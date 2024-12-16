@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "paws-time:dev": "pnpm --filter paws-time dev",
+    "paws-time:build": "pnpm --filter paws-time build",
+    "paws-time:start": "pnpm --filter paws-time start",
+    "paws-time:lint": "pnpm --filter paws-time lint"
   },
   "keywords": [],
   "author": "",
