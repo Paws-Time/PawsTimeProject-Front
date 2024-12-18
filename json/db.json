@@ -1,0 +1,14 @@
+{
+    "posts": [
+        {
+            "board_id": "1",
+            "post_id": "101",
+            "title": "게시글 제목 예시",
+            "content": "여기에 게시글의 내용이 들어갑니다.",
+            "created_at": "2024-06-01T12:00:00Z",
+            "updated_at": "2024-06-02T15:00:00Z"
+        }
+    ]
+}
+// pnpm json-server
+// json-server --watch json/db.json --port 3001
