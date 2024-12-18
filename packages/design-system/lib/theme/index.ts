@@ -1,5 +1,6 @@
 import { componentToken, referenceToken, systemToken } from "./colors";
 import { fontSize } from "./typograph";
+import { shadow } from "./shadow";
 
 export const theme = {
   colors: {
@@ -10,5 +11,8 @@ export const theme = {
   fontSize: {
     display: fontSize.display,
     text: fontSize.text,
+  },
+  shadow: {
+    ...shadow,
   },
 };
