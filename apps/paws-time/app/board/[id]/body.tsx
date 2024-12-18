@@ -21,7 +21,10 @@ export const Body = ({ postId }: { postId: string }) => {
 
       try {
         // JSON Server의 API 호출
-        const response = await fetch(`http://localhost:3001/posts/${postId}`);
+        // const response = await fetch(`http://localhost:3001/posts`); // 리스트 페이지
+
+        console.log({ postId });
+        const response = await fetch(`http://localhost:3001/posts/${postId}`); // 상세 페이지
 
         if (!response.ok) throw new Error("Failed to fetch post data");
 
