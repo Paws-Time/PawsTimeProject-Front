@@ -1,8 +1,10 @@
 "use client";
 
+import { NextPage } from "next";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { NextPage } from "next";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const BoardWritePage: NextPage = () => {
   const [title, setTitle] = useState("");
@@ -31,11 +33,7 @@ const BoardWritePage: NextPage = () => {
         </div>
         <div>
           <label>내용:</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
+          <ReactQuill theme="snow" value={content} onChange={setContent} />
         </div>
         <button type="submit">작성 완료</button>
       </form>
