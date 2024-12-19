@@ -4,7 +4,8 @@ export default function Home() {
   return (
     <>
       test
-      <Button label="hover button" />;
+      <Button label="테스트1" />;
+      <Button label="테스트2" />;
     </>
   );
 }
