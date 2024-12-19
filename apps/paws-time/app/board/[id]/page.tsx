@@ -1,11 +1,9 @@
 import { Body } from "./body";
+import { NextPage } from 'core-next/hoc'
 
-const BoardDetailPage = async ({
+export default NextPage<{ id: string }, { postId: string }>(async ({
   params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ postId: string }>;
+  searchParams
 }) => {
   // const searchParams = useSearchParams();
   // /boardId?postId={}
@@ -24,7 +22,7 @@ const BoardDetailPage = async ({
       <Body postId={postId} />
     </div>
   );
-};
+});
 
 // 스타일 객체
 export const styles = {
@@ -65,4 +63,3 @@ export const styles = {
   },
 };
 
-export default BoardDetailPage;

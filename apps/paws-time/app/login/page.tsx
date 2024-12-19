@@ -1,7 +1,7 @@
 // np -> snippets
 "use client";
 
-import { NextPage } from "next";
+import { NextPage } from "core-next/hoc";
 import { useState } from "react";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   password: string;
 }
 
-const Login: NextPage<Props> = () => {
+export default NextPage(() => {
   const [loginValue, setLoginValue] = useState<Props>({
     email: "",
     password: "",
@@ -53,6 +53,4 @@ const Login: NextPage<Props> = () => {
       </form>
     </div>
   );
-};
-
-export default Login;
+});

@@ -1,4 +1,5 @@
-import { NextPage } from "next";
+
+import { NextPage } from "core-next/hoc";
 import Link from "next/link";
 
 interface Post {
@@ -6,7 +7,7 @@ interface Post {
   title: string;
 }
 
-const BoardPage: NextPage = () => {
+export default NextPage(() => {
   const posts: Post[] = [
     { id: 1, title: "첫 번째 게시글" },
     { id: 2, title: "두 번째 게시글" },
@@ -29,6 +30,4 @@ const BoardPage: NextPage = () => {
       </Link>
     </div>
   );
-};
-
-export default BoardPage;
+});
