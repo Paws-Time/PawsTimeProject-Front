@@ -8,7 +8,8 @@
     "paws-time:dev": "pnpm --filter paws-time dev",
     "paws-time:build": "pnpm --filter paws-time build",
     "paws-time:start": "pnpm --filter paws-time start",
-    "paws-time:lint": "pnpm --filter paws-time lint"
+    "paws-time:lint": "pnpm --filter paws-time lint",
+    "start:json": "json-server --watch json/db.json --port 4000"
   },
   "keywords": [],
   "author": "",

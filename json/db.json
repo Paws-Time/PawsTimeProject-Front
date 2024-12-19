@@ -1,14 +1,31 @@
 {
     "posts": [
         {
-            "board_id": "1",
-            "post_id": "101",
+            "id": "101",
             "title": "게시글 제목 예시",
             "content": "여기에 게시글의 내용이 들어갑니다.",
+            "user_id": "2",
+            "board_id": "1",
+            "like_count": "10",
+            "id_delete": "false",
             "created_at": "2024-06-01T12:00:00Z",
             "updated_at": "2024-06-02T15:00:00Z"
         }
+    ],
+    "boards": [
+        {
+            "id": "1",
+            "title": "게시글 제목 예시",
+            "description": "게시글 설명",
+            "is_delete": "false",
+            "created_at": "2024-06-01T12:00:00Z",
+            "updated_at": "2024-06-02T15:00:00Z"
+        }
+    ],
+    "users": [
+        {
+            "id": "2",
+            "nick": "JaeWon"
+        }
     ]
 }
-// pnpm json-server
-// json-server --watch json/db.json --port 3001
