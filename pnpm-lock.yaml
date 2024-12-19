@@ -10,6 +10,9 @@ importers:
 
   apps/paws-time:
     dependencies:
+      core-next:
+        specifier: workspace:*
+        version: link:../../packages/core-next
       next:
         specifier: 15.1.0
         version: 15.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -47,6 +50,19 @@ importers:
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.16
+      typescript:
+        specifier: ^5
+        version: 5.7.2
+
+  packages/core-next:
+    dependencies:
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.0.1
       typescript:
         specifier: ^5
         version: 5.7.2
