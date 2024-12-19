@@ -48,7 +48,7 @@ interface InputProps {
   label: string;
   type: string;
 }
-export const InputField: React.FC<InputProps> = ({ label, type }) => {
+export const InputField = ({ label, type }: InputProps) => {
   return (
     <InputWrapper>
       <input type={type} placeholder={label} />
