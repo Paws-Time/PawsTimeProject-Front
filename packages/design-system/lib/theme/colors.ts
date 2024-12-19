@@ -43,6 +43,7 @@ export const componentToken = {
       background: referenceToken.base.white,
     },
     hover: referenceToken.primary.gray[100],
+    focus: referenceToken.primary.gray[100],
     active: referenceToken.primary.gray[200],
     disable: referenceToken.base.white,
   },

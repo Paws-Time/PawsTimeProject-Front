@@ -20,6 +20,8 @@ const StyledButton = styled.button<{ state: ButtonState }>`
   padding: 12px, 24px;
   border: none;
   border-radius: 5px;
+  width: 500px;
+  height: 40px;
   font-size: ${theme.fontSize.text.md};
   font-weight: bold;
   cursor: pointer;
