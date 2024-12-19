@@ -9,7 +9,8 @@ export const referenceToken = {
     green: {
       100: "#51C8BC", //로그인, 회원가입, 등 기본색
       200: "#3BADCD", //버튼에 사용될 청록색
-      300: "#113E1D", //sidebar에 사용될 어두운색
+      300: "#248EAC",
+      400: "#113E1D", //sidebar에 사용될 어두운색
     },
     gray: {
       100: "#E5E5E5", //사이드바 자리 사용될 밝은회색
@@ -31,26 +32,20 @@ export const systemToken = {
 
 export const componentToken = {
   button: {
-    primary: {
-      background: referenceToken.primary.green[100],
-    },
+    primary: referenceToken.primary.gray[100],
     hover: referenceToken.primary.green[200],
     active: referenceToken.primary.green[300],
     disabled: referenceToken.primary.green[100],
   },
   input: {
-    primary: {
-      background: referenceToken.base.white,
-    },
+    primary: referenceToken.base.white,
     hover: referenceToken.primary.gray[100],
     focus: referenceToken.primary.gray[100],
     active: referenceToken.primary.gray[200],
     disable: referenceToken.base.white,
   },
   card: {
-    primary: {
-      background: referenceToken.base.white,
-    },
+    primary: referenceToken.base.white,
     hover: referenceToken.primary.gray[100],
     active: referenceToken.primary.gray[200],
     disable: referenceToken.base.white,

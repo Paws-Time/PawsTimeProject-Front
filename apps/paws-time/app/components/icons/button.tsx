@@ -20,8 +20,6 @@ const StyledButton = styled.button<{ state: ButtonState }>`
   padding: 12px, 24px;
   border: none;
   border-radius: 5px;
-  width: 500px;
-  height: 40px;
   font-size: ${theme.fontSize.text.md};
   font-weight: bold;
   cursor: pointer;
@@ -39,7 +37,7 @@ const StyledButton = styled.button<{ state: ButtonState }>`
   }}
 `;
 
-export const Button = (props: Props) => {
+export const CustomButton = (props: Props) => {
   const { label, onClick, ...rest } = props;
   const [state, setState] = useState<ButtonState>("primary");
   return (
