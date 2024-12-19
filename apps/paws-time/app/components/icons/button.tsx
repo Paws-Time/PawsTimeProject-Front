@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { theme } from "design-system/lib/theme";
 
@@ -30,16 +31,25 @@ const StyledButton = styled.button<{ state: ButtonState }>`
     return css`
       background-color: ${theme.colors.comp.button[state]}; //배경색상
       box-shadow: ${shadow};
-      color: ${theme.colors.ref.base.white}; //글자색상
+      color: ${theme.colors.ref.base.black}; //글자색상
       cursor: ${state === "disabled" ? "not-allowed" : "pointer"};
     `;
   }}
 `;
 
-export const button = (props: Props) => {
-  const { state = "primary", label, ...rest } = props;
+export const Button = (props: Props) => {
+  const { label, onClick, ...rest } = props;
+  const [state, setState] = useState<ButtonState>("primary");
   return (
-    <StyledButton state={state} {...rest}>
+    <StyledButton
+      state={state}
+      onClick={onClick}
+      onMouseEnter={() => setState("hover")} // 마우스 오버
+      onMouseLeave={() => setState("primary")} // 마우스 벗어남
+      onMouseDown={() => setState("active")} // 클릭
+      onMouseUp={() => setState("hover")} // 클릭 해제
+      {...rest}
+    >
       {label}
     </StyledButton>
   );
