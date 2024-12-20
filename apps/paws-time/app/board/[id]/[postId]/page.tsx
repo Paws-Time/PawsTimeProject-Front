@@ -1,19 +1,13 @@
 import { Body } from "./body";
 
-const BoardDetailPage = async ({
-  params,
-}: {
-  params: { id: number; postId: number };
-}) => {
-  const { id: boardId, postId } = await params; // id는 boardId로, postId는 그대로 사용, await 안 쓰면 warning
+const BoardDetailPage = async ({ params }: { params: { postId: number } }) => {
+  const { postId } = params; // postId만 사용
 
-  console.log({ boardId, postId });
-
-  const userId = 2; // 임의로 설정, 실제로는 로그인된 사용자 ID로 설정 필요
+  console.log({ postId });
 
   return (
     <div style={styles.container}>
-      <Body id={postId} userId={userId} />
+      <Body postId={postId} />
     </div>
   );
 };
