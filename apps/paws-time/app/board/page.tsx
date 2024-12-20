@@ -1,34 +1,25 @@
-import { NextPage } from "next";
-import Link from "next/link";
+"use client";
+import CreateBoard from "../components/board/createBoard";
+import MainBoard from "../components/board/mainBoard";
+import useStore from "../hooks/store";
 
-interface Post {
-  id: number;
-  title: string;
-}
-
-const BoardPage: NextPage = () => {
-  const posts: Post[] = [
-    { id: 1, title: "첫 번째 게시글" },
-    { id: 2, title: "두 번째 게시글" },
-  ];
+export default function BoardPage() {
+  const { currentComponent } = useStore(); // Zustand의 상태와 액션 사용
 
   return (
-    <div>
-      <h1>게시판</h1>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>
-            {/* 게시글 상세 페이지로 이동 */}
-            <Link href={`/board/${post.id}`}>{post.title}</Link>
-          </li>
-        ))}
-      </ul>
-      {/* 글 작성 페이지로 이동 */}
-      <Link href="/board/write">
-        <button>글 작성하기</button>
-      </Link>
+    <div className="w-custom-width h-custom-height">
+      {(() => {
+        switch (currentComponent) {
+          case "board":
+            return <MainBoard />;
+          case "create":
+          return <CreateBoard />;
+          case "login":
+          // return <Login />;
+          default:
+            return <div>잘못된 컴포넌트 상태입니다.</div>;
+        }
+      })()}
     </div>
   );
-};
-
-export default BoardPage;
+}

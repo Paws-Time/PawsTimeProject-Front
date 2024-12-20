@@ -12,13 +12,17 @@
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-quill-new": "^3.3.3"
+    "react-quill-new": "^3.3.3",
+    "design-system": "workspace:*",
+    "styled-components": "^6.1.13",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/styled-components": "^5.1.34",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
     "json-server": "1.0.0-beta.3",

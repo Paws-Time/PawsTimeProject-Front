@@ -1,0 +1,28 @@
+[
+  {
+    "boardId": 0,
+    "title": "string",
+    "description": "string",
+    "isDelete": true,
+    "createdAt": "2024-12-20T04:46:28.232Z",
+    "updatedAt": "2024-12-20T04:46:28.232Z"
+  },
+
+  {
+    "boardId": 1,
+    "title": "string1",
+    "description": "string1",
+    "isDelete": true,
+    "createdAt": "2024-12-20T04:46:28.232Z",
+    "updatedAt": "2024-12-20T04:46:28.232Z"
+  },
+
+  {
+    "boardId": 2,
+    "title": "string2",
+    "description": "string2",
+    "isDelete": true,
+    "createdAt": "2024-12-20T04:46:28.232Z",
+    "updatedAt": "2024-12-20T04:46:28.232Z"
+  }
+]
