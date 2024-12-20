@@ -10,13 +10,37 @@ export const BoardWriteBody = () => {
   const [content, setContent] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ title, content });
-    alert("글 작성 완료!");
-    router.push("/board");
-  };
 
+    // 서버에 보낼 데이터
+    const postData = {
+      title: title,
+      content: content,
+      boardId: 1, // 임의 값 고정
+      category: "TECH", // 임의 값 고정
+      likesCount: 0, // 임의 값 고정
+    };
+    try {
+      const response = await fetch("http://43.200.46.13:8080/post/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (response.ok) {
+        alert("글 작성 완료!");
+        router.push("/board");
+      } else {
+        throw new Error("게시글 작성에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("서버 요청에 실패했습니다.");
+    }
+  };
   return (
     <form onSubmit={handleSubmit}>
       <div>
