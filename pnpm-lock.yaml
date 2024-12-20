@@ -22,16 +22,15 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
-react-quill-new:
-  specifier: ^3.3.3
-  version: 3.3.3 (quill-delta@5.1.0) (react-dom@19.0.0 (react@19.0.0)) (react@19.0.0)
-styled-components:
-  specifier: ^6.1.13
-  version: 6.1.13 (react-dom@19.0.0 (react@19.0.0)) (react@19.0.0)
-zustand:
-  specifier: ^5.0.2
-  version: 5.0.2 (@types/react@19.0.1) (react@19.0.0)
-
+      react-quill-new:
+        specifier: ^3.3.3
+        version: 3.3.3(quill-delta@5.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      styled-components:
+        specifier: ^6.1.13
+        version: 6.1.13(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/react@19.0.1)(react@19.0.0)
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
