@@ -15,14 +15,18 @@ export default {
 
       spacing: {
         // 높이 및 너비를 위한 사용자 정의 크기
-        "custom-sidew": "300px",
-        "custom-sideh": "800px",
+        "custom-sidew": "400px", //사이드바
+        "custom-sideh": "1350px", //사이드바
         "custom-buttonw": "500px",
         "custom-buttonh": "40px",
-        "custom-boardw": "1670px",
-        "custom-boardh": "1170px",
-        "custom-width": "1480px", // 사용자 정의 너비
-        "custom-height": "977px", // 사용자 정의 높이
+        "custom-boardw": "1480px", //보더
+        "custom-boardh": "950px", //보더
+        "custom-boardhw": "1480px", //보더안 헤더
+        "custom-boardhh": "140px", //보더안 헤더
+        "custom-width": "1800px", // 사용자 정의 너비
+        "custom-height": "1350px", // 사용자 정의 높이
+        "custom-headerw": "1480px", //전체 헤더
+        "custom-headerh": "180px", //전체 헤더
       },
     },
   },
