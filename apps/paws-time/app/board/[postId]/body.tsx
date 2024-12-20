@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import { styles } from "./page";
 
 interface PostData {
-  post_id: number; // 게시글 ID
+  post_id: number;
   title: string;
   content: string;
   created_at: string;
   updated_at: string;
 }
 
-export const Body = ({ postId }: { postId?: number }) => {
+export const Body = ({ postId }: { postId?: string }) => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -23,11 +23,13 @@ export const Body = ({ postId }: { postId?: number }) => {
           `http://43.200.46.13:8080/post/posts/${postId}`
         );
 
-        if (!response.ok) throw new Error("Failed to fetch post data");
+        if (!response.ok) {
+          console.error("Failed to fetch data. Status:", response.status);
+          throw new Error("Failed to fetch post data");
+        }
 
         const data = await response.json();
 
-        // 필드 매핑
         const mappedData: PostData = {
           post_id: data.postId,
           title: data.title,
@@ -50,12 +52,8 @@ export const Body = ({ postId }: { postId?: number }) => {
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>게시글을 불러올 수 없습니다.</div>;
 
-  // 게시글 작성자(user_id)가 로그인한 사용자(userId)와 일치하면 수정 가능 표시
-  const canEdit = false; // 로그인 확인 로직 없음
-
   return (
     <div style={styles.contentBox}>
-      ㅁ
       <div style={styles.imagePlaceholder}>
         <img
           src="/aaa.jpg"

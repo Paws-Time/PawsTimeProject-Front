@@ -1,7 +1,7 @@
 import { Body } from "./body";
 
-const BoardDetailPage = async ({ params }: { params: { postId: number } }) => {
-  const { postId } = params; // postId만 사용
+const BoardDetailPage = async ({ params }: { params: { postId: string } }) => {
+  const { postId } = await params; // postId만 사용
 
   console.log({ postId });
 
