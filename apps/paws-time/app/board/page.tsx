@@ -1,32 +1,25 @@
 "use client";
-import Sidebar from "../components/sidebar";
+import CreateBoard from "../components/board/createBoard";
 import MainBoard from "../components/board/mainBoard";
 import useStore from "../hooks/store";
 
-export default function Page() {
-  const { isSidebarOpen } = useStore(); // Sidebar 상태 가져오기
+export default function BoardPage() {
+  const { currentComponent } = useStore(); // Zustand의 상태와 액션 사용
 
   return (
-    <div className="flex flex-col w-custom-width h-custom-height">
-      {/* Header */}
-
-      <div className="flex flex-row flex-grow">
-        {/* Sidebar */}
-        {isSidebarOpen ? (
-          <div>
-            <div className="w-custom-sidew h-custom-sideh">
-              <Sidebar />
-            </div>
-            <div className="w-custom-boardw h-custom-boardh">
-              <MainBoard />
-            </div>
-          </div>
-        ) : (
-          <div className="w-custom-width h-custom-boardh">
-            <MainBoard />
-          </div>
-        )}
-      </div>
+    <div className="w-custom-width h-custom-height">
+      {(() => {
+        switch (currentComponent) {
+          case "board":
+            return <MainBoard />;
+          case "create":
+          return <CreateBoard />;
+          case "login":
+          // return <Login />;
+          default:
+            return <div>잘못된 컴포넌트 상태입니다.</div>;
+        }
+      })()}
     </div>
   );
 }

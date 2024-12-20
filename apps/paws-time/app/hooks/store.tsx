@@ -9,7 +9,7 @@ interface AppState {
 
   toggleSidebar: () => void;
   toggleModal: () => void;
-  toggleComponent: () => void;
+  toggleComponent: (component: string) => void;
 }
 
 const useStore = create<AppState>((set) => ({
@@ -21,7 +21,8 @@ const useStore = create<AppState>((set) => ({
   toggleSidebar: () =>
     set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
   toggleModal: () => set((state) => ({ isModalOpen: !state.isModalOpen })),
-  toggleComponent: () => set(() => ({})),
+  toggleComponent: (component: string) =>
+    set(() => ({ currentComponent: component })),
 }));
 
 export default useStore;
