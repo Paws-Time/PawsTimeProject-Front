@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
-  const [isShow, setShow] = useState(true);
+  const [isShow, setShow] = useState(false);
   const router = useRouter();
 
   const menus = [
