@@ -6,7 +6,7 @@ import React, { useState } from "react";
 export const BoardWriteBody = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("TECH"); // 기본 카테고리 값
+  const [boardId, setBoardId] = useState(1); // 기본값 1로 설정
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,12 +21,34 @@ export const BoardWriteBody = () => {
       alert("내용을 입력해주세요.");
       return;
     }
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    // 유효성 검사 (제목 5~20자, 내용 5자 이상)
+    if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
+      alert("제목은 5자 이상 20자 이하로 작성해주세요.");
+      return;
+    }
+    if (trimmedContent.length < 5) {
+      alert("내용은 최소 5자 이상이어야 합니다.");
+      return;
+    }
 
+    const categoryMap: Record<number, string> = {
+      1: "TECH",
+      2: "EDUCATION",
+      3: "LIFESTYLE",
+      4: "ENTERTAINMENT",
+    };
+
+    const category = categoryMap[boardId] || "OTHER"; // boardId가 없으면 기본값 "OTHER"
+
+    // 서버에 보낼 데이터
     const postData = {
       title: title,
       content: content,
-      boardId: 1, // 임의 값
-      category: category, // 선택된 카테고리 값
+      boardId: boardId,
+      category: category,
+      likesCount: 0, // 임의 값 고정
     };
 
     try {
@@ -58,14 +80,14 @@ export const BoardWriteBody = () => {
         <div style={styles.field}>
           <label style={styles.label}>게시판</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={boardId}
+            onChange={(e) => setBoardId(Number(e.target.value))}
             style={styles.select}
           >
-            <option value="TECH">TECH</option>
-            <option value="EDUCATION">EDUCATION</option>
-            <option value="LIFESTYLE">LIFESTYLE</option>
-            <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+            <option value={1}>TECH</option>
+            <option value={2}>EDUCATION</option>
+            <option value={3}>LIFESTYLE</option>
+            <option value={4}>ENTERTAINMENT</option>
           </select>
         </div>
         <div style={styles.field}>
