@@ -16,6 +16,10 @@ export default defineConfig({
           useInfinite: true,
           useMutation: true,
         },
+        mutator: {
+          path: "app/lib/axios-client/customClient.ts",
+          name: "customInstance",
+        },
       },
     },
   },

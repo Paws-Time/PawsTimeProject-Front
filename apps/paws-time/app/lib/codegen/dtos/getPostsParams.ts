@@ -6,9 +6,9 @@
  */
 
 export type GetPostsParams = {
-boardId?: number;
-keyword?: string;
-page?: number;
-size?: number;
-sort?: string;
+  boardId?: number;
+  keyword?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
 };

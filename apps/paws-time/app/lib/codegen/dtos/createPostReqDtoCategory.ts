@@ -5,13 +5,13 @@
  * OpenAPI spec version: v1
  */
 
-export type CreatePostReqDtoCategory = typeof CreatePostReqDtoCategory[keyof typeof CreatePostReqDtoCategory];
-
+export type CreatePostReqDtoCategory =
+  (typeof CreatePostReqDtoCategory)[keyof typeof CreatePostReqDtoCategory];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreatePostReqDtoCategory = {
-  TECH: 'TECH',
-  LIFESTYLE: 'LIFESTYLE',
-  EDUCATION: 'EDUCATION',
-  ENTERTAINMENT: 'ENTERTAINMENT',
+  TECH: "TECH",
+  LIFESTYLE: "LIFESTYLE",
+  EDUCATION: "EDUCATION",
+  ENTERTAINMENT: "ENTERTAINMENT",
 } as const;

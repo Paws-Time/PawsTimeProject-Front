@@ -4,6 +4,7 @@ import { InputField } from "../icons/input";
 import { CustomButton } from "../icons/button";
 import useStore from "@/app/hooks/store";
 import Sidebar from "../sidebar";
+import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 
 export default function MainBoard() {
   const { isSidebarOpen, toggleSidebar, toggleComponent } = useStore(); // Zustand 훅 사용
@@ -11,6 +12,9 @@ export default function MainBoard() {
   const sidebarHandle = () => {
     toggleSidebar();
   };
+
+  const { data } = useGetBoardList();
+  console.log(data)
   return (
     <div className="flex flex-row pt-0 w-custom-width h-custom-height">
       {isSidebarOpen && (

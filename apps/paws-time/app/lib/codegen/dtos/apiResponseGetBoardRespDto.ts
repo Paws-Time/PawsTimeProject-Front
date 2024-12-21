@@ -4,8 +4,8 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import type { GetBoardRespDto } from './getBoardRespDto';
-import type { ApiResponseGetBoardRespDtoStatus } from './apiResponseGetBoardRespDtoStatus';
+import type { GetBoardRespDto } from "./getBoardRespDto";
+import type { ApiResponseGetBoardRespDtoStatus } from "./apiResponseGetBoardRespDtoStatus";
 
 export interface ApiResponseGetBoardRespDto {
   data?: GetBoardRespDto;

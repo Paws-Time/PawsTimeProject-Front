@@ -5,19 +5,19 @@
  * OpenAPI spec version: v1
  */
 
-export type ApiResponseListGetBoardRespDtoStatus = typeof ApiResponseListGetBoardRespDtoStatus[keyof typeof ApiResponseListGetBoardRespDtoStatus];
-
+export type ApiResponseListGetBoardRespDtoStatus =
+  (typeof ApiResponseListGetBoardRespDtoStatus)[keyof typeof ApiResponseListGetBoardRespDtoStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ApiResponseListGetBoardRespDtoStatus = {
-  SUCCESS: 'SUCCESS',
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-  INVALID: 'INVALID',
-  DUPLICATE: 'DUPLICATE',
-  NOTFOUND: 'NOTFOUND',
-  UNAUTHORIZED: 'UNAUTHORIZED',
-  FORBIDDEN: 'FORBIDDEN',
-  ERROR: 'ERROR',
+  SUCCESS: "SUCCESS",
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+  INVALID: "INVALID",
+  DUPLICATE: "DUPLICATE",
+  NOTFOUND: "NOTFOUND",
+  UNAUTHORIZED: "UNAUTHORIZED",
+  FORBIDDEN: "FORBIDDEN",
+  ERROR: "ERROR",
 } as const;

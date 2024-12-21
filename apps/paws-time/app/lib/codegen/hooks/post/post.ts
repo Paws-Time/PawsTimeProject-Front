@@ -4,11 +4,7 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
   QueryFunction,
@@ -18,395 +14,557 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query'
-import axios from 'axios'
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type {
   CreatePostReqDto,
   GetDetailPost200,
   GetPosts200,
   GetPostsParams,
-  UpdatePostReqDto
-} from '../../dtos'
+  UpdatePostReqDto,
+} from "../../dtos";
+import { customInstance } from "../../../axios-client/customClient";
+import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
-
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * 게시글id로 상세조회를 할 수 있습니다.
  * @summary 게시글 상세 조회
  */
 export const getDetailPost = (
-    postId: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<GetDetailPost200>> => {
-    
-    return axios.get(
-      `/post/posts/${postId}`,options
-    );
-  }
-
-
-export const getGetDetailPostQueryKey = (postId: number,) => {
-    return [`/post/posts/${postId}`] as const;
-    }
-
-    
-export const getGetDetailPostInfiniteQueryOptions = <TData = Awaited<ReturnType<typeof getDetailPost>>, TError = AxiosError<unknown>>(postId: number, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData>, axios?: AxiosRequestConfig}
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
 ) => {
+  return customInstance<GetDetailPost200>(
+    { url: `/post/posts/${postId}`, method: "GET", signal },
+    options,
+  );
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export const getGetDetailPostQueryKey = (postId: number) => {
+  return [`/post/posts/${postId}`] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetDetailPostQueryKey(postId);
+export const getGetDetailPostInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDetailPost>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getDetailPost>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  
+  const queryKey = queryOptions?.queryKey ?? getGetDetailPostQueryKey(postId);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDetailPost>>> = ({ signal }) => getDetailPost(postId, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDetailPost>>> = ({
+    signal,
+  }) => getDetailPost(postId, requestOptions, signal);
 
-      
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getDetailPost>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetDetailPostInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getDetailPost>>>
-export type GetDetailPostInfiniteQueryError = AxiosError<unknown>
-
+export type GetDetailPostInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDetailPost>>
+>;
+export type GetDetailPostInfiniteQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시글 상세 조회
  */
 
-export function useGetDetailPostInfinite<TData = Awaited<ReturnType<typeof getDetailPost>>, TError = AxiosError<unknown>>(
- postId: number, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetDetailPostInfinite<
+  TData = Awaited<ReturnType<typeof getDetailPost>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getDetailPost>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDetailPostInfiniteQueryOptions(postId, options);
 
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
-  const queryOptions = getGetDetailPostInfiniteQueryOptions(postId,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
-
-
-export const getGetDetailPostQueryOptions = <TData = Awaited<ReturnType<typeof getDetailPost>>, TError = AxiosError<unknown>>(postId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetDetailPostQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDetailPost>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getDetailPost>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetDetailPostQueryKey(postId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetDetailPostQueryKey(postId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDetailPost>>> = ({
+    signal,
+  }) => getDetailPost(postId, requestOptions, signal);
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDetailPost>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDetailPost>>> = ({ signal }) => getDetailPost(postId, { signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetDetailPostQueryResult = NonNullable<Awaited<ReturnType<typeof getDetailPost>>>
-export type GetDetailPostQueryError = AxiosError<unknown>
-
+export type GetDetailPostQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDetailPost>>
+>;
+export type GetDetailPostQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시글 상세 조회
  */
 
-export function useGetDetailPost<TData = Awaited<ReturnType<typeof getDetailPost>>, TError = AxiosError<unknown>>(
- postId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDetailPost>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetDetailPost<
+  TData = Awaited<ReturnType<typeof getDetailPost>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getDetailPost>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDetailPostQueryOptions(postId, options);
 
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-  const queryOptions = getGetDetailPostQueryOptions(postId,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * 게시글을 수정할 수 있습니다.
  * @summary 게시글 수정
  */
 export const updatePost = (
-    postId: number,
-    updatePostReqDto: UpdatePostReqDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string>> => {
-    
-    return axios.put(
-      `/post/posts/${postId}`,
-      updatePostReqDto,options
-    );
-  }
+  postId: number,
+  updatePostReqDto: BodyType<UpdatePostReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    {
+      url: `/post/posts/${postId}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updatePostReqDto,
+    },
+    options,
+  );
+};
 
+export const getUpdatePostMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePost>>,
+    TError,
+    { postId: number; data: BodyType<UpdatePostReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePost>>,
+  TError,
+  { postId: number; data: BodyType<UpdatePostReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePost>>,
+    { postId: number; data: BodyType<UpdatePostReqDto> }
+  > = (props) => {
+    const { postId, data } = props ?? {};
 
-export const getUpdatePostMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePost>>, TError,{postId: number;data: UpdatePostReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof updatePost>>, TError,{postId: number;data: UpdatePostReqDto}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return updatePost(postId, data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type UpdatePostMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePost>>
+>;
+export type UpdatePostMutationBody = BodyType<UpdatePostReqDto>;
+export type UpdatePostMutationError = ErrorType<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePost>>, {postId: number;data: UpdatePostReqDto}> = (props) => {
-          const {postId,data} = props ?? {};
-
-          return  updatePost(postId,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdatePostMutationResult = NonNullable<Awaited<ReturnType<typeof updatePost>>>
-    export type UpdatePostMutationBody = UpdatePostReqDto
-    export type UpdatePostMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시글 수정
  */
-export const useUpdatePost = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePost>>, TError,{postId: number;data: UpdatePostReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof updatePost>>,
-        TError,
-        {postId: number;data: UpdatePostReqDto},
-        TContext
-      > => {
+export const useUpdatePost = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePost>>,
+    TError,
+    { postId: number; data: BodyType<UpdatePostReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updatePost>>,
+  TError,
+  { postId: number; data: BodyType<UpdatePostReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdatePostMutationOptions(options);
 
-      const mutationOptions = getUpdatePostMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
+  return useMutation(mutationOptions);
+};
+/**
  * 게시글을 삭제할 수 있습니다.
  * @summary 게시글 삭제
  */
 export const deletePost = (
-    postId: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string>> => {
-    
-    return axios.delete(
-      `/post/posts/${postId}`,options
-    );
-  }
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    { url: `/post/posts/${postId}`, method: "DELETE" },
+    options,
+  );
+};
 
+export const getDeletePostMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deletePost>>,
+    TError,
+    { postId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deletePost>>,
+  TError,
+  { postId: number },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deletePost>>,
+    { postId: number }
+  > = (props) => {
+    const { postId } = props ?? {};
 
-export const getDeletePostMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePost>>, TError,{postId: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof deletePost>>, TError,{postId: number}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return deletePost(postId, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeletePostMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deletePost>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deletePost>>, {postId: number}> = (props) => {
-          const {postId} = props ?? {};
+export type DeletePostMutationError = ErrorType<unknown>;
 
-          return  deletePost(postId,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeletePostMutationResult = NonNullable<Awaited<ReturnType<typeof deletePost>>>
-    
-    export type DeletePostMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시글 삭제
  */
-export const useDeletePost = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePost>>, TError,{postId: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof deletePost>>,
-        TError,
-        {postId: number},
-        TContext
-      > => {
+export const useDeletePost = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deletePost>>,
+    TError,
+    { postId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deletePost>>,
+  TError,
+  { postId: number },
+  TContext
+> => {
+  const mutationOptions = getDeletePostMutationOptions(options);
 
-      const mutationOptions = getDeletePostMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
+  return useMutation(mutationOptions);
+};
+/**
  * 게시글 목록 조회를 할 수 있습니다.
  * @summary 게시글 목록 조회
  */
 export const getPosts = (
-    params?: GetPostsParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<GetPosts200>> => {
-    
-    return axios.get(
-      `/post/posts`,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
-
-
-export const getGetPostsQueryKey = (params?: GetPostsParams,) => {
-    return [`/post/posts`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getGetPostsInfiniteQueryOptions = <TData = Awaited<ReturnType<typeof getPosts>>, TError = AxiosError<unknown>>(params?: GetPostsParams, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData>, axios?: AxiosRequestConfig}
+  params?: GetPostsParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
 ) => {
+  return customInstance<GetPosts200>(
+    { url: `/post/posts`, method: "GET", params, signal },
+    options,
+  );
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export const getGetPostsQueryKey = (params?: GetPostsParams) => {
+  return [`/post/posts`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetPostsQueryKey(params);
+export const getGetPostsInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPosts>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostsParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPosts>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  
+  const queryKey = queryOptions?.queryKey ?? getGetPostsQueryKey(params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPosts>>> = ({ signal }) => getPosts(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPosts>>> = ({
+    signal,
+  }) => getPosts(params, requestOptions, signal);
 
-      
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getPosts>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetPostsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getPosts>>>
-export type GetPostsInfiniteQueryError = AxiosError<unknown>
-
+export type GetPostsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPosts>>
+>;
+export type GetPostsInfiniteQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시글 목록 조회
  */
 
-export function useGetPostsInfinite<TData = Awaited<ReturnType<typeof getPosts>>, TError = AxiosError<unknown>>(
- params?: GetPostsParams, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetPostsInfinite<
+  TData = Awaited<ReturnType<typeof getPosts>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostsParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPosts>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostsInfiniteQueryOptions(params, options);
 
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
-  const queryOptions = getGetPostsInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
-
-
-export const getGetPostsQueryOptions = <TData = Awaited<ReturnType<typeof getPosts>>, TError = AxiosError<unknown>>(params?: GetPostsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPosts>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPosts>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetPostsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetPostsQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPosts>>> = ({
+    signal,
+  }) => getPosts(params, requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPosts>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPosts>>> = ({ signal }) => getPosts(params, { signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetPostsQueryResult = NonNullable<Awaited<ReturnType<typeof getPosts>>>
-export type GetPostsQueryError = AxiosError<unknown>
-
+export type GetPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPosts>>
+>;
+export type GetPostsQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시글 목록 조회
  */
 
-export function useGetPosts<TData = Awaited<ReturnType<typeof getPosts>>, TError = AxiosError<unknown>>(
- params?: GetPostsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPosts>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetPosts<
+  TData = Awaited<ReturnType<typeof getPosts>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPosts>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostsQueryOptions(params, options);
 
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-  const queryOptions = getGetPostsQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * 새로운 게시글을 생성할 수 있습니다.
  * @summary 게시글 생성
  */
 export const createPost = (
-    createPostReqDto: CreatePostReqDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string>> => {
-    
-    return axios.post(
-      `/post/posts`,
-      createPostReqDto,options
-    );
-  }
+  createPostReqDto: BodyType<CreatePostReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<string>(
+    {
+      url: `/post/posts`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createPostReqDto,
+      signal,
+    },
+    options,
+  );
+};
 
+export const getCreatePostMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPost>>,
+    TError,
+    { data: BodyType<CreatePostReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createPost>>,
+  TError,
+  { data: BodyType<CreatePostReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createPost>>,
+    { data: BodyType<CreatePostReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getCreatePostMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPost>>, TError,{data: CreatePostReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof createPost>>, TError,{data: CreatePostReqDto}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return createPost(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreatePostMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createPost>>
+>;
+export type CreatePostMutationBody = BodyType<CreatePostReqDto>;
+export type CreatePostMutationError = ErrorType<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPost>>, {data: CreatePostReqDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createPost(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreatePostMutationResult = NonNullable<Awaited<ReturnType<typeof createPost>>>
-    export type CreatePostMutationBody = CreatePostReqDto
-    export type CreatePostMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시글 생성
  */
-export const useCreatePost = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPost>>, TError,{data: CreatePostReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof createPost>>,
-        TError,
-        {data: CreatePostReqDto},
-        TContext
-      > => {
+export const useCreatePost = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPost>>,
+    TError,
+    { data: BodyType<CreatePostReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createPost>>,
+  TError,
+  { data: BodyType<CreatePostReqDto> },
+  TContext
+> => {
+  const mutationOptions = getCreatePostMutationOptions(options);
 
-      const mutationOptions = getCreatePostMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
+  return useMutation(mutationOptions);
+};

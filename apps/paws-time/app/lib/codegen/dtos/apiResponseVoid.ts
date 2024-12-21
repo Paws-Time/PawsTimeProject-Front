@@ -4,8 +4,8 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import type { ApiResponseVoidData } from './apiResponseVoidData';
-import type { ApiResponseVoidStatus } from './apiResponseVoidStatus';
+import type { ApiResponseVoidData } from "./apiResponseVoidData";
+import type { ApiResponseVoidStatus } from "./apiResponseVoidStatus";
 
 export interface ApiResponseVoid {
   data?: ApiResponseVoidData;

@@ -4,11 +4,7 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
   QueryFunction,
@@ -18,395 +14,555 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query'
-import axios from 'axios'
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type {
   ApiResponseGetBoardRespDto,
   ApiResponseListGetBoardRespDto,
   ApiResponseVoid,
   CreateBoardReqDto,
   GetBoardListParams,
-  UpdateBoardReqDto
-} from '../../dtos'
+  UpdateBoardReqDto,
+} from "../../dtos";
+import { customInstance } from "../../../axios-client/customClient";
+import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
-
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * board_id를 입력하면 title, description을 조회할 수 있습니다.
  * @summary 게시판 상세 조회
  */
 export const getBoard = (
-    boardId: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseGetBoardRespDto>> => {
-    
-    return axios.get(
-      `/board/${boardId}`,options
-    );
-  }
-
-
-export const getGetBoardQueryKey = (boardId: number,) => {
-    return [`/board/${boardId}`] as const;
-    }
-
-    
-export const getGetBoardInfiniteQueryOptions = <TData = Awaited<ReturnType<typeof getBoard>>, TError = AxiosError<unknown>>(boardId: number, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData>, axios?: AxiosRequestConfig}
+  boardId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
 ) => {
+  return customInstance<ApiResponseGetBoardRespDto>(
+    { url: `/board/${boardId}`, method: "GET", signal },
+    options,
+  );
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export const getGetBoardQueryKey = (boardId: number) => {
+  return [`/board/${boardId}`] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetBoardQueryKey(boardId);
+export const getGetBoardInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBoard>>,
+  TError = ErrorType<unknown>,
+>(
+  boardId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getBoard>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  
+  const queryKey = queryOptions?.queryKey ?? getGetBoardQueryKey(boardId);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoard>>> = ({ signal }) => getBoard(boardId, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoard>>> = ({
+    signal,
+  }) => getBoard(boardId, requestOptions, signal);
 
-      
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!boardId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getBoard>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
-
-   return  { queryKey, queryFn, enabled: !!(boardId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetBoardInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getBoard>>>
-export type GetBoardInfiniteQueryError = AxiosError<unknown>
-
+export type GetBoardInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBoard>>
+>;
+export type GetBoardInfiniteQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시판 상세 조회
  */
 
-export function useGetBoardInfinite<TData = Awaited<ReturnType<typeof getBoard>>, TError = AxiosError<unknown>>(
- boardId: number, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetBoardInfinite<
+  TData = Awaited<ReturnType<typeof getBoard>>,
+  TError = ErrorType<unknown>,
+>(
+  boardId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getBoard>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBoardInfiniteQueryOptions(boardId, options);
 
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
-  const queryOptions = getGetBoardInfiniteQueryOptions(boardId,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
-
-
-export const getGetBoardQueryOptions = <TData = Awaited<ReturnType<typeof getBoard>>, TError = AxiosError<unknown>>(boardId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetBoardQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBoard>>,
+  TError = ErrorType<unknown>,
+>(
+  boardId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBoard>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetBoardQueryKey(boardId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetBoardQueryKey(boardId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoard>>> = ({
+    signal,
+  }) => getBoard(boardId, requestOptions, signal);
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!boardId,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoard>>> = ({ signal }) => getBoard(boardId, { signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(boardId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetBoardQueryResult = NonNullable<Awaited<ReturnType<typeof getBoard>>>
-export type GetBoardQueryError = AxiosError<unknown>
-
+export type GetBoardQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBoard>>
+>;
+export type GetBoardQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시판 상세 조회
  */
 
-export function useGetBoard<TData = Awaited<ReturnType<typeof getBoard>>, TError = AxiosError<unknown>>(
- boardId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBoard>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetBoard<
+  TData = Awaited<ReturnType<typeof getBoard>>,
+  TError = ErrorType<unknown>,
+>(
+  boardId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBoard>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBoardQueryOptions(boardId, options);
 
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-  const queryOptions = getGetBoardQueryOptions(boardId,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * 선택한 게시판의 제목, 설명을 수정할 수 있습니다.
  * @summary 게시판 수정
  */
 export const updateBoard = (
-    boardId: number,
-    updateBoardReqDto: UpdateBoardReqDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseVoid>> => {
-    
-    return axios.put(
-      `/board/${boardId}`,
-      updateBoardReqDto,options
-    );
-  }
+  boardId: number,
+  updateBoardReqDto: BodyType<UpdateBoardReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/board/${boardId}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updateBoardReqDto,
+    },
+    options,
+  );
+};
 
+export const getUpdateBoardMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateBoard>>,
+    TError,
+    { boardId: number; data: BodyType<UpdateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateBoard>>,
+  TError,
+  { boardId: number; data: BodyType<UpdateBoardReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateBoard>>,
+    { boardId: number; data: BodyType<UpdateBoardReqDto> }
+  > = (props) => {
+    const { boardId, data } = props ?? {};
 
-export const getUpdateBoardMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBoard>>, TError,{boardId: number;data: UpdateBoardReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof updateBoard>>, TError,{boardId: number;data: UpdateBoardReqDto}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return updateBoard(boardId, data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type UpdateBoardMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateBoard>>
+>;
+export type UpdateBoardMutationBody = BodyType<UpdateBoardReqDto>;
+export type UpdateBoardMutationError = ErrorType<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateBoard>>, {boardId: number;data: UpdateBoardReqDto}> = (props) => {
-          const {boardId,data} = props ?? {};
-
-          return  updateBoard(boardId,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateBoardMutationResult = NonNullable<Awaited<ReturnType<typeof updateBoard>>>
-    export type UpdateBoardMutationBody = UpdateBoardReqDto
-    export type UpdateBoardMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시판 수정
  */
-export const useUpdateBoard = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBoard>>, TError,{boardId: number;data: UpdateBoardReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof updateBoard>>,
-        TError,
-        {boardId: number;data: UpdateBoardReqDto},
-        TContext
-      > => {
+export const useUpdateBoard = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateBoard>>,
+    TError,
+    { boardId: number; data: BodyType<UpdateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateBoard>>,
+  TError,
+  { boardId: number; data: BodyType<UpdateBoardReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdateBoardMutationOptions(options);
 
-      const mutationOptions = getUpdateBoardMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
+  return useMutation(mutationOptions);
+};
+/**
  * 선택한 게시판을 삭제합니다.
  * @summary 게시판 삭제
  */
 export const deleteBoard = (
-    boardId: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseVoid>> => {
-    
-    return axios.put(
-      `/board/delete/${boardId}`,undefined,options
-    );
-  }
+  boardId: number,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    { url: `/board/delete/${boardId}`, method: "PUT" },
+    options,
+  );
+};
 
+export const getDeleteBoardMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBoard>>,
+    TError,
+    { boardId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteBoard>>,
+  TError,
+  { boardId: number },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteBoard>>,
+    { boardId: number }
+  > = (props) => {
+    const { boardId } = props ?? {};
 
-export const getDeleteBoardMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteBoard>>, TError,{boardId: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteBoard>>, TError,{boardId: number}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return deleteBoard(boardId, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteBoardMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteBoard>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteBoard>>, {boardId: number}> = (props) => {
-          const {boardId} = props ?? {};
+export type DeleteBoardMutationError = ErrorType<unknown>;
 
-          return  deleteBoard(boardId,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteBoardMutationResult = NonNullable<Awaited<ReturnType<typeof deleteBoard>>>
-    
-    export type DeleteBoardMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시판 삭제
  */
-export const useDeleteBoard = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteBoard>>, TError,{boardId: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof deleteBoard>>,
-        TError,
-        {boardId: number},
-        TContext
-      > => {
+export const useDeleteBoard = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBoard>>,
+    TError,
+    { boardId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteBoard>>,
+  TError,
+  { boardId: number },
+  TContext
+> => {
+  const mutationOptions = getDeleteBoardMutationOptions(options);
 
-      const mutationOptions = getDeleteBoardMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
+  return useMutation(mutationOptions);
+};
+/**
  * 새로운 게시판을 생성할 수 있습니다.
  * @summary 게시판 생성
  */
 export const createBoard = (
-    createBoardReqDto: CreateBoardReqDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseVoid>> => {
-    
-    return axios.post(
-      `/board/boards`,
-      createBoardReqDto,options
-    );
-  }
+  createBoardReqDto: BodyType<CreateBoardReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/board/boards`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createBoardReqDto,
+      signal,
+    },
+    options,
+  );
+};
 
+export const getCreateBoardMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBoard>>,
+    TError,
+    { data: BodyType<CreateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createBoard>>,
+  TError,
+  { data: BodyType<CreateBoardReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createBoard>>,
+    { data: BodyType<CreateBoardReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getCreateBoardMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBoard>>, TError,{data: CreateBoardReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof createBoard>>, TError,{data: CreateBoardReqDto}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return createBoard(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreateBoardMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createBoard>>
+>;
+export type CreateBoardMutationBody = BodyType<CreateBoardReqDto>;
+export type CreateBoardMutationError = ErrorType<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createBoard>>, {data: CreateBoardReqDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createBoard(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateBoardMutationResult = NonNullable<Awaited<ReturnType<typeof createBoard>>>
-    export type CreateBoardMutationBody = CreateBoardReqDto
-    export type CreateBoardMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 게시판 생성
  */
-export const useCreateBoard = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBoard>>, TError,{data: CreateBoardReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof createBoard>>,
-        TError,
-        {data: CreateBoardReqDto},
-        TContext
-      > => {
+export const useCreateBoard = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBoard>>,
+    TError,
+    { data: BodyType<CreateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createBoard>>,
+  TError,
+  { data: BodyType<CreateBoardReqDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateBoardMutationOptions(options);
 
-      const mutationOptions = getCreateBoardMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
+  return useMutation(mutationOptions);
+};
+/**
  * 생성되어있는 모든 게시판을 조회합니다.
  * @summary 게시판 목록 조회
  */
 export const getBoardList = (
-    params?: GetBoardListParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseListGetBoardRespDto>> => {
-    
-    return axios.get(
-      `/board/list`,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
-
-
-export const getGetBoardListQueryKey = (params?: GetBoardListParams,) => {
-    return [`/board/list`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getGetBoardListInfiniteQueryOptions = <TData = Awaited<ReturnType<typeof getBoardList>>, TError = AxiosError<unknown>>(params?: GetBoardListParams, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData>, axios?: AxiosRequestConfig}
+  params?: GetBoardListParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
 ) => {
+  return customInstance<ApiResponseListGetBoardRespDto>(
+    { url: `/board/list`, method: "GET", params, signal },
+    options,
+  );
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export const getGetBoardListQueryKey = (params?: GetBoardListParams) => {
+  return [`/board/list`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetBoardListQueryKey(params);
+export const getGetBoardListInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBoardList>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetBoardListParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getBoardList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  
+  const queryKey = queryOptions?.queryKey ?? getGetBoardListQueryKey(params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoardList>>> = ({ signal }) => getBoardList(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoardList>>> = ({
+    signal,
+  }) => getBoardList(params, requestOptions, signal);
 
-      
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getBoardList>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetBoardListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getBoardList>>>
-export type GetBoardListInfiniteQueryError = AxiosError<unknown>
-
+export type GetBoardListInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBoardList>>
+>;
+export type GetBoardListInfiniteQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시판 목록 조회
  */
 
-export function useGetBoardListInfinite<TData = Awaited<ReturnType<typeof getBoardList>>, TError = AxiosError<unknown>>(
- params?: GetBoardListParams, options?: { query?:UseInfiniteQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetBoardListInfinite<
+  TData = Awaited<ReturnType<typeof getBoardList>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetBoardListParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getBoardList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBoardListInfiniteQueryOptions(params, options);
 
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
-  const queryOptions = getGetBoardListInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
-
-
-export const getGetBoardListQueryOptions = <TData = Awaited<ReturnType<typeof getBoardList>>, TError = AxiosError<unknown>>(params?: GetBoardListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetBoardListQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBoardList>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetBoardListParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBoardList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetBoardListQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetBoardListQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoardList>>> = ({
+    signal,
+  }) => getBoardList(params, requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBoardList>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoardList>>> = ({ signal }) => getBoardList(params, { signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetBoardListQueryResult = NonNullable<Awaited<ReturnType<typeof getBoardList>>>
-export type GetBoardListQueryError = AxiosError<unknown>
-
+export type GetBoardListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBoardList>>
+>;
+export type GetBoardListQueryError = ErrorType<unknown>;
 
 /**
  * @summary 게시판 목록 조회
  */
 
-export function useGetBoardList<TData = Awaited<ReturnType<typeof getBoardList>>, TError = AxiosError<unknown>>(
- params?: GetBoardListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBoardList>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetBoardList<
+  TData = Awaited<ReturnType<typeof getBoardList>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetBoardListParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBoardList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBoardListQueryOptions(params, options);
 
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-  const queryOptions = getGetBoardListQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-

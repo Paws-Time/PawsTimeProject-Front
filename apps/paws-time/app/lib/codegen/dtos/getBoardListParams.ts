@@ -6,8 +6,8 @@
  */
 
 export type GetBoardListParams = {
-pageNo?: number;
-pageSize?: number;
-sortBy?: string;
-direction?: string;
+  pageNo?: number;
+  pageSize?: number;
+  sortBy?: string;
+  direction?: string;
 };

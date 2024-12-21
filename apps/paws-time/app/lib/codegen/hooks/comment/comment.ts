@@ -4,81 +4,98 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import {
-  useMutation
-} from '@tanstack/react-query'
+import { useMutation } from "@tanstack/react-query";
 import type {
   MutationFunction,
   UseMutationOptions,
-  UseMutationResult
-} from '@tanstack/react-query'
-import axios from 'axios'
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
-import type {
-  ApiResponseVoid,
-  CreateCommentReqDto
-} from '../../dtos'
+  UseMutationResult,
+} from "@tanstack/react-query";
+import type { ApiResponseVoid, CreateCommentReqDto } from "../../dtos";
+import { customInstance } from "../../../axios-client/customClient";
+import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
-
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * 댓글 생성 기능
  * @summary 댓글 생성
  */
 export const createComment = (
-    postId: number,
-    createCommentReqDto: CreateCommentReqDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseVoid>> => {
-    
-    return axios.post(
-      `/${postId}/comments`,
-      createCommentReqDto,options
-    );
-  }
+  postId: number,
+  createCommentReqDto: BodyType<CreateCommentReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/${postId}/comments`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createCommentReqDto,
+      signal,
+    },
+    options,
+  );
+};
 
+export const getCreateCommentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createComment>>,
+    TError,
+    { postId: number; data: BodyType<CreateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createComment>>,
+  TError,
+  { postId: number; data: BodyType<CreateCommentReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createComment>>,
+    { postId: number; data: BodyType<CreateCommentReqDto> }
+  > = (props) => {
+    const { postId, data } = props ?? {};
 
-export const getCreateCommentMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createComment>>, TError,{postId: number;data: CreateCommentReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof createComment>>, TError,{postId: number;data: CreateCommentReqDto}, TContext> => {
-const {mutation: mutationOptions, axios: axiosOptions} = options ?? {};
+    return createComment(postId, data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreateCommentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createComment>>
+>;
+export type CreateCommentMutationBody = BodyType<CreateCommentReqDto>;
+export type CreateCommentMutationError = ErrorType<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createComment>>, {postId: number;data: CreateCommentReqDto}> = (props) => {
-          const {postId,data} = props ?? {};
-
-          return  createComment(postId,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateCommentMutationResult = NonNullable<Awaited<ReturnType<typeof createComment>>>
-    export type CreateCommentMutationBody = CreateCommentReqDto
-    export type CreateCommentMutationError = AxiosError<unknown>
-
-    /**
+/**
  * @summary 댓글 생성
  */
-export const useCreateComment = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createComment>>, TError,{postId: number;data: CreateCommentReqDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        Awaited<ReturnType<typeof createComment>>,
-        TError,
-        {postId: number;data: CreateCommentReqDto},
-        TContext
-      > => {
+export const useCreateComment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createComment>>,
+    TError,
+    { postId: number; data: BodyType<CreateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createComment>>,
+  TError,
+  { postId: number; data: BodyType<CreateCommentReqDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateCommentMutationOptions(options);
 
-      const mutationOptions = getCreateCommentMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
+  return useMutation(mutationOptions);
+};

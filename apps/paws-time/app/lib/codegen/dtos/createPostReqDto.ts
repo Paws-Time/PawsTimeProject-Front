@@ -4,7 +4,7 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import type { CreatePostReqDtoCategory } from './createPostReqDtoCategory';
+import type { CreatePostReqDtoCategory } from "./createPostReqDtoCategory";
 
 export interface CreatePostReqDto {
   boardId?: number;
