@@ -1,20 +1,19 @@
 "use client";
 import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
-import { useState } from "react";
-
-// 상태 타입 정의
-type CardState = "primary" | "hover" | "active";
 
 type CardProps = {
   title: string;
-  description: string;
-  imageUrl: string;
-  reviews: number;
-  likes: number;
+  contentPreview: string;
+  imageUrl?: string;
+  views: number;
+  likesCount: number;
+  onClick: () => void; // onClick 속성 추가
 };
 
-const CardWrapper = styled.div<{ $state: CardState }>`
+const DEFAULT_IMAGE_URL = "/logo.png";
+
+const CardWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,19 +27,15 @@ const CardWrapper = styled.div<{ $state: CardState }>`
   transition: all 0.3s ease;
   cursor: pointer;
 
-  border: ${(props) =>
-    props.$state === "primary"
-      ? "none"
-      : props.$state === "hover"
-      ? `double 1px ${theme.colors.comp.card.hover}`
-      : `inset 3px ${theme.colors.comp.card.active}`};
+  &:hover {
+    border: double 1px ${theme.colors.comp.card.hover};
+    box-shadow: ${theme.shadow.hover};
+  }
 
-  box-shadow: ${(props) =>
-    props.$state === "hover"
-      ? `${theme.shadow.hover}`
-      : props.$state === "active"
-      ? "inset 0 0 10px rgba(0, 0, 0, 0.2)"
-      : `${theme.shadow.primary}`};
+  &:active {
+    border: inset 3px ${theme.colors.comp.card.active};
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  }
 
   .call-menu {
     font-size: ${theme.fontSize.text.xl};
@@ -62,33 +57,39 @@ const CardWrapper = styled.div<{ $state: CardState }>`
   }
 
   .image-field {
-    margin: 0 15px;
-    width: 330px;
+    margin-left: 0;
+    width: 95%;
+    max-width: 300px;
     height: 140px;
     margin-left: 20px;
     border-radius: 15px;
     background-color: ${theme.colors.ref.base.white};
     overflow: hidden;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     img {
-      width: 100%;
+      margin-left: 0;
+      max-width: 260px;
+      width: 90%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center;
+      border-radius: inherit;
     }
   }
 
   .description {
     display: flex;
     font-size: ${theme.fontSize.text.xs};
-    height: 16px;
-    margin-left: 20px;
-    margin-top: 8px;
-    text-align: left;
     color: ${theme.colors.ref.base.black};
+    width: 90%;
+    max-width: 300px;
+    margin-top: 2px;
+    margin-bottom: 3px;
+    text-align: center;
+    align-self: flex-start;
   }
 
   .foot {
@@ -117,33 +118,25 @@ const CardWrapper = styled.div<{ $state: CardState }>`
 
 export function Card({
   title,
-  description,
-  imageUrl,
-  reviews,
-  likes,
+  contentPreview,
+  imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
+  views,
+  likesCount,
+  onClick,
 }: CardProps) {
-  const [state, setState] = useState<CardState>("primary");
-
-  // 기본 이미지 설정
-  const defaultImage = "/logo.png";
-  const finalImageUrl = imageUrl || defaultImage;
-
   return (
-    <CardWrapper
-      $state={state}
-      onMouseEnter={() => setState("hover")}
-      onMouseLeave={() => setState("primary")}
-      onClick={() => setState("active")}
-    >
-      <div className="call-menu">...</div>
+    <CardWrapper onClick={onClick} role="button" tabIndex={0}>
+      <div className="call-menu" onClick={() => {}}>
+        ...
+      </div>
       <div className="title">{title}</div>
       <div className="image-field">
-        <img src={finalImageUrl} alt={title} />
+        <img src={imageUrl} alt={title} />
       </div>
-      <div className="description">{description}</div>
+      <div className="contentPreview">{contentPreview}</div>
       <div className="foot">
-        <span className="reviews">💬 {reviews} reviews</span>
-        <span className="like">👍 {likes} likes</span>
+        <span className="views">💬 {views} reviews</span>
+        <span className="likesCount">👍 {likesCount} likes</span>
       </div>
     </CardWrapper>
   );

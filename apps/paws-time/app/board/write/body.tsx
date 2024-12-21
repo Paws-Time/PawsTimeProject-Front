@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-export const BoardWriteBody = () => {
+const BoardWriteBody = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [boardId, setBoardId] = useState(1); // 기본값 1로 설정
@@ -23,6 +23,18 @@ export const BoardWriteBody = () => {
       return;
     }
 
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+
+    if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
+      alert("제목은 5자 이상 20자 이하로 작성해주세요.");
+      return;
+    }
+
+    if (trimmedContent.length < 5) {
+      alert("내용은 최소 5자 이상이어야 합니다.");
+      return;
+    }
     // boardId에 따라 category 결정
     const categoryMap: Record<number, string> = {
       1: "TECH",
@@ -52,14 +64,14 @@ export const BoardWriteBody = () => {
       });
 
       if (response.ok) {
-        alert("게시판 생성이 완료되었습니다.");
+        alert("게시글 생성이 완료되었습니다.");
         router.push("/board");
       } else {
-        throw new Error("게시글 작성에 실패했습니다.");
+        throw new Error("게시글 생성 중 오류가 발생하였습니다.");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("서버 요청에 실패했습니다.");
+      alert("게시글 생성 중 오류가 발생하였습니다.");
     }
   };
 
@@ -199,3 +211,5 @@ const styles = {
     transition: "background-color 0.2s",
   },
 };
+
+export default BoardWriteBody;

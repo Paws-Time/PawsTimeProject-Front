@@ -1,104 +1,52 @@
 "use client";
-import { Card } from "../icons/card";
-import { InputField } from "../icons/input";
-import { CustomButton } from "../icons/button";
-import useStore from "@/app/hooks/store";
 import { useEffect, useState } from "react";
-import { fetchBoards } from "@/app/service/api";
+import { useRouter } from "next/navigation";
 import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
+import useStore from "@/app/hooks/store";
 
-export default function MainBoard() {
-  const { toggleComponent } = useStore(); // Zustand 훅 사용
-  const [boards, setBoards] = useState([]);
+interface Board {
+  boardId: string | number | undefined;
+  title: string;
+  description: string;
+  createdAt: string;
+  isDelete?: boolean;
+  updatedAt?: string;
+}
+export default function BoardList() {
+  const router = useRouter();
+  const [boards, setBoards] = useState<Board[]>([]);
+  const { isShow } = useStore();
 
-  const { data } = useGetBoardList();
+  // 보더 데이터 가져오기
+  const { data, isLoading, isError } = useGetBoardList();
+
   useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const boardData = await fetchBoards();
-        setBoards(boardData); // 데이터 상태에 저장
-      } catch (error) {
-        console.error("Failed to fetch boards:", error);
-      }
-    };
+    if (data) {
+      setBoards(data.data || []); // API로부터 받은 데이터를 상태에 저장
+    }
+  }, [data]);
 
-    getBoards();
-  }, []);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>보더 데이터를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
-    <div className="flex flex-col w-custom-boardw h-custom-boardh">
-      {/* 검색 및 필터 폼 */}
-      <form className="flex w-10 h-10 mb-5 px-4">
-        {/* 필터 Dropdown */}
-        <select
-          value="all"
-          onChange={(e) => console.log(e.target.value)}
-          className="border border-gray-300 mr-5 h-[40px] px-2"
-        >
-          <option value="default">전체보기</option>
-          <option value="TECH">기술</option>
-          <option value="LIFESTYLE">라이프스타일</option>
-          <option value="EDUCATION">교육</option>
-          <option value="ENTERTAINMENT">유머</option>
-        </select>
-
-        {/* 검색창 */}
-        <InputField
-          label="검색할 내용을 적어주세요"
-          type="text"
-          value=""
-          onChange={(e) => console.log(e.target.value)}
-        />
-
-        {/* 검색 버튼 */}
-        <CustomButton $label="검색" onClick={() => {}} $sizeType="long" />
-
-        <CustomButton
-          $label="새글 쓰기"
-          $sizeType="long"
-          onClick={() => toggleComponent("create")}
-        />
-      </form>
-      <div>
-        {/* 카드 목록 */}
-        <div className={"p-4 gap-10 grid grid-cols-5"}>
-          {boards.map((board) => (
-            <Card
-              key={board.boardId}
-              boardId={board.boardId}
-              title={board.title}
-              description={board.description}
-              createdAt={board.createdAt}
-              updatedAt={board.updatedAt}
-            />
-          ))}
-        </div>
-
-        {/* 페이지 네이션 */}
-        <div className="flex justify-center items-center mt-6">
-          <button className="px-4 py-2 mx-1 border rounded">1</button>
-          <button className="px-4 py-2 mx-1 border rounded">2</button>
-          <button className="px-4 py-2 mx-1 border rounded">3</button>
-          <span className="px-4 py-2 mx-1">...</span>
-          <button className="px-4 py-2 mx-1 border rounded">10</button>
-          {/* 필터 Dropdown */}
-          <select
-            value="all"
-            onChange={(e) => console.log(e.target.value)}
-            className="border border-gray-300 mr-5 h-[40px] px-2"
+    <div className="flex w-full h-custom-boardh">
+      {isShow && <div className="flex w-custom-sidew " />}
+      {/* 보더 목록 */}
+      <div className="p-4 gap-4 flex flex-col w-4/5">
+        {boards.map((board) => (
+          <div
+            key={board.boardId}
+            onClick={() => router.push(`/board/boards/${board.boardId}`)}
+            className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
           >
-            <option value="five">5개씩 조회</option>
-            <option value="ten">10개씩 조회</option>
-          </select>
-          <select
-            value="all"
-            onChange={(e) => console.log(e.target.value)}
-            className="border border-gray-300 mr-5 h-[40px] px-2"
-          >
-            <option value="decs">내림차순</option>
-            <option value="asc">오름차순</option>
-          </select>
-        </div>
+            <h2 className="text-lg font-bold">{board.title}</h2>
+            <p className="text-sm text-gray-600">{board.description}</p>
+            <p className="text-xs text-gray-400">
+              생성일: {new Date(board.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

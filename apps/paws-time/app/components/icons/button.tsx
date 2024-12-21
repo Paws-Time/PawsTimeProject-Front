@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import { theme } from "design-system/lib/theme";
 
 type ButtonState = "primary" | "hover" | "active" | "disabled";
-type SizeType = "mini" | "short" | "normal" | "long";
+type SizeType = "mini" | "short" | "normal" | "long" | "menu";
 
 type Props = {
   $state?: ButtonState;
@@ -58,6 +58,10 @@ const StyledButton = styled.button<{
       `,
       long: css`
         width: 510px;
+        height: 50px;
+      `,
+      menu: css`
+        width: 95%;
         height: 50px;
       `,
     };

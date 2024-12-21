@@ -1,7 +1,6 @@
 "use client";
-import { styles } from "./page";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface PostData {
   post_id: number;

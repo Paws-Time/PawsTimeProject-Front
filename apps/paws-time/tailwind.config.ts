@@ -15,7 +15,7 @@ export default {
 
       spacing: {
         // 높이 및 너비를 위한 사용자 정의 크기
-        "custom-sidew": "400px", //사이드바
+        "custom-sidew": "300px", //사이드바
         "custom-sideh": "1350px",
         "custom-buttonw": "500px",
         "custom-buttonh": "40px",

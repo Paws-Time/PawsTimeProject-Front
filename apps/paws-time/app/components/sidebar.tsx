@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import useStore from "../hooks/store";
+import { CustomButton } from "./icons/button";
 
 export default function Sidebar() {
-  const [isShow, setShow] = useState(true);
+  const { isShow, toggleIsShow } = useStore();
+  // const [isShow, setShow] = useState(true);
   const router = useRouter();
 
   const menus = [
     { id: 1, path: "/board", name: "게시판" },
     { id: 2, path: "/board/write", name: "게시글 작성" },
   ];
-
   return (
     <aside
       style={{
@@ -29,6 +30,7 @@ export default function Sidebar() {
       <button
         style={{
           position: "absolute",
+          marginTop: "400px",
           top: "10px",
           right: "-40px",
           backgroundColor: "#fff",
@@ -37,9 +39,9 @@ export default function Sidebar() {
           padding: "5px 10px",
           cursor: "pointer",
         }}
-        onClick={() => setShow(!isShow)}
+        onClick={() => toggleIsShow()}
       >
-        {isShow ? "<<" : ">>"}
+        {isShow ? "◀" : "▶"}
       </button>
       <nav>
         <ul style={{ padding: "20px 0", listStyleType: "none" }}>
@@ -48,22 +50,11 @@ export default function Sidebar() {
               key={menu.id}
               style={{ marginBottom: "15px", textAlign: "center" }}
             >
-              <button
-                style={{
-                  width: "90%",
-                  padding: "10px",
-                  fontSize: "16px",
-                  backgroundColor: "#007bff",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s",
-                }}
+              <CustomButton
+                $label={menu.name}
+                $sizeType="menu"
                 onClick={() => router.push(menu.path)}
-              >
-                {menu.name}
-              </button>
+              />
             </li>
           ))}
         </ul>
