@@ -169,6 +169,9 @@ const styles = {
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     height: "800px",
     overflow: "auto",
+    display: "flex",
+    flexDirection: "column" as const,
+    justifyContent: "space-between", // 버튼을 하단으로 위치
   },
   heading: {
     textAlign: "center" as const,
@@ -205,8 +208,8 @@ const styles = {
     resize: "none", // 크기 조정 방지
   },
   button: {
-    width: "100%",
-    padding: "10px",
+    marginTop: "auto", // 버튼을 하단으로 밀어냄
+    padding: "15px",
     fontSize: "18px",
     color: "#fff",
     backgroundColor: "#007bff",

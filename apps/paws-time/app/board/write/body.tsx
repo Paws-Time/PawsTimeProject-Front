@@ -64,7 +64,7 @@ export const BoardWriteBody = () => {
   };
 
   return (
-   <div style={styles.container}>
+    <div style={styles.container}>
       <div style={styles.background}></div>
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.heading}>글 작성하기</h2>
@@ -136,6 +136,9 @@ const styles = {
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
     height: "800px",
     overflow: "auto",
+    display: "flex",
+    flexDirection: "column" as const,
+    justifyContent: "space-between",
   },
   heading: {
     textAlign: "center" as const,
@@ -184,6 +187,7 @@ const styles = {
     appearance: "none" as const, // 기본 화살표 제거
   },
   button: {
+    marginTop: "auto",
     width: "100%",
     padding: "15px",
     fontSize: "18px",
