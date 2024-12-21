@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "app/lib/codegen/codegen.sh"
   },
   "dependencies": {
     "@tanstack/react-query": "4",
     "axios": "^1.7.9",
     "design-system": "workspace:*",
     "next": "15.1.0",
+    "orval": "^7.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-quill-new": "^3.3.3",
