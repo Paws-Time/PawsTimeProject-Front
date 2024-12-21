@@ -1,3 +1,5 @@
+import Sidebar from "../components/sidebar";
+
 export default function BoardLayout({
   children,
 }: {
@@ -18,8 +20,8 @@ export default function BoardLayout({
           </div>
         </div>
       </header>
-      {/* Main Content Area */}
       <div className="flex flex-row flex-1">
+        <Sidebar />
         <main className="flex-1 bg-white p-6 overflow-auto">{children}</main>
       </div>
     </div>
