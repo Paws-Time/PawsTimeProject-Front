@@ -7,9 +7,9 @@ type ButtonState = "primary" | "hover" | "active" | "disabled";
 type SizeType = "mini" | "short" | "normal" | "long";
 
 type Props = {
-  state?: ButtonState;
-  label: string;
-  sizetype?: SizeType; // 버튼 크기 타입
+  $state?: ButtonState;
+  $label: string;
+  $sizeType?: SizeType; // 버튼 크기 타입
   onClick?: () => void;
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -17,8 +17,8 @@ type Props = {
 >;
 
 const StyledButton = styled.button<{
-  state: ButtonState;
-  sizetype: SizeType;
+  $state: ButtonState;
+  $sizeType: SizeType;
 }>`
   // 기본 설정
   display: inline-block;
@@ -30,19 +30,19 @@ const StyledButton = styled.button<{
   transition: all 0.3s ease;
 
   // 상태에 따른 shadow와 color 변경
-  ${({ state }) => {
+  ${({ $state }) => {
     const shadow =
-      state === "disabled" ? theme.shadow.primary : theme.shadow[state];
+      $state === "disabled" ? theme.shadow.primary : theme.shadow[$state];
     return css`
-      background-color: ${theme.colors.comp.button[state]}; // 배경색상
+      background-color: ${theme.colors.comp.button[$state]}; // 배경색상
       box-shadow: ${shadow};
       color: ${theme.colors.ref.base.black}; // 글자색상
-      cursor: ${state === "disabled" ? "not-allowed" : "pointer"};
+      cursor: ${$state === "disabled" ? "not-allowed" : "pointer"};
     `;
   }}
 
   // 타입에 따른 크기 설정
-  ${({ sizetype }) => {
+  ${({ $sizeType }) => {
     const sizeStyles = {
       mini: css`
         width: 30px;
@@ -61,24 +61,24 @@ const StyledButton = styled.button<{
         height: 50px;
       `,
     };
-    return sizeStyles[sizetype];
+    return sizeStyles[$sizeType];
   }}
 `;
 
 export const CustomButton = (props: Props) => {
   const {
-    label,
+    $label,
     onClick,
-    sizetype = "normal",
-    state = "primary",
+    $sizeType = "normal",
+    $state = "primary",
     ...rest
   } = props; // 기본값 설정
-  const [currentState, setCurrentState] = useState<ButtonState>(state);
+  const [currentState, setCurrentState] = useState<ButtonState>($state);
 
   return (
     <StyledButton
-      state={currentState}
-      sizetype={sizetype}
+      $state={currentState}
+      $sizeType={$sizeType}
       onClick={onClick}
       onMouseEnter={() => setCurrentState("hover")} // 마우스 오버
       onMouseLeave={() => setCurrentState("primary")} // 마우스 벗어남
@@ -86,7 +86,7 @@ export const CustomButton = (props: Props) => {
       onMouseUp={() => setCurrentState("hover")} // 클릭 해제
       {...rest}
     >
-      {label}
+      {$label}
     </StyledButton>
   );
 };
