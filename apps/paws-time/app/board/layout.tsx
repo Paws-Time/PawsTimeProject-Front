@@ -5,7 +5,7 @@ export default function BoardLayout({
 }) {
   return (
     <div className="flex flex-col w-full h-screen">
-      <header className="flex items-center justify-between w-full h-screen bg-gray-200 px-6 shadow-md">
+      <header className="flex items-center justify-between w-full bg-gray-200 px-6 shadow-md">
         <div className="flex items-center">
           <div className="w-20 h-20 bg-gray-400 rounded-full"></div>
           <span className="ml-4 font-bold text-lg">PAWS TIME</span>
