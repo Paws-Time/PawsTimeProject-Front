@@ -9,11 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "4",
+    "design-system": "workspace:*",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-quill-new": "^3.3.3",
-    "design-system": "workspace:*",
     "styled-components": "^6.1.13",
     "zustand": "^5.0.2"
   },

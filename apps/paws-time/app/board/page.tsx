@@ -1,7 +1,7 @@
 "use client";
-import CreateBoard from "../components/board/createBoard";
 import MainBoard from "../components/board/mainBoard";
 import useStore from "../hooks/store";
+import BoardWritePage from "./write/page";
 
 export default function BoardPage() {
   const { currentComponent } = useStore(); // Zustand의 상태와 액션 사용
@@ -13,7 +13,7 @@ export default function BoardPage() {
           case "board":
             return <MainBoard />;
           case "create":
-          return <CreateBoard />;
+            return <BoardWritePage />;
           case "login":
           // return <Login />;
           default:
