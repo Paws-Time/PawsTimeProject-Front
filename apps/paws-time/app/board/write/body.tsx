@@ -14,6 +14,16 @@ export const BoardWriteBody = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!title.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!content.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
     // boardId에 따라 category 결정
     const categoryMap: Record<number, string> = {
       1: "TECH",
@@ -43,7 +53,7 @@ export const BoardWriteBody = () => {
       });
 
       if (response.ok) {
-        alert("글 작성 완료!");
+        alert("게시판 생성이 완료되었습니다.");
         router.push("/board");
       } else {
         throw new Error("게시글 작성에 실패했습니다.");
@@ -81,7 +91,7 @@ export const BoardWriteBody = () => {
         <label>내용:</label>
         <ReactQuill theme="snow" value={content} onChange={setContent} />
       </div>
-      <button type="submit">작성 완료</button>
+      <button type="submit">작성 하기</button>
     </form>
   );
 };
