@@ -1,5 +1,4 @@
 "use client";
-import { styles } from "./page";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +10,7 @@ interface PostData {
   updated_at: string;
 }
 
-export const BoardDetailBody = ({ postId }: { postId?: string }) => {
+const BoardDetailBody = ({ postId }: { postId?: string }) => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -225,3 +224,5 @@ const styles = {
     borderRadius: "5px",
   },
 };
+
+export default BoardDetailBody;

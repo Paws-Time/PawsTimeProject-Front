@@ -1,10 +1,8 @@
-"use client";
-
 import React from "react";
 import { useParams } from "next/navigation";
-import { BoardEditBody } from "./body";
+import BoardEditBody from "./body";
 
-export default function BoardEditPage() {
+const BoardEditPage = () => {
   const { postId } = useParams() as { postId: string };
 
   return (
@@ -12,4 +10,6 @@ export default function BoardEditPage() {
       <BoardEditBody postId={postId} />
     </div>
   );
-}
+};
+
+export default BoardEditPage;
