@@ -5,9 +5,9 @@ export default function Home() {
     <>
       <div className="mt-3">
         테스트
-        <CustomButton label="테스트" sizetype="normal" />
-        <CustomButton label="테스트" sizetype="mini" />
-        <CustomButton label="테스트" sizetype="long" />
+        <CustomButton $label="테스트" $sizeType="normal" />
+        <CustomButton $label="테스트" $sizeType="mini" />
+        <CustomButton $label="테스트" $sizeType="long" />
       </div>
     </>
   );

@@ -5,11 +5,13 @@ import { CustomButton } from "../icons/button";
 import useStore from "@/app/hooks/store";
 import { useEffect, useState } from "react";
 import { fetchBoards } from "@/app/service/api";
+import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 
 export default function MainBoard() {
   const { toggleComponent } = useStore(); // Zustand 훅 사용
   const [boards, setBoards] = useState([]);
 
+  const { data } = useGetBoardList();
   useEffect(() => {
     const getBoards = async () => {
       try {
