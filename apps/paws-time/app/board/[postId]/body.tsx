@@ -72,7 +72,7 @@ export const Body = ({ postId }: { postId?: string }) => {
         return;
       }
 
-      alert("게시글이 성공적으로 삭제되었습니다.");
+      alert("게시판이 삭제되었습니다.");
       router.push("/board");
     } catch (error) {
       console.error("Error deleting post:", error);

@@ -8,19 +8,41 @@ import "react-quill-new/dist/quill.snow.css";
 export const BoardWriteBody = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [boardId, setBoardId] = useState(1); // 기본값 1로 설정
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!title.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!content.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    // boardId에 따라 category 결정
+    const categoryMap: Record<number, string> = {
+      1: "TECH",
+      2: "EDUCATION",
+      3: "LIFESTYLE",
+      4: "ENTERTAINMENT",
+    };
+
+    const category = categoryMap[boardId] || "OTHER"; // boardId가 없으면 기본값 "OTHER"
+
     // 서버에 보낼 데이터
     const postData = {
       title: title,
       content: content,
-      boardId: 1, // 임의 값 고정
-      category: "TECH", // 임의 값 고정
+      boardId: boardId,
+      category: category,
       likesCount: 0, // 임의 값 고정
     };
+
     try {
       const response = await fetch("http://43.200.46.13:8080/post/posts", {
         method: "POST",
@@ -31,7 +53,7 @@ export const BoardWriteBody = () => {
       });
 
       if (response.ok) {
-        alert("글 작성 완료!");
+        alert("게시판 생성이 완료되었습니다.");
         router.push("/board");
       } else {
         throw new Error("게시글 작성에 실패했습니다.");
@@ -43,6 +65,19 @@ export const BoardWriteBody = () => {
   };
   return (
     <form onSubmit={handleSubmit}>
+      <div>
+        <label>게시판 선택:</label>
+        <select
+          value={boardId}
+          onChange={(e) => setBoardId(Number(e.target.value))}
+          required
+        >
+          <option value={1}>TECH</option>
+          <option value={2}>EDUCATION</option>
+          <option value={3}>LIFESTYLE</option>
+          <option value={4}>ENTERTAINMENT</option>
+        </select>
+      </div>
       <div>
         <label>제목:</label>
         <input
@@ -56,7 +91,7 @@ export const BoardWriteBody = () => {
         <label>내용:</label>
         <ReactQuill theme="snow" value={content} onChange={setContent} />
       </div>
-      <button type="submit">작성 완료</button>
+      <button type="submit">작성 하기</button>
     </form>
   );
 };

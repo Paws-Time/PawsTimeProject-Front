@@ -28,8 +28,8 @@ export default function MainBoard() {
             className="border border-gray-300 mr-5 h-[40px] px-2"
           >
             <option value="all">전체보기</option>
-            <option value="Photo">사진겔러리</option>
-            <option value="Review">리뷰겔러리</option>
+            <option value="Photo">사진갤러리</option>
+            <option value="Review">리뷰갤러리</option>
           </select>
 
           {/* 검색창 */}
