@@ -1,15 +1,17 @@
-"use client";
+import BoardEditBody from "./body";
 
-import React from "react";
-import { useParams } from "next/navigation";
-import { BoardEditBody } from "./body";
-
-export const BoardEditPage = () => {
-  const { postId } = useParams() as { postId: string };
+const BoardEditPage = async ({
+  params,
+}: {
+  params: { boardId: string; postId: string };
+}) => {
+  const { boardId, postId } = await params;
 
   return (
     <div>
-      <BoardEditBody postId={postId} />
+      <BoardEditBody boardId={boardId} postId={postId} />
     </div>
   );
 };
+
+export default BoardEditPage;
