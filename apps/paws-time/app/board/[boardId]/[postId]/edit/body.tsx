@@ -10,7 +10,13 @@ interface PostData {
   postCategory: string; // 수정 시 고정 값 사용하거나 서버에서 받은 값 유지
 }
 
-export function BoardEditBody({ postId }: { postId: string }) {
+const BoardEditBody = ({
+  boardId,
+  postId,
+}: {
+  boardId: string;
+  postId: string;
+}) => {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -78,6 +84,7 @@ export function BoardEditBody({ postId }: { postId: string }) {
       title: trimmedTitle,
       content: trimmedContent,
       postCategory: "TECH",
+      boardId,
     };
 
     try {
@@ -98,9 +105,9 @@ export function BoardEditBody({ postId }: { postId: string }) {
         return;
       }
 
-      alert("게시글이 성공적으로 수정되었습니다.");
+      alert("게시글이 수정이 완료되었습니다.");
       // 수정 완료 후 상세 보기 페이지 이동
-      router.push(`/board/${postId}`);
+      router.push(`/board/${boardId}/${postId}`);
     } catch (error) {
       console.error("Error updating post:", error);
       alert("게시글 수정 중 오류가 발생했습니다.");
@@ -141,7 +148,7 @@ export function BoardEditBody({ postId }: { postId: string }) {
       </form>
     </div>
   );
-}
+};
 
 const styles = {
   background: {
@@ -219,3 +226,5 @@ const styles = {
     transition: "background-color 0.2s",
   },
 };
+
+export default BoardEditBody;

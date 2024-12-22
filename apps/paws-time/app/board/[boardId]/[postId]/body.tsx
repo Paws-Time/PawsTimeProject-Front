@@ -1,17 +1,23 @@
 "use client";
-import { styles } from "./page";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface PostData {
-  post_id: number;
+  board_id: string;
+  post_id: string;
   title: string;
   content: string;
   created_at: string;
   updated_at: string;
 }
 
-export const BoardDetailBody = ({ postId }: { postId?: string }) => {
+const BoardDetailBody = ({
+  boardId,
+  postId,
+}: {
+  boardId?: string;
+  postId?: string;
+}) => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -33,6 +39,7 @@ export const BoardDetailBody = ({ postId }: { postId?: string }) => {
         const data = await response.json();
 
         const mappedData: PostData = {
+          board_id: data.boardId,
           post_id: data.postId,
           title: data.title,
           content: data.content,
@@ -73,7 +80,7 @@ export const BoardDetailBody = ({ postId }: { postId?: string }) => {
       }
 
       alert("게시판이 삭제되었습니다.");
-      router.push("/board");
+      router.push(`/board/${boardId}`);
     } catch (error) {
       console.error("Error deleting post:", error);
       alert("게시글 삭제 중 오류가 발생했습니다.");
@@ -109,7 +116,7 @@ export const BoardDetailBody = ({ postId }: { postId?: string }) => {
           </button>
           <button
             style={{ ...styles.button, ...styles.editButton }}
-            onClick={() => router.push(`/board/${postId}/edit`)}
+            onClick={() => router.push(`/board/${boardId}/${postId}/edit`)}
           >
             수정
           </button>
@@ -225,3 +232,5 @@ const styles = {
     borderRadius: "5px",
   },
 };
+
+export default BoardDetailBody;
