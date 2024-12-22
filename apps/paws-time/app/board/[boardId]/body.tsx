@@ -170,7 +170,7 @@ const BoardListBody = ({ boardId }: { boardId: string }) => {
 
 const styles = {
   container: {
-    width: "80%",
+    width: "65%",
     margin: "20px auto",
     padding: "20px",
     backgroundColor: "#f9f9f9",
