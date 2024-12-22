@@ -1,4 +1,4 @@
-import { BoardWriteBody } from "./body";
+import BoardWriteBody from "./body";
 
 const BoardWritePage = () => {
   return (

@@ -4,7 +4,7 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { BoardEditBody } from "./body";
 
-export default function BoardEditPage() {
+export const BoardEditPage = () => {
   const { postId } = useParams() as { postId: string };
 
   return (
@@ -12,4 +12,4 @@ export default function BoardEditPage() {
       <BoardEditBody postId={postId} />
     </div>
   );
-}
+};
