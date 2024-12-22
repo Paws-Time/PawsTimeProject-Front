@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface PostData {
-  postId: number;
+  id: number;
   title: string;
   contentPreview: string;
   createdAt: string;
@@ -14,14 +14,46 @@ interface PostData {
   category: string;
 }
 
+const categoryMap: Record<number, string> = {
+  1: "TECH",
+  2: "EDUCATION",
+  3: "LIFESTYLE",
+  4: "ENTERTAINMENT",
+};
+
 const BoardListBody = ({ boardId }: { boardId: string }) => {
   const router = useRouter();
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState(""); // 입력 필드의 값
+  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 값
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
   const [sort, setSort] = useState("createdAt,desc");
+
+  const category = categoryMap[Number(boardId)] || "Unknown";
+
+  // 검색 트리거 함수
+  const handleSearch = () => {
+    setSearchKeyword(keyword);
+  };
+
+  // Enter 키 동작
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearchKeyword(keyword);
+    }
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    const sortedPosts = posts.slice().sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return order === "asc" ? dateA - dateB : dateB - dateA;
+    });
+    setPosts(sortedPosts); // 상태 업데이트
+    setSort(`createdAt,${order}`); // 현재 정렬 상태 업데이트
+  };
 
   // 게시글 목록 가져오기
   useEffect(() => {
@@ -48,22 +80,23 @@ const BoardListBody = ({ boardId }: { boardId: string }) => {
     if (boardId) {
       fetchPosts();
     }
-  }, [boardId, keyword, page, size, sort]);
+  }, [boardId, searchKeyword, page, size, sort]);
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
+      <h1 style={styles.heading}>{category} 게시판</h1>
       <div style={styles.filterContainer}>
         <input
           type="text"
           placeholder="검색어를 입력하세요"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={handleKeyDown} // Enter 키 동작
           style={styles.input}
         />
-        <button onClick={() => setPage(0)} style={styles.button}>
+        <button onClick={handleSearch} style={styles.button}>
           검색
         </button>
       </div>
@@ -77,10 +110,22 @@ const BoardListBody = ({ boardId }: { boardId: string }) => {
           <option value={5}>5개 보기</option>
           <option value={10}>10개 보기</option>
         </select>
-        <button onClick={() => setSort("createdAt,desc")} style={styles.button}>
+        <button
+          onClick={() => handleSort("desc")}
+          style={{
+            ...styles.button,
+            ...(sort === "createdAt,desc" ? styles.activeButton : {}),
+          }}
+        >
           최신순
         </button>
-        <button onClick={() => setSort("createdAt,asc")} style={styles.button}>
+        <button
+          onClick={() => handleSort("asc")}
+          style={{
+            ...styles.button,
+            ...(sort === "createdAt,asc" ? styles.activeButton : {}),
+          }}
+        >
           오래된순
         </button>
       </div>
@@ -103,11 +148,11 @@ const BoardListBody = ({ boardId }: { boardId: string }) => {
       </div>
 
       <ul style={styles.postList}>
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <li
-            key={post.postId}
+            key={`${post.id}-${index}`}
             style={styles.postItem}
-            onClick={() => router.push(`/board/${boardId}/${post.postId}`)}
+            onClick={() => router.push(`/board/${boardId}/${post.id}`)}
           >
             <h2 style={styles.postTitle}>{post.title}</h2>
             <p style={styles.postPreview}>{post.contentPreview}</p>
@@ -165,6 +210,10 @@ const styles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+  },
+  activeButton: {
+    backgroundColor: "#0056b3", // 활성화된 버튼 색상
+    fontWeight: "bold", // 강조
   },
   pagination: {
     display: "flex",
