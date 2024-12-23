@@ -1,11 +1,14 @@
 "use client";
 
-import useStore from "@/app/hooks/store";
 import { useRouter } from "next/navigation";
 import { CustomButton } from "./utils/button";
+import useSideBarStore from "@/app/hooks/sidebarStore";
 
 export default function Sidebar() {
-  const { isShow, toggleIsShow } = useStore();
+  const { sideBarState, sideBarActions } = useSideBarStore();
+  const { isShow } = sideBarState;
+  const { toggleIsShow } = sideBarActions;
+
   // const [isShow, setShow] = useState(true);
   const router = useRouter();
 
@@ -39,7 +42,7 @@ export default function Sidebar() {
           padding: "5px 10px",
           cursor: "pointer",
         }}
-        onClick={() => toggleIsShow()}
+        onClick={toggleIsShow}
       >
         {isShow ? "◀" : "▶"}
       </button>

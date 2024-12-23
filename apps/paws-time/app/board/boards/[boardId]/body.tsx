@@ -25,26 +25,26 @@ interface PostResponse {
 
 const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   const router = useRouter();
-  const [keyword, setKeyword] = useState("");
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
-  const [sort, setSort] = useState("createdAt");
+  const [keyword, setKeyword] = useState<string>("");
+  const [page, setPage] = useState<number>(0);
+  const [size, setSize] = useState<number>(10);
+  const [sort, setSort] = useState<string>("createdAt");
 
+  const params = {
+    boardId,
+    keyword,
+    pageNo: page,
+    pageSize: size,
+    sortBy: sort,
+    direction: "desc",
+  };
   // 게시글 목록 가져오기
-  const { data, isLoading, error } = useGetPosts<PostResponse>(
-    {
-      boardId,
-      keyword,
-      page,
-      size,
-      sort,
+  const { data, isLoading, error } = useGetPosts<PostResponse>({
+    request:{params},
+    query: {
+      staleTime: 5 * 60 * 1000,
     },
-    {
-      query: {
-        staleTime: 5 * 60 * 1000,
-      },
-    }
-  );
+  });
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>error...</div>;
   return (

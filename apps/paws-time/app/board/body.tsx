@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
-import useStore from "../hooks/store";
 import { useGetBoardList } from "../lib/codegen/hooks/board/board";
+import useBoardState from "../hooks/boardStore";
+import useSideBarStore from "../hooks/sidebarStore";
 
 interface Board {
   boardId: number;
@@ -12,26 +13,45 @@ interface Board {
   isDelete?: boolean;
   updatedAt?: string;
 }
+
 export default function BoardList() {
   const router = useRouter();
-  const [boards, setBoards] = useState<Board[]>([]);
-  const { isShow } = useStore();
+  const { sideBarState } = useSideBarStore();
+  const { isShow } = sideBarState;
+  const { boardState, boardAction } = useBoardState();
+  const { pageNo, pageSize, sortBy, direction } = boardState;
+  // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
+
+  const params = {
+    pageNo, // 여기서 숫자 값으로 바로 사용
+    pageSize,
+    sortBy,
+    direction,
+  };
 
   // 보더 데이터 가져오기
-  const { data, isLoading, isError } = useGetBoardList();
+  const { data, isLoading, isError } = useGetBoardList<{
+    status: string;
+    message: string | null;
+    data: Board[];
+  }>(params);
 
-  useEffect(() => {
-    if (data) {
-      setBoards(data.data || []); // API로부터 받은 데이터를 상태에 저장
-    }
-  }, [data]);
+  // 데이터가 없는 경우 빈 배열로 설정
+  const boards = data?.data || [];
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>보더 데이터를 불러오는 중 오류가 발생했습니다.</div>;
+  // 로딩 상태 처리
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // 에러 상태 처리
+  if (isError) {
+    return <div>Error occurred while fetching boards.</div>;
+  }
 
   return (
     <div className="flex w-full h-custom-boardh">
-      {isShow && <div className="flex w-custom-sidew " />}
+      {isShow && <div className="flex w-custom-sidew" />}
       {/* 보더 목록 */}
       <div className="p-4 gap-4 flex flex-col w-4/5">
         {boards.map((board) => (
