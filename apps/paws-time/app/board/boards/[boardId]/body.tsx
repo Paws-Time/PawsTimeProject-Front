@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
+import usePostStore from "@/app/hooks/postStore";
 
 interface PostData {
   id: number;
@@ -25,28 +25,27 @@ interface PostResponse {
 
 const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   const router = useRouter();
-  const [keyword, setKeyword] = useState<string>("");
-  const [page, setPage] = useState<number>(0);
-  const [size, setSize] = useState<number>(10);
-  const [sort, setSort] = useState<string>("createdAt");
+  const { postState, postAction } = usePostStore();
+  const { keyword, page, size, sort } = postState;
+  const { setKeyword, setPage, setPageSize, setSortBy } = postAction;
 
   const params = {
     boardId,
     keyword,
-    pageNo: page,
-    pageSize: size,
-    sortBy: sort,
-    direction: "desc",
+    page,
+    size,
+    sort,
   };
   // 게시글 목록 가져오기
-  const { data, isLoading, error } = useGetPosts<PostResponse>({
-    request:{params},
+  const { data, isLoading, error } = useGetPosts<PostResponse>(params, {
     query: {
       staleTime: 5 * 60 * 1000,
     },
   });
+
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>error...</div>;
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
@@ -61,23 +60,25 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
         <CustomButton
           $label="검색"
           $sizeType="normal"
-          onClick={() => setPage(0)}
+          onClick={() => setPage(0)} // 검색 시 첫 페이지로 이동
         />
+        {/* 필터 Dropdown */}
         <select
           value={size}
-          onChange={(e) => setSize(Number(e.target.value))}
+          onChange={(e) => setPageSize(Number(e.target.value) as 3 | 5 | 10)} // 숫자로 변환
           style={styles.select}
         >
-          <option value={5}>5개 보기</option>
-          <option value={10}>10개 보기</option>
+          <option value={3}>3개씩 조회</option>
+          <option value={5}>5개씩 조회</option>
+          <option value={10}>10개씩 조회</option>
         </select>
         <select
-          value={size}
-          onChange={(e) => setSort(String(e.target.value))}
+          value={sort}
+          onChange={(e) => setSortBy(e.target.value as "createdAt" | "desc")} // 정렬 기준 변경
           style={styles.select}
         >
-          <option value={"desc"}>최신순</option>
-          <option value={"createdAt"}>과거순</option>
+          <option value="desc">최신순</option>
+          <option value="createdAt">과거순</option>
         </select>
       </div>
       <div style={styles.cardContainer}>
@@ -97,13 +98,14 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
         <CustomButton
           $label="이전"
           $sizeType="normal"
-          onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-          disabled={page === 0}
+          onClick={() => setPage} // 이전 페이지로 이동
+          disabled={page === 0} // 첫 페이지에서는 비활성화
         />
         <CustomButton
           $label="다음"
           $sizeType="normal"
-          onClick={() => setPage((prev) => prev + 1)}
+          onClick={() => setPage} // 다음 페이지로 이동
+          disabled={page === 0} // 마지막 페이지에서는 비활성화
         />
       </div>
     </div>

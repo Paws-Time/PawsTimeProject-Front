@@ -24,34 +24,23 @@ interface AppState {
 }
 
 // Zustand 상태 관리
-const useBoardState = create<AppState>((set) => ({
-  // 상태 초기화
+const useBoardStore = create<AppState>((set) => ({
   boardState: {
     pageNo: 0,
     pageSize: 10,
     sortBy: "createdAt",
     direction: "DESC",
   },
-
-  // 상태 변경 함수 초기화
   boardActions: {
     setPageNo: (pageNo) =>
-      set((state) => ({
-        boardState: { ...state.boardState, pageNo },
-      })),
+      set((state) => ({ boardState: { ...state.boardState, pageNo } })),
     setPageSize: (pageSize) =>
-      set((state) => ({
-        boardState: { ...state.boardState, pageSize },
-      })),
+      set((state) => ({ boardState: { ...state.boardState, pageSize } })),
     setSortBy: (sortBy) =>
-      set((state) => ({
-        boardState: { ...state.boardState, sortBy },
-      })),
+      set((state) => ({ boardState: { ...state.boardState, sortBy } })),
     setDirection: (direction) =>
-      set((state) => ({
-        boardState: { ...state.boardState, direction },
-      })),
+      set((state) => ({ boardState: { ...state.boardState, direction } })),
   },
 }));
 
-export default useBoardState;
+export default useBoardStore;

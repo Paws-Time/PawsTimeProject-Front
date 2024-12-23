@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useGetBoardList } from "../lib/codegen/hooks/board/board";
-import useBoardState from "../hooks/boardStore";
 import useSideBarStore from "../hooks/sidebarStore";
+import useBoardStore from "../hooks/boardStore";
 
 interface Board {
   boardId: number;
@@ -18,7 +18,7 @@ export default function BoardList() {
   const router = useRouter();
   const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
-  const { boardState, boardAction } = useBoardState();
+  const { boardState, boardAction } = useBoardStore();
   const { pageNo, pageSize, sortBy, direction } = boardState;
   // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
 

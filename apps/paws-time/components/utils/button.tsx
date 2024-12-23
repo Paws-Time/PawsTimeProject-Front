@@ -11,10 +11,7 @@ type StyledProps = {
   $label: string;
   $sizeType?: SizeType; // 버튼 크기 타입
   onClick?: () => void;
-} & React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->;
+};
 type Props = StyledProps & React.JSX.IntrinsicElements["button"];
 export const CustomButton = (props: Props) => {
   const {
@@ -83,7 +80,7 @@ const StyledButton = styled.button<{
         height: 45px;
       `,
       long: css`
-        width: 510px;
+        width: 100%;
         height: 50px;
       `,
       menu: css`

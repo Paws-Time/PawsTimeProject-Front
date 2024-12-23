@@ -1,7 +1,20 @@
 "use client";
-import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 import React from "react";
+import { theme } from "design-system/lib/theme";
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  $label: string;
+}
+
+export const InputField = ({ $label, type, ...rest }: InputProps) => {
+  return (
+    <InputWrapper>
+      <input type={type} placeholder={$label} {...rest} />
+      {type === "password" && <span className="icon">👁️</span>}
+    </InputWrapper>
+  );
+};
 
 const InputWrapper = styled.div`
   position: relative;
@@ -31,9 +44,8 @@ const InputWrapper = styled.div`
       border-color: ${theme.colors.comp.input.hover};
     }
 
-    //여백을 미리 선정
     &[type="password"] {
-      padding-right: 40px;
+      padding-right: 40px; /* 아이콘 공간 확보 */
     }
   }
 
@@ -43,17 +55,3 @@ const InputWrapper = styled.div`
     cursor: pointer;
   }
 `;
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  type: string;
-}
-export const InputField = ({ label, type }: InputProps) => {
-  return (
-    <InputWrapper>
-      <input type={type} placeholder={label} />
-      {type === "password" && <span className="icon"></span>}{" "}
-      {/* 항상 눈동자 아이콘 표시 */}
-    </InputWrapper>
-  );
-};

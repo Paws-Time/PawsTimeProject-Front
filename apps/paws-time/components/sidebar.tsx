@@ -14,7 +14,8 @@ export default function Sidebar() {
 
   const menus = [
     { id: 1, path: "/board", name: "게시판" },
-    { id: 2, path: "/board/write", name: "게시글 작성" },
+    { id: 2, path: "/board/createBoard", name: "게시판 작성" },
+    { id: 3, path: "/board/write", name: "게시글 작성" },
   ];
   return (
     <aside
