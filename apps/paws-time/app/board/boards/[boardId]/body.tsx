@@ -51,7 +51,7 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
       <div style={styles.filterContainer}>
         <InputField
-          label="검색어를 입력하세요"
+          $label="검색어를 입력하세요"
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}

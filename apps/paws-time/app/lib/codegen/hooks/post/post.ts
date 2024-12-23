@@ -18,6 +18,7 @@ import type {
 } from "@tanstack/react-query";
 import type {
   ApiResponseGetDetailPostRespDto,
+  ApiResponseInteger,
   ApiResponseListGetListPostRespDto,
   ApiResponseVoid,
   CreatePostReqDto,
@@ -39,13 +40,13 @@ export const getDetailPost = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseGetDetailPostRespDto>(
-    { url: `/post/posts/${postId}`, method: "GET", signal },
+    { url: `/post/${postId}`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetDetailPostQueryKey = (postId: number) => {
-  return [`/post/posts/${postId}`] as const;
+  return [`/post/${postId}`] as const;
 };
 
 export const getGetDetailPostInfiniteQueryOptions = <
@@ -196,7 +197,7 @@ export const updatePost = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/post/posts/${postId}`,
+      url: `/post/${postId}`,
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       data: updatePostReqDto,
@@ -275,7 +276,7 @@ export const deletePost = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/post/posts/${postId}`, method: "DELETE" },
+    { url: `/post/${postId}`, method: "DELETE" },
     options,
   );
 };
@@ -351,13 +352,13 @@ export const getPosts = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetListPostRespDto>(
-    { url: `/post/posts`, method: "GET", params, signal },
+    { url: `/post`, method: "GET", params, signal },
     options,
   );
 };
 
 export const getGetPostsQueryKey = (params?: GetPostsParams) => {
-  return [`/post/posts`, ...(params ? [params] : [])] as const;
+  return [`/post`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetPostsInfiniteQueryOptions = <
@@ -498,7 +499,7 @@ export const createPost = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/post/posts`,
+      url: `/post`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: createPostReqDto,
@@ -566,6 +567,82 @@ export const useCreatePost = <
   TContext
 > => {
   const mutationOptions = getCreatePostMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * 게시글에 좋아요를 누를 수 있습니다.
+ * @summary 좋아요
+ */
+export const toggleLike = (
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseInteger>(
+    { url: `/post/${postId}/like`, method: "POST", signal },
+    options,
+  );
+};
+
+export const getToggleLikeMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof toggleLike>>,
+    TError,
+    { postId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof toggleLike>>,
+  TError,
+  { postId: number },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof toggleLike>>,
+    { postId: number }
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return toggleLike(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ToggleLikeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof toggleLike>>
+>;
+
+export type ToggleLikeMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 좋아요
+ */
+export const useToggleLike = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof toggleLike>>,
+    TError,
+    { postId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof toggleLike>>,
+  TError,
+  { postId: number },
+  TContext
+> => {
+  const mutationOptions = getToggleLikeMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

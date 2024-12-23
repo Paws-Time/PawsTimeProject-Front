@@ -12,7 +12,7 @@
     { "name": "Board", "description": "게사판 API" }
   ],
   "paths": {
-    "/post/posts/{postId}": {
+    "/post/{postId}": {
       "get": {
         "tags": ["Post"],
         "summary": "게시글 상세 조회",
@@ -208,7 +208,7 @@
         }
       }
     },
-    "/post/posts": {
+    "/post": {
       "get": {
         "tags": ["Post"],
         "summary": "게시글 목록 조회",
@@ -278,6 +278,32 @@
             "content": {
               "*/*": {
                 "schema": { "$ref": "#/components/schemas/ApiResponseVoid" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{postId}/like": {
+      "post": {
+        "tags": ["Post"],
+        "summary": "좋아요",
+        "description": "게시글에 좋아요를 누를 수 있습니다.",
+        "operationId": "toggleLike",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseInteger" }
               }
             }
           }
@@ -564,6 +590,28 @@
             "enum": ["TECH", "LIFESTYLE", "EDUCATION", "ENTERTAINMENT"]
           },
           "likesCount": { "type": "integer", "format": "int32" }
+        }
+      },
+      "ApiResponseInteger": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "CREATE",
+              "UPDATE",
+              "DELETE",
+              "INVALID",
+              "DUPLICATE",
+              "NOTFOUND",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "ERROR"
+            ]
+          },
+          "message": { "type": "string" },
+          "data": { "type": "integer", "format": "int32" }
         }
       },
       "CreateCommentReqDto": {
