@@ -6,7 +6,7 @@ import { theme } from "design-system/lib/theme";
 type ButtonState = "primary" | "hover" | "active" | "disabled";
 type SizeType = "mini" | "short" | "normal" | "long" | "menu";
 
-type Props = {
+type StyledProps = {
   $state?: ButtonState;
   $label: string;
   $sizeType?: SizeType; // 버튼 크기 타입
@@ -15,6 +15,32 @@ type Props = {
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >;
+type Props = StyledProps & React.JSX.IntrinsicElements["button"];
+export const CustomButton = (props: Props) => {
+  const {
+    $label,
+    onClick,
+    $sizeType = "normal",
+    $state = "primary",
+    ...rest
+  } = props; // 기본값 설정
+  const [currentState, setCurrentState] = useState<ButtonState>($state);
+
+  return (
+    <StyledButton
+      $state={currentState}
+      $sizeType={$sizeType}
+      onClick={onClick}
+      onMouseEnter={() => setCurrentState("hover")} // 마우스 오버
+      onMouseLeave={() => setCurrentState("primary")} // 마우스 벗어남
+      onMouseDown={() => setCurrentState("active")} // 클릭
+      onMouseUp={() => setCurrentState("hover")} // 클릭 해제
+      {...rest}
+    >
+      {$label}
+    </StyledButton>
+  );
+};
 
 const StyledButton = styled.button<{
   $state: ButtonState;
@@ -68,29 +94,3 @@ const StyledButton = styled.button<{
     return sizeStyles[$sizeType];
   }}
 `;
-
-export const CustomButton = (props: Props) => {
-  const {
-    $label,
-    onClick,
-    $sizeType = "normal",
-    $state = "primary",
-    ...rest
-  } = props; // 기본값 설정
-  const [currentState, setCurrentState] = useState<ButtonState>($state);
-
-  return (
-    <StyledButton
-      $state={currentState}
-      $sizeType={$sizeType}
-      onClick={onClick}
-      onMouseEnter={() => setCurrentState("hover")} // 마우스 오버
-      onMouseLeave={() => setCurrentState("primary")} // 마우스 벗어남
-      onMouseDown={() => setCurrentState("active")} // 클릭
-      onMouseUp={() => setCurrentState("hover")} // 클릭 해제
-      {...rest}
-    >
-      {$label}
-    </StyledButton>
-  );
-};

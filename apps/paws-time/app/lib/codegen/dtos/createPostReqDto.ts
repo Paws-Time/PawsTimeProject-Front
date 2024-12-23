@@ -7,19 +7,11 @@
 import type { CreatePostReqDtoCategory } from "./createPostReqDtoCategory";
 
 export interface CreatePostReqDto {
-  boardId?: number;
+  boardId: number;
   category: CreatePostReqDtoCategory;
-  /**
-   * 게시글 내용
-   * @minLength 5
-   * @maxLength 2147483647
-   */
+  /** 게시글 내용 */
   content: string;
   likesCount?: number;
-  /**
-   * 게시글 제목
-   * @minLength 5
-   * @maxLength 20
-   */
+  /** 게시글 제목 */
   title: string;
 }

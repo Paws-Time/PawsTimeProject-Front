@@ -4,12 +4,10 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import type { UpdatePostReqDtoPostCategory } from "./updatePostReqDtoPostCategory";
 
 export interface UpdatePostReqDto {
   /** 게시글 내용 */
   content: string;
-  postCategory: UpdatePostReqDtoPostCategory;
   /** 게시글 제목 */
   title: string;
 }

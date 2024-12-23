@@ -17,9 +17,10 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  ApiResponseGetDetailPostRespDto,
+  ApiResponseListGetListPostRespDto,
+  ApiResponseVoid,
   CreatePostReqDto,
-  GetDetailPost200,
-  GetPosts200,
   GetPostsParams,
   UpdatePostReqDto,
 } from "../../dtos";
@@ -29,7 +30,7 @@ import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
- * 게시글id로 상세조회를 할 수 있습니다.
+ * 게시글 ID로 상세 조회를 할 수 있습니다.
  * @summary 게시글 상세 조회
  */
 export const getDetailPost = (
@@ -37,7 +38,7 @@ export const getDetailPost = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetDetailPost200>(
+  return customInstance<ApiResponseGetDetailPostRespDto>(
     { url: `/post/posts/${postId}`, method: "GET", signal },
     options,
   );
@@ -193,7 +194,7 @@ export const updatePost = (
   updatePostReqDto: BodyType<UpdatePostReqDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<string>(
+  return customInstance<ApiResponseVoid>(
     {
       url: `/post/posts/${postId}`,
       method: "PUT",
@@ -273,7 +274,7 @@ export const deletePost = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<string>(
+  return customInstance<ApiResponseVoid>(
     { url: `/post/posts/${postId}`, method: "DELETE" },
     options,
   );
@@ -349,7 +350,7 @@ export const getPosts = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetPosts200>(
+  return customInstance<ApiResponseListGetListPostRespDto>(
     { url: `/post/posts`, method: "GET", params, signal },
     options,
   );
@@ -487,7 +488,7 @@ export function useGetPosts<
 }
 
 /**
- * 새로운 게시글을 생성할 수 있습니다.
+ * 게시글을 생성 할 수 있습니다.
  * @summary 게시글 생성
  */
 export const createPost = (
@@ -495,7 +496,7 @@ export const createPost = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<string>(
+  return customInstance<ApiResponseVoid>(
     {
       url: `/post/posts`,
       method: "POST",

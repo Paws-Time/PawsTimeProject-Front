@@ -1,15 +1,12 @@
-import BoardDetailBody from "./body";
+import PostDetailBody from "./body";
 
-const BoardDetailPage = async ({ params }: { params: { postId: string } }) => {
-  const { postId } = await params; // postId만 사용
-
-  console.log({ postId });
-
+const PostDetailPage = ({ params }: { params: { postId: number } }) => {
+  const { postId } = params;
   return (
     <div>
-      <BoardDetailBody />
+      <PostDetailBody postId={postId} />
     </div>
   );
 };
 
-export default BoardDetailPage;
+export default PostDetailPage;

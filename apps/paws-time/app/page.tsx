@@ -1,4 +1,4 @@
-import { CustomButton } from "./components/icons/button";
+import { CustomButton } from "@/components/utils/button";
 
 export default function Home() {
   return (

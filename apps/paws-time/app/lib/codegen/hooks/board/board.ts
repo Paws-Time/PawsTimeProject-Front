@@ -36,11 +36,11 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 export const getBoard = (
   boardId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseGetBoardRespDto>(
     { url: `/board/${boardId}`, method: "GET", signal },
-    options
+    options,
   );
 };
 
@@ -60,7 +60,7 @@ export const getGetBoardInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -103,7 +103,7 @@ export function useGetBoardInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetBoardInfiniteQueryOptions(boardId, options);
 
@@ -129,7 +129,7 @@ export const getGetBoardQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -170,7 +170,7 @@ export function useGetBoard<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetBoardQueryOptions(boardId, options);
 
@@ -190,7 +190,7 @@ export function useGetBoard<
 export const updateBoard = (
   boardId: number,
   updateBoardReqDto: BodyType<UpdateBoardReqDto>,
-  options?: SecondParameter<typeof customInstance>
+  options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
     {
@@ -199,7 +199,7 @@ export const updateBoard = (
       headers: { "Content-Type": "application/json" },
       data: updateBoardReqDto,
     },
-    options
+    options,
   );
 };
 
@@ -270,11 +270,11 @@ export const useUpdateBoard = <
  */
 export const deleteBoard = (
   boardId: number,
-  options?: SecondParameter<typeof customInstance>
+  options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
     { url: `/board/delete/${boardId}`, method: "PUT" },
-    options
+    options,
   );
 };
 
@@ -346,7 +346,7 @@ export const useDeleteBoard = <
 export const createBoard = (
   createBoardReqDto: BodyType<CreateBoardReqDto>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseVoid>(
     {
@@ -356,7 +356,7 @@ export const createBoard = (
       data: createBoardReqDto,
       signal,
     },
-    options
+    options,
   );
 };
 
@@ -428,11 +428,11 @@ export const useCreateBoard = <
 export const getBoardList = (
   params?: GetBoardListParams,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetBoardRespDto>(
     { url: `/board/list`, method: "GET", params, signal },
-    options
+    options,
   );
 };
 
@@ -452,7 +452,7 @@ export const getGetBoardListInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -490,7 +490,7 @@ export function useGetBoardListInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetBoardListInfiniteQueryOptions(params, options);
 
@@ -516,7 +516,7 @@ export const getGetBoardListQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -554,7 +554,7 @@ export function useGetBoardList<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetBoardListQueryOptions(params, options);
 

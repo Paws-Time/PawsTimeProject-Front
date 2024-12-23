@@ -1,4 +1,4 @@
-import { BoardDetailBody } from "./body";
+import { PostEditBody } from "./body";
 
 const BoardDetailPage = async ({ params }: { params: { postId: string } }) => {
   const { postId } = await params; // postId만 사용
@@ -7,7 +7,7 @@ const BoardDetailPage = async ({ params }: { params: { postId: string } }) => {
 
   return (
     <div>
-      <BoardDetailBody postId={postId} />
+      <PostEditBody postId={postId} />
     </div>
   );
 };

@@ -8,10 +8,36 @@ type CardProps = {
   imageUrl?: string;
   views: number;
   likesCount: number;
-  onClick: () => void; // onClick 속성 추가
 };
 
+type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
+
 const DEFAULT_IMAGE_URL = "/logo.png";
+export function Card({
+  title,
+  contentPreview,
+  imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
+  views,
+  likesCount,
+  ...rest
+}: Props) {
+  return (
+    <CardWrapper role="button" tabIndex={0} {...rest}>
+      <div className="call-menu" onClick={() => {}}>
+        ...
+      </div>
+      <div className="title">{title}</div>
+      <div className="image-field">
+        <img src={imageUrl} alt={title} />
+      </div>
+      <div className="contentPreview">{contentPreview}</div>
+      <div className="foot">
+        <span className="views">💬 {views} reviews</span>
+        <span className="likesCount">👍 {likesCount} likes</span>
+      </div>
+    </CardWrapper>
+  );
+}
 
 const CardWrapper = styled.div`
   position: relative;
@@ -115,29 +141,3 @@ const CardWrapper = styled.div`
     }
   }
 `;
-
-export function Card({
-  title,
-  contentPreview,
-  imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
-  views,
-  likesCount,
-  onClick,
-}: CardProps) {
-  return (
-    <CardWrapper onClick={onClick} role="button" tabIndex={0}>
-      <div className="call-menu" onClick={() => {}}>
-        ...
-      </div>
-      <div className="title">{title}</div>
-      <div className="image-field">
-        <img src={imageUrl} alt={title} />
-      </div>
-      <div className="contentPreview">{contentPreview}</div>
-      <div className="foot">
-        <span className="views">💬 {views} reviews</span>
-        <span className="likesCount">👍 {likesCount} likes</span>
-      </div>
-    </CardWrapper>
-  );
-}

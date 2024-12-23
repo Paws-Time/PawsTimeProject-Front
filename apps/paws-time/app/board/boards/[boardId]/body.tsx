@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/app/components/icons/card";
-import { CustomButton } from "@/app/components/icons/button";
-import { InputField } from "@/app/components/icons/input";
+import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import { InputField } from "@/components/utils/input";
+import { CustomButton } from "@/components/utils/button";
+import { Card } from "@/components/utils/card";
 
 interface PostData {
   id: number;
@@ -16,46 +17,36 @@ interface PostData {
   views: number;
   likesCount: number;
 }
+interface PostResponse {
+  data: {
+    content: PostData[];
+  };
+}
 
-const BoardListBody = ({ boardId }: { boardId: string }) => {
+const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   const router = useRouter();
-  const [posts, setPosts] = useState<PostData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-  const [sort, setSort] = useState("createdAt,desc");
+  const [sort, setSort] = useState("createdAt");
 
   // 게시글 목록 가져오기
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(
-          `http://43.200.46.13:8080/post/posts?boardId=${boardId}&keyword=${keyword}&page=${page}&size=${size}&sort=${sort}`
-        );
-        if (!response.ok) {
-          console.error("Failed to fetch posts. Status:", response.status);
-          throw new Error("Failed to fetch posts");
-        }
-
-        const data: PostData[] = await response.json();
-        setPosts(data);
-
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (boardId) {
-      fetchPosts();
+  const { data, isLoading, error } = useGetPosts<PostResponse>(
+    {
+      boardId,
+      keyword,
+      page,
+      size,
+      sort,
+    },
+    {
+      query: {
+        staleTime: 5 * 60 * 1000,
+      },
     }
-  }, [boardId, keyword, page, size, sort]);
-
-  if (loading) return <div>Loading...</div>;
-
+  );
+  if (isLoading) return <div>loading...</div>;
+  if (error) return <div>error...</div>;
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
@@ -90,14 +81,14 @@ const BoardListBody = ({ boardId }: { boardId: string }) => {
         </select>
       </div>
       <div style={styles.cardContainer}>
-        {posts.map((post) => (
+        {data?.data.content.map((post) => (
           <Card
             key={post.id}
             title={post.title}
             contentPreview={post.contentPreview}
             views={post.views}
             likesCount={post.likesCount}
-            onClick={() => router.push(`posts/${post.id}`)}
+            onClick={() => router.push(`board/boards/posts/${post.id}`)}
           />
         ))}
       </div>
@@ -175,4 +166,4 @@ const styles = {
   },
 };
 
-export default BoardListBody;
+export default BoardDetailBody;

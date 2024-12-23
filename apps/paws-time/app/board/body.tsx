@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
-import useStore from "@/app/hooks/store";
+import useStore from "../hooks/store";
+import { useGetBoardList } from "../lib/codegen/hooks/board/board";
 
 interface Board {
-  boardId: string | number | undefined;
+  boardId: number;
   title: string;
   description: string;
   createdAt: string;
@@ -37,7 +37,7 @@ export default function BoardList() {
         {boards.map((board) => (
           <div
             key={board.boardId}
-            onClick={() => router.push(`/board/boards/${board.boardId}`)}
+            onClick={() => router.push(`board/boards/${board.boardId}`)}
             className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
           >
             <h2 className="text-lg font-bold">{board.title}</h2>

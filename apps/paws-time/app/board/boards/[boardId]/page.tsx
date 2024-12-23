@@ -1,9 +1,9 @@
-import BoardListBody from "./body";
+import BoardDetailBody from "./body";
 
-const BoardListPage = async ({ params }: { params: { boardId: string } }) => {
-  const { boardId } = await params;
+const BoardDetailPage = ({ params }: { params: { boardId: number } }) => {
+  const { boardId } = params;
 
-  return <BoardListBody boardId={boardId} />;
+  return <BoardDetailBody boardId={boardId} />;
 };
 
-export default BoardListPage;
+export default BoardDetailPage;

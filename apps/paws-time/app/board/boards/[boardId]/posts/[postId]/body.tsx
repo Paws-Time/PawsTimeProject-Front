@@ -10,7 +10,7 @@ interface PostData {
   updated_at: string;
 }
 
-const BoardDetailBody = () => {
+const PostDetailBody = () => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -230,4 +230,4 @@ const styles = {
   },
 };
 
-export default BoardDetailBody;
+export default PostDetailBody;
