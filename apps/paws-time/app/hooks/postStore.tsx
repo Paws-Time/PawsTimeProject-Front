@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 type sizeType = 3 | 5 | 10;
-type sortType = "createdAt" | "desc";
+type sortType = string;
 
 interface AppState {
   postState: {
@@ -24,7 +24,7 @@ const usePostStore = create<AppState>((set) => ({
     keyword: "",
     page: 0,
     size: 10,
-    sort: "createdAt",
+    sort: "createdAt,desc",
   },
 
   // 상태 변경 함수 초기화

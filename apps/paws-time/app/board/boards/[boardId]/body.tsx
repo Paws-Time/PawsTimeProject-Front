@@ -17,11 +17,6 @@ interface PostData {
   views: number;
   likesCount: number;
 }
-interface PostResponse {
-  data: {
-    content: PostData[];
-  };
-}
 
 const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   const router = useRouter();
@@ -31,21 +26,25 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
 
   const params = {
     boardId,
-    keyword,
+    ...(keyword && { keyword }),
     page,
     size,
-    sort,
+    sort: sort.replace(",", ","),
   };
+
   // 게시글 목록 가져오기
-  const { data, isLoading, error } = useGetPosts<PostResponse>(params, {
+  const { data, isLoading, error } = useGetPosts(params, {
     query: {
       staleTime: 5 * 60 * 1000,
     },
   });
 
-  if (isLoading) return <div>loading...</div>;
-  if (error) return <div>error...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
+  const posts = data?.data || [];
+  console.log("Fetched Posts Data:", data);
+  console.log("Posts Content:", posts);
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
@@ -62,10 +61,9 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
           $sizeType="normal"
           onClick={() => setPage(0)} // 검색 시 첫 페이지로 이동
         />
-        {/* 필터 Dropdown */}
         <select
           value={size}
-          onChange={(e) => setPageSize(Number(e.target.value) as 3 | 5 | 10)} // 숫자로 변환
+          onChange={(e) => setPageSize(Number(e.target.value) as 3 | 5 | 10)}
           style={styles.select}
         >
           <option value={3}>3개씩 조회</option>
@@ -74,26 +72,30 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
         </select>
         <select
           value={sort}
-          onChange={(e) => setSortBy(e.target.value as "createdAt" | "desc")} // 정렬 기준 변경
+          onChange={(e) => setSortBy(e.target.value)}
           style={styles.select}
         >
           <option value="desc">최신순</option>
           <option value="createdAt">과거순</option>
         </select>
       </div>
-      <div style={styles.cardContainer}>
-        {data?.data.content.map((post) => (
-          <Card
-            key={post.id}
-            title={post.title}
-            contentPreview={post.contentPreview}
-            views={post.views}
-            likesCount={post.likesCount}
-            onClick={() => router.push(`board/boards/posts/${post.id}`)}
-          />
-        ))}
-      </div>
 
+      <div style={styles.cardContainer}>
+        {posts.length > 0 ? (
+          posts.map((post: PostData) => (
+            <Card
+              key={post.id}
+              title={post.title}
+              contentPreview={post.contentPreview}
+              views={post.views}
+              likesCount={post.likesCount}
+              onClick={() => router.push(`/board/boards/posts/${post.id}`)}
+            />
+          ))
+        ) : (
+          <div style={styles.noData}>게시글이 없습니다.</div>
+        )}
+      </div>
       <div style={styles.pagination}>
         <CustomButton
           $label="이전"
