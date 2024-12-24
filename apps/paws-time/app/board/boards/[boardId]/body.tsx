@@ -66,8 +66,8 @@ const BoardDetailBody = () => {
       <div style={styles.filterContainer}>
         <InputField
           $label="검색어를 입력하세요"
-          type="text"
-          value={keyword}
+          $type="text"
+          $value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           style={styles.input}
         />

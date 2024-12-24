@@ -9,7 +9,6 @@ interface CountProps {
 }
 function Count({ postId }: CountProps) {
   const [isLike, setIsLike] = useState(false);
-  console.log(postId);
   //좋아요 추가.
   const { mutate } = useToggleLike({
     mutation: {
@@ -31,11 +30,11 @@ function Count({ postId }: CountProps) {
     <div style={postFormStyles.footer}>
       <div style={postFormStyles.likesAndComments}>
         <span>
-          {isLike && <button onClick={handleToggleLike}>좋아요</button>}
+          {isLike && <button onClick={handleToggleLike}>👍좋아요</button>}
           15
         </span>
 
-        <span>댓글 {commentCount}</span>
+        <span>💬댓글 {commentCount}</span>
       </div>
     </div>
   );
