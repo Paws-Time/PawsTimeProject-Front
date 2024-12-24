@@ -41,12 +41,17 @@ const PostDetailBody = () => {
   if (isLoading) console.log("로딩중입니다.");
   return (
     <div style={postFormStyles.container}>
-      <div style={postFormStyles.imageSection}>
-        <img
-          src="/aaa.jpg"
-          alt="이미지"
-          className="w-full h-full object-cover border-r-10"
-        />
+      <div style={postFormStyles.imageButtonSection}>
+        <div style={postFormStyles.imageSection}>
+          <img
+            src="/aaa.jpg"
+            alt="이미지"
+            className="w-full h-full object-cover border-r-10"
+          />
+        </div>
+        <div style={postFormStyles.buttonBox}>
+          <Count postId={numberPostId} />
+        </div>
       </div>
       <div style={postFormStyles.contentSection}>
         <div>
@@ -82,9 +87,6 @@ const PostDetailBody = () => {
         <div style={postFormStyles.textBox}>
           <Review postId={numberPostId} />
         </div>
-      </div>
-      <div style={postFormStyles.footer}>
-        <Count postId={numberPostId} />
       </div>
     </div>
   );

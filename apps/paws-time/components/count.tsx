@@ -21,7 +21,6 @@ function Count({ postId }: CountProps) {
   //댓글 수 조회
   const { data } = useGetCommentByPost(postId);
   const commentCount = data?.data?.length;
-  console.log(postId);
   //좋아요 핸들러
   // const handleToggleLike = () => {
   //   mutate({ postId });

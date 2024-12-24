@@ -10,13 +10,24 @@ export const postFormStyles = {
     borderRadius: "10px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
   },
+  imageButtonSection: {
+    display: "flex",
+    flexDirection: "column" as const, // 세로 정렬
+    justifyContent: "center", // 중앙 정렬
+    alignItems: "center", // 가로 축 중앙 정렬
+    gap: "20px", // 요소 간 간격
+    backgroundColor: "white",
+    borderRadius: "10px",
+    padding: "20px",
+    height: "100%",
+  },
   imageSection: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#e0e0e0",
     borderRadius: "10px",
-    height: "700px",
+    height: "100%",
   },
   contentSection: {
     display: "flex",
@@ -33,7 +44,7 @@ export const postFormStyles = {
     color: "#333",
   },
   buttonBox: {
-    marginTop: "10px",
+    marginTop: "5px",
     display: "flex",
     gap: "10px",
   },
@@ -86,5 +97,12 @@ export const postFormStyles = {
     backgroundColor: "#fff",
     border: "1px solid #ddd",
     borderRadius: "5px",
+  },
+  select: {
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
   },
 };
