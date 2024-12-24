@@ -20,9 +20,7 @@ export const PostEditBody = ({ postId }: { postId?: string }) => {
       if (!postId) return;
 
       try {
-        const response = await fetch(
-          `http://43.200.46.13:8080/post/posts/${postId}`
-        );
+        const response = await fetch(`http://43.200.46.13:8080/post/${postId}`);
 
         if (!response.ok) {
           console.error("Failed to fetch data. Status:", response.status);
@@ -58,12 +56,9 @@ export const PostEditBody = ({ postId }: { postId?: string }) => {
     }
 
     try {
-      const response = await fetch(
-        `http://43.200.46.13:8080/post/posts/${postId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         console.error("Failed to delete post. Status:", response.status);
