@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { postFormStyles } from "@/app/styles/postforms";
+import Count from "@/components/count";
 
 interface PostData {
   post_id: number;
@@ -74,153 +76,50 @@ export const PostEditBody = () => {
       alert("게시글 삭제 중 오류가 발생했습니다.");
     }
   };
-
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>게시글을 불러올 수 없습니다.</div>;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.imageSection}>
+    <div style={postFormStyles.container}>
+      <div style={postFormStyles.imageSection}>
         <img
           src="/aaa.jpg"
           alt="이미지"
           className="w-full h-full object-cover border-r-10"
         />
       </div>
-      <div style={styles.contentSection}>
+      <div style={postFormStyles.contentSection}>
         <div>
-          <div style={styles.titleBox}>
-            <h2 style={styles.title}>{post.title}</h2>
+          <div style={postFormStyles.titleBox}>
+            <h2 style={postFormStyles.title}>{post.title}</h2>
             <span>
               작성일: {new Date(post.created_at).toLocaleDateString()}
             </span>
           </div>
-          <div style={styles.textBox}>
+          <div style={postFormStyles.textBox}>
             <p>{post.content}</p>
           </div>
         </div>
-        <div style={styles.buttonBox}>
+        <div style={postFormStyles.buttonBox}>
           <button
-            style={{ ...styles.button, ...styles.deleteButton }}
+            style={{ ...postFormStyles.button, ...postFormStyles.deleteButton }}
             onClick={handleDelete}
           >
             삭제
           </button>
           <button
-            style={{ ...styles.button, ...styles.editButton }}
+            style={{ ...postFormStyles.button, ...postFormStyles.editButton }}
             onClick={() => router.push(`/board/${postId}/edit`)}
           >
             수정
           </button>
         </div>
       </div>
-      <div style={styles.footer}>
-        <div style={styles.likesAndComments}>
-          <span>좋아요 15</span>
-          <span>댓글 6</span>
-        </div>
-      </div>
-      <div style={styles.commentSection}>
-        <div style={styles.commentBox}>USER1: 댓글 내용입니다.</div>
-        <div style={styles.commentBox}>USER2: 댓글 내용입니다.</div>
+      <div style={postFormStyles.footer}></div>
+      <div style={postFormStyles.commentSection}>
+        <div style={postFormStyles.commentBox}>USER1: 댓글 내용입니다.</div>
+        <div style={postFormStyles.commentBox}>USER2: 댓글 내용입니다.</div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "grid",
-    gridTemplateColumns: "2fr 3fr", // 왼쪽 이미지와 오른쪽 텍스트 영역 비율
-    gap: "20px",
-    width: "80%",
-    margin: "20px auto",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  imageSection: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#e0e0e0",
-    borderRadius: "10px",
-    height: "300px",
-  },
-  // image: {
-  //   maxWidth: "100%",
-  //   maxHeight: "100%",
-  //   objectFit: "cover",
-  //   borderRadius: "10px",
-  // },
-  contentSection: {
-    display: "flex",
-    flexDirection: "column" as const,
-    justifyContent: "space-between",
-  },
-  titleBox: {
-    marginBottom: "10px",
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    margin: "0",
-    color: "#333",
-  },
-  buttonBox: {
-    marginTop: "10px",
-    display: "flex",
-    gap: "10px",
-  },
-  button: {
-    padding: "10px 20px",
-    fontSize: "16px",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "background-color 0.2s",
-  },
-  deleteButton: {
-    backgroundColor: "#f44336",
-  },
-  editButton: {
-    backgroundColor: "#4CAF50",
-  },
-  textBox: {
-    fontSize: "16px",
-    lineHeight: "1.5",
-    color: "#333",
-    backgroundColor: "#f1f1f1",
-    borderRadius: "10px",
-    padding: "10px",
-  },
-  footer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTop: "1px solid #ddd",
-    padding: "10px 0",
-    marginTop: "20px",
-  },
-  likesAndComments: {
-    display: "flex",
-    gap: "20px",
-    fontSize: "16px",
-    color: "#555",
-  },
-  commentSection: {
-    marginTop: "20px",
-    padding: "10px",
-    backgroundColor: "#f1f1f1",
-    borderRadius: "10px",
-  },
-  commentBox: {
-    marginBottom: "10px",
-    padding: "10px",
-    backgroundColor: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-  },
 };
