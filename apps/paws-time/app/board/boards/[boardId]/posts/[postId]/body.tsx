@@ -79,12 +79,12 @@ const PostDetailBody = () => {
             수정
           </button>
         </div>
+        <div style={postFormStyles.textBox}>
+          <Review postId={numberPostId} />
+        </div>
       </div>
       <div style={postFormStyles.footer}>
         <Count postId={numberPostId} />
-      </div>
-      <div style={postFormStyles.commentSection}>
-        <Review postId={numberPostId} />
       </div>
     </div>
   );

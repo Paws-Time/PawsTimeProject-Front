@@ -1,7 +1,7 @@
 export const postFormStyles = {
   container: {
     display: "grid",
-    gridTemplateColumns: "2fr 3fr", // 왼쪽 이미지와 오른쪽 텍스트 영역 비율
+    gridTemplateColumns: "4fr 3fr", // 왼쪽 이미지와 오른쪽 리뷰 영역 비율
     gap: "20px",
     width: "80%",
     margin: "20px auto",
@@ -16,7 +16,7 @@ export const postFormStyles = {
     alignItems: "center",
     backgroundColor: "#e0e0e0",
     borderRadius: "10px",
-    height: "300px",
+    height: "700px",
   },
   contentSection: {
     display: "flex",

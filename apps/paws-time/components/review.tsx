@@ -80,8 +80,8 @@ function Review({ postId }: ReviewProps) {
         <form onSubmit={handleSubmit} style={postFormStyles.commentBox}>
           <InputField
             $label="댓글 입력창"
-            $type="text"
-            $value={content || ""}
+            type="text"
+            value={content || ""}
             onChange={(e) => setContent(e.target.value)}
           />
           <CustomButton $label="저장하기" $sizeType="long" />

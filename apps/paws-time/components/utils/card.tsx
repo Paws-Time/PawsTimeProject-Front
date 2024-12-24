@@ -1,13 +1,13 @@
 "use client";
+import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
 import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 
 type CardProps = {
   $title?: string;
+  postId: number;
   $contentPreview?: string;
   imageUrl?: string;
-  views?: number;
-  likesCount?: number;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
@@ -15,22 +15,23 @@ type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
 const DEFAULT_IMAGE_URL = "/logo.png";
 export function Card({
   $title,
+  postId,
   $contentPreview,
   imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
-  views,
-  likesCount,
   ...rest
 }: Props) {
+  const { data } = useGetCommentByPost(postId);
+  const commentCount = data?.data?.length;
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
       <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} alt={$title} />
+        <img src={imageUrl} />
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
-        <span className="views">💬 {views} 댓글</span>
-        <span className="likesCount">👍 {likesCount} 좋아요</span>
+        <span className="views">💬 {commentCount} 댓글</span>
+        <span className="likesCount">👍 좋아요</span>
       </div>
     </CardWrapper>
   );
@@ -100,7 +101,7 @@ const CardWrapper = styled.div`
     width: 340px;
     height: 30px;
     text-align: center;
-    font-size: ${theme.fontSize.text.lg};
+    font-size: ${theme.fontSize.text.xs};
 
     .reviews {
       margin-left: 20px; /* 정렬 조정 */

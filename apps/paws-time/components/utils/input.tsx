@@ -5,17 +5,17 @@ import { theme } from "design-system/lib/theme";
 
 interface StyledProps {
   $label: string;
-  $type: string;
-  $value: string;
+  type: string;
+  value: string;
 }
 
 type Props = StyledProps & React.InputHTMLAttributes<HTMLInputElement>;
 
-export const InputField = ({ $label, $type, ...rest }: Props) => {
+export const InputField = ({ $label, type, ...rest }: Props) => {
   return (
     <InputWrapper>
-      <input type={$type} placeholder={$label} {...rest} />
-      {$type === "password" && <span className="icon">👁️</span>}
+      <input type={type} placeholder={$label} {...rest} />
+      {type === "password" && <span className="icon">👁️</span>}
     </InputWrapper>
   );
 };
