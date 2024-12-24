@@ -8,24 +8,24 @@ import { Card } from "@/components/utils/card";
 import usePostStore from "@/app/hooks/postStore";
 
 interface PostData {
-  id: number;
+  id?: number;
   postId?: number;
-  title: string;
-  contentPreview: string;
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likesCount: number;
+  title?: string;
+  contentPreview?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  views?: number;
+  likesCount?: number;
 }
 
 interface GetListPostRespDto {
-  id: number;
-  title: string;
-  contentPreview: string;
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likesCount: number;
+  id?: number;
+  title?: string;
+  contentPreview?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  views?: number;
+  likesCount?: number;
 }
 
 const BoardDetailBody = ({ boardId }: { boardId: number }) => {
@@ -103,11 +103,13 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
               $contentPreview={post.contentPreview}
               views={post.views}
               likesCount={post.likesCount}
-              onClick={() => router.push(`/board/boards/posts/${post.id}`)}
+              onClick={() =>
+                router.push(`/board/boards/${boardId}/posts/${post.id}/edit`)
+              }
             />
           ))
         ) : (
-          <div style={styles.noData}>게시글이 없습니다.</div>
+          <div>게시글이 없습니다.</div>
         )}
       </div>
       <div style={styles.pagination}>

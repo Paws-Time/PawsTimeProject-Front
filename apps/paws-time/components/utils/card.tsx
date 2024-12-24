@@ -3,11 +3,11 @@ import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 
 type CardProps = {
-  $title: string;
-  $contentPreview: string;
+  $title?: string;
+  $contentPreview?: string;
   imageUrl?: string;
-  views: number;
-  likesCount: number;
+  views?: number;
+  likesCount?: number;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
