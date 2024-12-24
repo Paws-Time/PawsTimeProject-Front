@@ -6,7 +6,6 @@
  */
 
 export interface GetListPostRespDto {
-  category?: string;
   contentPreview?: string;
   createdAt?: string;
   id?: number;

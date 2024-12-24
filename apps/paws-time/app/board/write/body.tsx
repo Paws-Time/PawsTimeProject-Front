@@ -1,16 +1,55 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
+import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
+import React, { useEffect, useState } from "react";
+
+interface BoardResDto {
+  boardId: number;
+  title: string;
+}
+
+interface PostReqDto {
+  title: string;
+  content: string;
+  boardId: number;
+  likesCount: number;
+}
 
 const BoardWriteBody = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [boardId, setBoardId] = useState(1); // 기본값 1로 설정
+  const [boardId, setBoardId] = useState<number>(1);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
 
-  const router = useRouter();
+  const { data } = useGetBoardList();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (data) {
+      const boardList =
+        data.data?.map((board: any) => ({
+          boardId: board.boardId,
+          title: board.title,
+        })) || [];
+      setBoardOption(boardList);
+    }
+  }, [data]);
+
+  const { mutate, isLoading, isError } = useCreatePost({
+    mutation: {
+      onSuccess: () => {
+        alert("게시글이 성공적으로 생성되었습니다.");
+        setTitle("");
+        setContent("");
+      },
+      onError: (error) => {
+        console.error(error);
+        alert("게시글 생성 중 오류가 발생했습니다.");
+      },
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -35,45 +74,24 @@ const BoardWriteBody = () => {
       alert("내용은 최소 5자 이상이어야 합니다.");
       return;
     }
-    // boardId에 따라 category 결정
-    const categoryMap: Record<number, string> = {
-      1: "TECH",
-      2: "EDUCATION",
-      3: "LIFESTYLE",
-      4: "ENTERTAINMENT",
-    };
 
-    const category = categoryMap[boardId] || "OTHER"; // boardId가 없으면 기본값 "OTHER"
-
-    // 서버에 보낼 데이터
-    const postData = {
-      title: title,
-      content: content,
+    const postData: PostReqDto = {
+      title: trimmedTitle,
+      content: trimmedContent,
       boardId: boardId,
-      category: category,
-      likesCount: 0, // 임의 값 고정
+      likesCount: 0,
     };
 
-    try {
-      const response = await fetch("http://43.200.46.13:8080/post/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
-
-      if (response.ok) {
-        alert("게시글 생성이 완료되었습니다.");
-        router.push("/board");
-      } else {
-        throw new Error("게시글 생성 중 오류가 발생하였습니다.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("게시글 생성 중 오류가 발생하였습니다.");
-    }
+    mutate({ data: postData });
   };
+
+  if (isLoading) {
+    return <div>게시글을 생성 중입니다...</div>;
+  }
+
+  if (isError) {
+    return <div>게시글 생성 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
+  }
 
   return (
     <div style={styles.container}>
@@ -87,10 +105,11 @@ const BoardWriteBody = () => {
             onChange={(e) => setBoardId(Number(e.target.value))}
             style={styles.select}
           >
-            <option value={1}>TECH</option>
-            <option value={2}>EDUCATION</option>
-            <option value={3}>LIFESTYLE</option>
-            <option value={4}>ENTERTAINMENT</option>
+            {boardOption.map((board) => (
+              <option key={board.boardId} value={board.boardId}>
+                {board.title}
+              </option>
+            ))}
           </select>
         </div>
         <div style={styles.field}>
@@ -186,7 +205,7 @@ const styles = {
     border: "1px solid #ddd",
     boxSizing: "border-box" as const,
     lineHeight: "1.5",
-    resize: "none",
+    resize: "none" as const,
   },
   select: {
     width: "100%",

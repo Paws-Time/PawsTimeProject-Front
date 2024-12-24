@@ -4,11 +4,9 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import type { CreatePostReqDtoCategory } from "./createPostReqDtoCategory";
 
 export interface CreatePostReqDto {
   boardId: number;
-  category: CreatePostReqDtoCategory;
   /** 게시글 내용 */
   content: string;
   likesCount?: number;

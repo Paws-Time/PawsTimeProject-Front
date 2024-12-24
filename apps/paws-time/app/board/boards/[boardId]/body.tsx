@@ -9,7 +9,17 @@ import usePostStore from "@/app/hooks/postStore";
 
 interface PostData {
   id: number;
-  postId: number;
+  postId?: number;
+  title: string;
+  contentPreview: string;
+  createdAt: string;
+  updatedAt: string;
+  views: number;
+  likesCount: number;
+}
+
+interface GetListPostRespDto {
+  id: number;
   title: string;
   contentPreview: string;
   createdAt: string;
@@ -29,7 +39,7 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
     ...(keyword && { keyword }),
     page,
     size,
-    sort: sort.replace(",", ","),
+    sort,
   };
 
   // 게시글 목록 가져오기
@@ -42,9 +52,13 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
-  const posts = data?.data || [];
-  console.log("Fetched Posts Data:", data);
-  console.log("Posts Content:", posts);
+  const posts: PostData[] = (data?.data || []).map(
+    (post: GetListPostRespDto) => ({
+      ...post,
+      postId: post.id,
+    })
+  );
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
@@ -85,8 +99,8 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
           posts.map((post: PostData) => (
             <Card
               key={post.id}
-              title={post.title}
-              contentPreview={post.contentPreview}
+              $title={post.title}
+              $contentPreview={post.contentPreview}
               views={post.views}
               likesCount={post.likesCount}
               onClick={() => router.push(`/board/boards/posts/${post.id}`)}
