@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
@@ -28,14 +28,15 @@ interface GetListPostRespDto {
   likesCount?: number;
 }
 
-const BoardDetailBody = ({ boardId }: { boardId: number }) => {
+const BoardDetailBody = () => {
   const router = useRouter();
+  const { boardId } = useParams();
+  const numberBoardId = Number(boardId);
   const { postState, postAction } = usePostStore();
   const { keyword, page, size, sort } = postState;
   const { setKeyword, setPage, setPageSize, setSortBy } = postAction;
-
   const params = {
-    boardId,
+    boardId: numberBoardId,
     ...(keyword && { keyword }),
     page,
     size,
@@ -104,7 +105,7 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
               views={post.views}
               likesCount={post.likesCount}
               onClick={() =>
-                router.push(`/board/boards/${boardId}/posts/${post.id}/edit`)
+                router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }
             />
           ))

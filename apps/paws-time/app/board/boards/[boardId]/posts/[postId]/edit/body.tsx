@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface PostData {
   post_id: number;
@@ -10,10 +10,11 @@ interface PostData {
   updated_at: string;
 }
 
-export const PostEditBody = ({ postId }: { postId?: string }) => {
+export const PostEditBody = () => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const { postId } = useParams();
 
   useEffect(() => {
     const fetchPostData = async () => {
