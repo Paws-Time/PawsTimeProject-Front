@@ -6,7 +6,7 @@ import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const params = {
-    boardId: 1, // 필요한 경우 동적으로 설정
+    boardId: 1, // 현재 0으로 전체 조회 안됨.
     page: 0,
     size: 5,
     sort: "createdAt,desc",
@@ -18,17 +18,14 @@ const Carousel = () => {
       staleTime: 5 * 60 * 1000,
     },
   });
-  console.log(data);
   const posts = data?.data || [];
 
-  // 이전 슬라이드
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? posts.length - 1 : prevIndex - 1
     );
   };
 
-  // 다음 슬라이드
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === posts.length - 1 ? 0 : prevIndex + 1
