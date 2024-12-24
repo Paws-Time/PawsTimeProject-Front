@@ -18,7 +18,7 @@ export default function BoardList() {
   const router = useRouter();
   const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
-  const { boardState, boardAction } = useBoardStore();
+  const { boardState } = useBoardStore();
   const { pageNo, pageSize, sortBy, direction } = boardState;
   // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
 

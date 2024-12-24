@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
@@ -8,28 +8,39 @@ import { Card } from "@/components/utils/card";
 import usePostStore from "@/app/hooks/postStore";
 
 interface PostData {
-  id: number;
-  postId: number;
-  title: string;
-  contentPreview: string;
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likesCount: number;
+  id?: number;
+  postId?: number;
+  title?: string;
+  contentPreview?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  views?: number;
+  likesCount?: number;
 }
 
-const BoardDetailBody = ({ boardId }: { boardId: number }) => {
+interface GetListPostRespDto {
+  id?: number;
+  title?: string;
+  contentPreview?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  views?: number;
+  likesCount?: number;
+}
+
+const BoardDetailBody = () => {
   const router = useRouter();
+  const { boardId } = useParams();
+  const numberBoardId = Number(boardId);
   const { postState, postAction } = usePostStore();
   const { keyword, page, size, sort } = postState;
   const { setKeyword, setPage, setPageSize, setSortBy } = postAction;
-
   const params = {
-    boardId,
+    boardId: numberBoardId,
     ...(keyword && { keyword }),
     page,
     size,
-    sort: sort.replace(",", ","),
+    sort,
   };
 
   // 게시글 목록 가져오기
@@ -42,9 +53,13 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
-  const posts = data?.data || [];
-  console.log("Fetched Posts Data:", data);
-  console.log("Posts Content:", posts);
+  const posts: PostData[] = (data?.data || []).map(
+    (post: GetListPostRespDto) => ({
+      ...post,
+      postId: post.id,
+    })
+  );
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
@@ -85,15 +100,17 @@ const BoardDetailBody = ({ boardId }: { boardId: number }) => {
           posts.map((post: PostData) => (
             <Card
               key={post.id}
-              title={post.title}
-              contentPreview={post.contentPreview}
+              $title={post.title}
+              $contentPreview={post.contentPreview}
               views={post.views}
               likesCount={post.likesCount}
-              onClick={() => router.push(`/board/boards/posts/${post.id}`)}
+              onClick={() =>
+                router.push(`/board/boards/${boardId}/posts/${post.id}`)
+              }
             />
           ))
         ) : (
-          <div style={styles.noData}>게시글이 없습니다.</div>
+          <div>게시글이 없습니다.</div>
         )}
       </div>
       <div style={styles.pagination}>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface PostData {
   post_id: number;
@@ -14,17 +14,14 @@ const PostDetailBody = () => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const postId = Number(searchParams.get("post.Id"));
+  const { boardId, postId } = useParams();
 
   useEffect(() => {
     const fetchPostData = async () => {
       if (!postId) return;
 
       try {
-        const response = await fetch(
-          `http://43.200.46.13:8080/post/posts/${postId}`
-        );
+        const response = await fetch(`http://43.200.46.13:8080/post/${postId}`);
 
         if (!response.ok) {
           console.error("Failed to fetch data. Status:", response.status);
@@ -63,12 +60,9 @@ const PostDetailBody = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://43.200.46.13:8080/post/posts/${postId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         console.error("Failed to delete post. Status:", response.status);
@@ -90,7 +84,11 @@ const PostDetailBody = () => {
   return (
     <div style={styles.container}>
       <div style={styles.imageSection}>
-        <img src="/aaa.jpg" alt="이미지" style={styles.image} />
+        <img
+          src="/aaa.jpg"
+          alt="이미지"
+          className="w-full h-full object-cover border-r-10"
+        />
       </div>
       <div style={styles.contentSection}>
         <div>
@@ -113,7 +111,9 @@ const PostDetailBody = () => {
           </button>
           <button
             style={{ ...styles.button, ...styles.editButton }}
-            onClick={() => router.push(`/board/${postId}/edit`)}
+            onClick={() =>
+              router.push(`/board/boards/${boardId}/posts/${postId}/edit`)
+            }
           >
             수정
           </button>
@@ -152,12 +152,6 @@ const styles = {
     backgroundColor: "#e0e0e0",
     borderRadius: "10px",
     height: "300px",
-  },
-  image: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-    objectFit: "cover",
-    borderRadius: "10px",
   },
   contentSection: {
     display: "flex",

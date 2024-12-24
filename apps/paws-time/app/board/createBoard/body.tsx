@@ -33,6 +33,14 @@ export default function CreateBoardComponent() {
     console.log(params);
   };
 
+  if (isLoading) {
+    return <div>게시판판을 생성 중입니다...</div>;
+  }
+
+  if (isError) {
+    return <div>게시판 생성 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
+  }
+
   return (
     <div style={formStyles.container}>
       <div style={formStyles.background}></div>

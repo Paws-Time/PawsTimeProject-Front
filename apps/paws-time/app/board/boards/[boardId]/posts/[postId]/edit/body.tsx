@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface PostData {
   post_id: number;
@@ -10,19 +10,18 @@ interface PostData {
   updated_at: string;
 }
 
-export const PostEditBody = ({ postId }: { postId?: string }) => {
+export const PostEditBody = () => {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const { postId } = useParams();
 
   useEffect(() => {
     const fetchPostData = async () => {
       if (!postId) return;
 
       try {
-        const response = await fetch(
-          `http://43.200.46.13:8080/post/posts/${postId}`
-        );
+        const response = await fetch(`http://43.200.46.13:8080/post/${postId}`);
 
         if (!response.ok) {
           console.error("Failed to fetch data. Status:", response.status);
@@ -58,12 +57,9 @@ export const PostEditBody = ({ postId }: { postId?: string }) => {
     }
 
     try {
-      const response = await fetch(
-        `http://43.200.46.13:8080/post/posts/${postId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         console.error("Failed to delete post. Status:", response.status);
@@ -85,7 +81,11 @@ export const PostEditBody = ({ postId }: { postId?: string }) => {
   return (
     <div style={styles.container}>
       <div style={styles.imageSection}>
-        <img src="/aaa.jpg" alt="이미지" style={styles.image} />
+        <img
+          src="/aaa.jpg"
+          alt="이미지"
+          className="w-full h-full object-cover border-r-10"
+        />
       </div>
       <div style={styles.contentSection}>
         <div>
@@ -148,12 +148,12 @@ const styles = {
     borderRadius: "10px",
     height: "300px",
   },
-  image: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-    objectFit: "cover",
-    borderRadius: "10px",
-  },
+  // image: {
+  //   maxWidth: "100%",
+  //   maxHeight: "100%",
+  //   objectFit: "cover",
+  //   borderRadius: "10px",
+  // },
   contentSection: {
     display: "flex",
     flexDirection: "column" as const,

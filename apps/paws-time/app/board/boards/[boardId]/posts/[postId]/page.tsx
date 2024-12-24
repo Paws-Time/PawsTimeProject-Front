@@ -1,10 +1,9 @@
 import PostDetailBody from "./body";
 
-const PostDetailPage = ({ params }: { params: { postId: number } }) => {
-  const { postId } = params;
+const PostDetailPage = () => {
   return (
     <div>
-      <PostDetailBody postId={postId} />
+      <PostDetailBody />
     </div>
   );
 };

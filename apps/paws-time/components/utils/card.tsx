@@ -3,19 +3,19 @@ import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 
 type CardProps = {
-  title: string;
-  contentPreview: string;
+  $title?: string;
+  $contentPreview?: string;
   imageUrl?: string;
-  views: number;
-  likesCount: number;
+  views?: number;
+  likesCount?: number;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
 
 const DEFAULT_IMAGE_URL = "/logo.png";
 export function Card({
-  title,
-  contentPreview,
+  $title,
+  $contentPreview,
   imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
   views,
   likesCount,
@@ -26,11 +26,11 @@ export function Card({
       <div className="call-menu" onClick={() => {}}>
         ...
       </div>
-      <div className="title">{title}</div>
+      <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} alt={title} />
+        <img src={imageUrl} alt={$title} />
       </div>
-      <div className="contentPreview">{contentPreview}</div>
+      <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
         <span className="views">💬 {views} reviews</span>
         <span className="likesCount">👍 {likesCount} likes</span>
