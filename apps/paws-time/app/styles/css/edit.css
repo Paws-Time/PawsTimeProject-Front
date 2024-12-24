@@ -1,0 +1,108 @@
+.container {
+  display: grid;
+  grid-template-columns: 2fr 3fr; /* 왼쪽 이미지와 오른쪽 텍스트 영역 비율 */
+  gap: 20px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.imageSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  height: 300px;
+}
+
+/* .image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  } */
+
+.contentSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.titleBox {
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.buttonBox {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteButton {
+  background-color: #f44336;
+}
+
+.editButton {
+  background-color: #4caf50;
+}
+
+.textBox {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+.likesAndComments {
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+.commentSection {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+.commentBox {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}

@@ -28,7 +28,7 @@ export function Card({
       </div>
       <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} alt={$title} />
+        <img src={imageUrl} alt={$title} loading="lazy" />
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
@@ -74,20 +74,20 @@ const CardWrapper = styled.div`
 
   .title {
     font-size: ${theme.fontSize.text.sm};
+    font-size: 15px;
     color: ${theme.colors.ref.base.black};
-    margin-top: 2px;
     margin-left: 20px;
-    margin-bottom: 3px;
     text-align: left;
     align-self: flex-start;
+    display: flex;
   }
 
   .image-field {
-    margin-left: 0;
-    width: 95%;
+    width: 100%;
     max-width: 300px;
     height: 140px;
-    margin-left: 20px;
+    margin-left: 6px;
+    border: 1px solid black;
     border-radius: 15px;
     background-color: ${theme.colors.ref.base.white};
     overflow: hidden;
@@ -98,22 +98,26 @@ const CardWrapper = styled.div`
     img {
       margin-left: 0;
       max-width: 260px;
-      width: 90%;
+      width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center;
       border-radius: inherit;
+      overflow: hidden;
     }
   }
 
-  .description {
+  .contentPreview {
     display: flex;
     font-size: ${theme.fontSize.text.xs};
+    font-size: 15px; // fontSize 안 정해짐
     color: ${theme.colors.ref.base.black};
     width: 90%;
     max-width: 300px;
-    margin-top: 2px;
+    padding-left: 5px;
+    margin-top: 10px;
     margin-bottom: 3px;
+    margin-left: 20px;
     text-align: center;
     align-self: flex-start;
   }
@@ -122,6 +126,7 @@ const CardWrapper = styled.div`
     display: flex;
     width: 100%;
     height: 16px;
+    margin-left: 20px;
     margin-top: 10px;
     font-size: ${theme.fontSize.text.xs};
     .reviews {
