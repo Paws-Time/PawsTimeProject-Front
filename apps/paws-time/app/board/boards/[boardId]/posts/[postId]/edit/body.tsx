@@ -81,7 +81,11 @@ export const PostEditBody = () => {
   return (
     <div style={styles.container}>
       <div style={styles.imageSection}>
-        <img src="/aaa.jpg" alt="이미지" style={styles.image} />
+        <img
+          src="/aaa.jpg"
+          alt="이미지"
+          className="w-full h-full object-cover border-r-10"
+        />
       </div>
       <div style={styles.contentSection}>
         <div>
@@ -144,12 +148,12 @@ const styles = {
     borderRadius: "10px",
     height: "300px",
   },
-  image: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-    objectFit: "cover",
-    borderRadius: "10px",
-  },
+  // image: {
+  //   maxWidth: "100%",
+  //   maxHeight: "100%",
+  //   objectFit: "cover",
+  //   borderRadius: "10px",
+  // },
   contentSection: {
     display: "flex",
     flexDirection: "column" as const,
