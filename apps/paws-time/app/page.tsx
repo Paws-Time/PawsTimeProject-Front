@@ -2,7 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Carousel from "./components/carouselBody"; // 캐러셀 컴포넌트
 import PopularPostsBody from "./components/hotpostsBody";
+import { Test } from "./Test";
 
+// import "./styles.css";
 const MainPage = () => {
   return (
     <div style={{ padding: "20px" }}>
@@ -11,8 +13,9 @@ const MainPage = () => {
         {/* 좌측 최신 글 섹션 */}
         <div style={{ flex: 2, marginRight: "20px" }}>
           <h2>최신 글</h2>
-          <Carousel />
+          {/* <Carousel /> */}
         </div>
+        <Test />
 
         {/* 우측 이미지 섹션 */}
         <div style={{ flex: 1, textAlign: "center" }}>
