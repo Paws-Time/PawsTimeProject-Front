@@ -47,6 +47,7 @@ export const postFormStyles = {
     marginTop: "5px",
     display: "flex",
     gap: "10px",
+    justifyContent: "flex-end",
   },
   button: {
     padding: "10px 20px",

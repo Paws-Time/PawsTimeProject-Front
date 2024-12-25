@@ -28,6 +28,7 @@ function Review({ postId }: ReviewProps) {
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
   const [pageNo, setPageNo] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
   const [reviews, setReviews] = useState<ReviewResDto[]>([]);
   const [params, setParams] = useState<ReviewReqParams>({
     pageNo,
@@ -35,6 +36,7 @@ function Review({ postId }: ReviewProps) {
     sortBy,
     direction,
   });
+
   //댓글작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
@@ -90,6 +92,13 @@ function Review({ postId }: ReviewProps) {
       data: { content },
     });
   };
+  // const totalPageNumber = () => {
+  //   const pageNumbers = [];
+  //   for (let i = 0; i < totalPage; i++) {
+  //     pageNumbers.push(i);
+  //   }
+  //   re;
+  // };
 
   return (
     <>
@@ -139,12 +148,14 @@ function Review({ postId }: ReviewProps) {
           <option value="desc">최신순</option>
           <option value="asc">오래된순</option>
         </select>
+
         <CustomButton
           $label="이전"
           $sizeType="short"
           className="ml-3"
           onClick={() => setPageNo((prev) => Math.max(0, prev - 1))}
         />
+
         <CustomButton
           $label="다음"
           $sizeType="short"
