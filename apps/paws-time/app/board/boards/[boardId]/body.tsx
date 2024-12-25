@@ -100,10 +100,9 @@ const BoardDetailBody = () => {
           posts.map((post: PostData) => (
             <Card
               key={post.id}
+              postId={post.id!}
               $title={post.title}
               $contentPreview={post.contentPreview}
-              views={post.views}
-              likesCount={post.likesCount}
               onClick={() =>
                 router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }
@@ -183,7 +182,8 @@ const styles = {
   cardContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "20px",
+    gap: "50px",
+    marginBottom: "20px",
   },
 };
 

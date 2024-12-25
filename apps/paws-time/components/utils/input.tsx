@@ -3,11 +3,15 @@ import styled from "styled-components";
 import React from "react";
 import { theme } from "design-system/lib/theme";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface StyledProps {
   $label: string;
+  type: string;
+  value: string;
 }
 
-export const InputField = ({ $label, type, ...rest }: InputProps) => {
+type Props = StyledProps & React.InputHTMLAttributes<HTMLInputElement>;
+
+export const InputField = ({ $label, type, ...rest }: Props) => {
   return (
     <InputWrapper>
       <input type={type} placeholder={$label} {...rest} />
