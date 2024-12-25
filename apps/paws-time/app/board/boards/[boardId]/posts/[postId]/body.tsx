@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { postFormStyles } from "@/app/styles/postforms";
-import { useGetDetailPost } from "@/app/lib/codegen/hooks/post/post";
+import {
+  useDeletePost,
+  useGetDetailPost,
+} from "@/app/lib/codegen/hooks/post/post";
 import { useParams, useRouter } from "next/navigation";
 import Count from "@/components/count";
 import Review from "@/components/review";
@@ -39,6 +42,17 @@ const PostDetailBody = () => {
     },
   });
   if (isLoading) console.log("로딩중입니다.");
+  const { mutate: deletePost } = useDeletePost({
+    mutation: {
+      onSuccess: () => {
+        alert("게시글이 삭제되었습니다."); // 알림 표시
+        router.push(`/board/boards/${boardId}`);
+      },
+    },
+  });
+  const handleDeletePost = (postId: number) => {
+    deletePost({ postId });
+  };
   return (
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
@@ -71,7 +85,7 @@ const PostDetailBody = () => {
         <div style={postFormStyles.buttonBox}>
           <button
             style={{ ...postFormStyles.button, ...postFormStyles.deleteButton }}
-            onClick={() => {}}
+            onClick={() => handleDeletePost(numberPostId)}
           >
             삭제
           </button>

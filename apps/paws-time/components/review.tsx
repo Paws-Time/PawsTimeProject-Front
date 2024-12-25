@@ -1,12 +1,14 @@
 import {
   deleteComment,
   useCreateComment,
+  useDeleteComment,
   useGetCommentByPost,
 } from "@/app/lib/codegen/hooks/comment/comment";
 import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
+import { deleteComment } from "../app/lib/codegen/hooks/comment/comment";
 
 interface ReviewProps {
   postId: number;
@@ -18,7 +20,7 @@ interface ReviewReqParams {
   direction?: string;
 }
 interface ReviewResDto {
-  reviewsId?: number;
+  commentId?: number;
   content?: string;
   createAt?: string;
 }
@@ -44,15 +46,26 @@ function Review({ postId }: ReviewProps) {
       },
     },
   });
-  //댓글삭제
-  // const { mutate: deleteComment } = useDeleteComment({
-  //   mutation: {
-  //     onSuccess: () => {
-  //       alert("댓글이 삭제 되었습니다.");
-  //     },
-  //   },
-  // });
-  //댓글조회
+  // 댓글삭제
+  const { mutate: deleteComment } = useDeleteComment({
+    mutation: {
+      onSuccess: (_, { commentId }) => {
+        // 댓글 삭제 성공 시 상태 업데이트
+        setReviews((prev) =>
+          prev.filter((review) => review.commentId !== commentId)
+        );
+        alert("댓글이 삭제되었습니다.");
+      },
+      onError: (error) => {
+        console.error("댓글 삭제 실패:", error);
+      },
+    },
+  });
+
+  const handleDeleteReviews = (commentId: number) => {
+    deleteComment({ commentId });
+  };
+  // 댓글조회
   const { data } = useGetCommentByPost(postId, params);
 
   useEffect(() => {
@@ -79,13 +92,10 @@ function Review({ postId }: ReviewProps) {
       data: { content },
     });
   };
-  const handleDelete = (commentId: number) => {
-    deleteComment(commentId);
-  };
 
   return (
     <>
-      {data?.data?.map((review) => (
+      {reviews.map((review) => (
         <div
           key={review.commentId}
           className="w-full flex flex-row items-center justify-between"
@@ -96,9 +106,12 @@ function Review({ postId }: ReviewProps) {
             <CustomButton
               $label="x"
               $sizeType="mini"
-              onClick={() => handleDelete(review.commentId)}
+              onClick={() => {
+                if (review.commentId !== undefined) {
+                  handleDeleteReviews(review.commentId);
+                }
+              }}
             />
-            <CustomButton $label="u" $sizeType="mini" onClick={() => {}} />
           </div>
         </div>
       ))}
