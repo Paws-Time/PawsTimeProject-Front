@@ -69,6 +69,25 @@ const PostDetailBody = () => {
       </div>
       <div style={postFormStyles.contentSection}>
         <div>
+          <div style={postFormStyles.buttonBox}>
+            <button
+              style={{
+                ...postFormStyles.button,
+                ...postFormStyles.deleteButton,
+              }}
+              onClick={() => handleDeletePost(numberPostId)}
+            >
+              삭제
+            </button>
+            <button
+              style={{ ...postFormStyles.button, ...postFormStyles.editButton }}
+              onClick={() =>
+                router.push(`/board/boards/${boardId}/posts/${postId}/edit`)
+              }
+            >
+              수정
+            </button>
+          </div>
           <div style={postFormStyles.titleBox}>
             <h2 style={postFormStyles.title}>{post?.title}</h2>
             <span>
@@ -80,24 +99,9 @@ const PostDetailBody = () => {
           </div>
           <div style={postFormStyles.textBox}>
             <p>{post?.content}</p>
-          </div>
+          </div>{" "}
         </div>
-        <div style={postFormStyles.buttonBox}>
-          <button
-            style={{ ...postFormStyles.button, ...postFormStyles.deleteButton }}
-            onClick={() => handleDeletePost(numberPostId)}
-          >
-            삭제
-          </button>
-          <button
-            style={{ ...postFormStyles.button, ...postFormStyles.editButton }}
-            onClick={() =>
-              router.push(`/board/boards/${boardId}/posts/${postId}/edit`)
-            }
-          >
-            수정
-          </button>
-        </div>
+
         <div style={postFormStyles.textBox}>
           <Review postId={numberPostId} />
         </div>

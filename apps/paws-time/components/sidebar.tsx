@@ -36,12 +36,17 @@ export default function Sidebar() {
           position: "absolute",
           marginTop: "400px",
           top: "10px",
-          right: "-40px",
+          right: "-15px",
+          width: "15px",
+          height: "50px",
           backgroundColor: "#fff",
           border: "1px solid #ddd",
           borderRadius: "5px",
-          padding: "5px 10px",
+          padding: "0",
           cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
         onClick={toggleIsShow}
       >
