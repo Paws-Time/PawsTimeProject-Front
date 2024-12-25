@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
-import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import React, { useEffect, useState } from "react";
+import { getPosts, useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { Card } from "@/components/utils/card";
+import { ApiResponseListGetListPostRespDto } from "../lib/codegen/dtos";
 
 interface PostData {
   id?: number;
@@ -23,44 +24,32 @@ interface GetListPostRespDto {
   likesCount?: number;
 }
 
+const boardIds = [1, 2, 3]; // 게시판 ID들
 const PopularPostsBody = () => {
-  const boardIds = [1, 2, 3]; // 게시판 ID들
+  const [posts, setPosts] = useState<ApiResponseListGetListPostRespDto[]>();
 
-  const postsByBoard = boardIds.map((boardId) => {
-    const { data, isLoading, error } = useGetPosts(
-      {
-        boardId,
-        page: 0,
-        size: 3,
-        sort: "createdAt,desc", // 최신순 정렬
-      },
-      {
-        query: {
-          staleTime: 5 * 60 * 1000,
-        },
-      }
-    );
+  useEffect(() => {
+    const fetchPostsByBoard = async () => {
+      const data = await Promise.all(
+        boardIds.map((boardId) =>
+          getPosts({ boardId, page: 0, size: 3, sort: "createdAt,desc" })
+        )
+      );
 
-    const posts: PostData[] = (data?.data || []).map(
-      (post: GetListPostRespDto) => ({
-        postId: post.id,
-        title: post.title,
-        contentPreview: post.contentPreview,
-        createdAt: post.createdAt,
-        views: post.views,
-        likesCount: post.likesCount,
-      })
-    );
+      console.log(data);
+      setPosts(data);
+    };
+    fetchPostsByBoard();
+  }, []);
 
-    return { boardId, posts, isLoading, error };
-  });
+  return null;
 
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>최신 인기 게시글</h1>
 
       <div style={styles.boardContainer}>
-        {postsByBoard.map(({ boardId, posts, isLoading, error }) => (
+        {posts?.map(({ boardId, posts, isLoading, error }) => (
           <div key={boardId} style={styles.boardSection}>
             <h3 style={styles.boardTitle}>게시판 {boardId}</h3>
             <div style={styles.cardRow}>
