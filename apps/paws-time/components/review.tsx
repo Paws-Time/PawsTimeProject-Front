@@ -1,5 +1,4 @@
 import {
-  deleteComment,
   useCreateComment,
   useDeleteComment,
   useGetCommentByPost,
@@ -8,7 +7,6 @@ import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
-import { deleteComment } from "../app/lib/codegen/hooks/comment/comment";
 
 interface ReviewProps {
   postId: number;
