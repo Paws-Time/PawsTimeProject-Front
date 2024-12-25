@@ -46,7 +46,7 @@ const BoardDetailBody = () => {
   // 게시글 목록 가져오기
   const { data, isLoading, error } = useGetPosts(params, {
     query: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
     },
   });
 
