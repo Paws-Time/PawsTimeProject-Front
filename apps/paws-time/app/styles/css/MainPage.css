@@ -13,7 +13,7 @@
 .left-carousel {
   flex: 2; /* 좌측 최신 게시물 */
   background-color: #f9f9f9;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -22,7 +22,7 @@
   flex: 1; /* 우측 이미지 */
   text-align: center;
   background-color: #ffffff;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

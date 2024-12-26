@@ -55,8 +55,8 @@ const CarouselBody = () => {
     <>
       <h2>최신 글</h2>
       <Swiper
-        slidesPerView={3}
-        spaceBetween={5}
+        slidesPerView={2}
+        spaceBetween={10}
         pagination={{ clickable: true }}
         navigation={true}
         modules={[Navigation, Pagination]}
