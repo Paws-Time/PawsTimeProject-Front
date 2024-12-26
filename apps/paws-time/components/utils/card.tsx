@@ -8,6 +8,8 @@ type CardProps = {
   postId: number;
   $contentPreview?: string;
   imageUrl?: string;
+  $views?: number;
+  $likeCount?: number;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
@@ -18,6 +20,8 @@ export function Card({
   postId,
   $contentPreview,
   imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
+  $views,
+  $likeCount,
   ...rest
 }: Props) {
   const { data } = useGetCommentByPost(postId);
@@ -30,8 +34,9 @@ export function Card({
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
-        <span className="views">💬 {commentCount} 댓글</span>
-        <span className="likesCount">👍 좋아요</span>
+        <span className="views">💬 {$views} 조회수</span>
+        <span className="likesCount">👍{$likeCount} 좋아요</span>
+        <span className="comments">💬{commentCount} 댓글수</span>
       </div>
     </CardWrapper>
   );
@@ -109,6 +114,10 @@ const CardWrapper = styled.div`
     }
 
     .likesCount {
+      margin-left: 20px; /* 정렬 조정 */
+      color: ${theme.colors.ref.base.black};
+    }
+    .comments {
       margin-left: 20px; /* 정렬 조정 */
       color: ${theme.colors.ref.base.black};
     }

@@ -103,6 +103,8 @@ const BoardDetailBody = () => {
               postId={post.id!}
               $title={post.title}
               $contentPreview={post.contentPreview}
+              $views={post.views}
+              $likeCount={post.likesCount}
               onClick={() =>
                 router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }

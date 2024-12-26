@@ -21,8 +21,7 @@ const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
   const [post, setPost] = useState<PostData | null>(null);
-  const numberPostId = Number(postId);
-  const { isLoading, isError } = useGetDetailPost(numberPostId, {
+  const { isLoading, isError } = useGetDetailPost(Number(postId), {
     query: {
       onSuccess: (data) => {
         if (data) {
@@ -64,7 +63,7 @@ const PostDetailBody = () => {
           />
         </div>
         <div style={postFormStyles.buttonBox}>
-          <Count postId={numberPostId} />
+          <Count boardId={Number(boardId)} postId={Number(postId)} />
         </div>
       </div>
       <div style={postFormStyles.contentSection}>
@@ -75,7 +74,7 @@ const PostDetailBody = () => {
                 ...postFormStyles.button,
                 ...postFormStyles.deleteButton,
               }}
-              onClick={() => handleDeletePost(numberPostId)}
+              onClick={() => handleDeletePost(Number(postId))}
             >
               삭제
             </button>
@@ -103,7 +102,7 @@ const PostDetailBody = () => {
         </div>
 
         <div style={postFormStyles.textBox}>
-          <Review postId={numberPostId} />
+          <Review postId={Number(postId)} />
         </div>
       </div>
     </div>
