@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { formStyles } from "@/app/styles/forms";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
+import { CustomButton } from "@/components/utils/button";
 
 interface PostData {
   postId: number;
@@ -145,9 +146,7 @@ export function PostEditBody() {
             required
           />
         </div>
-        <button type="submit" style={formStyles.button}>
-          수정 하기
-        </button>
+        <CustomButton $label="수정하기" $sizeType="long" type="submit" />
       </form>
     </div>
   );

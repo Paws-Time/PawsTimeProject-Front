@@ -1,9 +1,7 @@
 "use client";
 import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
-import { getPosts, useToggleLike } from "@/app/lib/codegen/hooks/post/post";
-// import { useToggleLike } from "@/app/lib/codegen/hooks/post/post";
+import { useGetPosts, useToggleLike } from "@/app/lib/codegen/hooks/post/post";
 import { postFormStyles } from "@/app/styles/postforms";
-import { useState } from "react";
 // import React, { useState } from "react";
 
 interface CountProps {
@@ -11,7 +9,6 @@ interface CountProps {
   postId: number; // postId는 반드시 숫자 타입이어야 함
 }
 function Count({ boardId, postId }: CountProps) {
-  // const [isLike, setIsLike] = useState(false);
   // //좋아요 추가.
   const { mutate } = useToggleLike({
     mutation: {
@@ -21,10 +18,13 @@ function Count({ boardId, postId }: CountProps) {
     },
   });
   //좋아요 수 조회
-  const {} = getPosts({ boardId });
+  const { data: postData } = useGetPosts({ boardId });
+  const likesCount = postData?.data
+    ?.filter((post) => post.id === postId)
+    .map((post) => post.likesCount);
   //댓글 수 조회
-  const { data } = useGetCommentByPost(postId);
-  const commentCount = data?.data?.length;
+  const { data: commentsData } = useGetCommentByPost(postId);
+  const commentCount = commentsData?.data?.length;
   // 좋아요 핸들러
   const handleToggleLike = () => {
     mutate({ postId });
@@ -33,7 +33,7 @@ function Count({ boardId, postId }: CountProps) {
     <div style={postFormStyles.footer}>
       <div style={postFormStyles.likesAndComments}>
         <span>
-          <button onClick={handleToggleLike}>👍좋아요</button>
+          <button onClick={handleToggleLike}>👍좋아요 {likesCount}</button>
         </span>
         <span>💬댓글수 {commentCount}</span>
       </div>
