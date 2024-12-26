@@ -7,12 +7,12 @@ function SortSetting() {
   const { setPageSize, setSortBy, setDirection } = boardActions;
 
   return (
-    <div className="mainContent">
-      <div className="checkBox">
-        {/* 정렬 기준 */}
-        <div>
-          <h4>정렬 기준</h4>
-          <label>
+    <div className="p-6 space-y-6">
+      {/* 정렬 기준 */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-bold">정렬 기준</h4>
+        <div className="space-y-2">
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="sortBy"
@@ -20,9 +20,9 @@ function SortSetting() {
               checked={sortBy === "title"}
               onChange={() => setSortBy("title")}
             />
-            제목순
+            <span>제목순</span>
           </label>
-          <label>
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="sortBy"
@@ -30,9 +30,9 @@ function SortSetting() {
               checked={sortBy === "likesCount"}
               onChange={() => setSortBy("likesCount")}
             />
-            좋아요순
+            <span>좋아요순</span>
           </label>
-          <label>
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="sortBy"
@@ -40,9 +40,9 @@ function SortSetting() {
               checked={sortBy === "views"}
               onChange={() => setSortBy("views")}
             />
-            조회순
+            <span>조회순</span>
           </label>
-          <label>
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="sortBy"
@@ -50,14 +50,16 @@ function SortSetting() {
               checked={sortBy === "createdAt"}
               onChange={() => setSortBy("createdAt")}
             />
-            작성일자순
+            <span>작성일자순</span>
           </label>
         </div>
+      </div>
 
-        {/* 정렬 방향 */}
-        <div>
-          <h4>정렬 방향</h4>
-          <label>
+      {/* 정렬 방향 */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-bold">정렬 방향</h4>
+        <div className="space-y-2">
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="direction"
@@ -65,9 +67,9 @@ function SortSetting() {
               checked={direction === "ASC"}
               onChange={() => setDirection("ASC")}
             />
-            오름차순
+            <span>오름차순</span>
           </label>
-          <label>
+          <label className="flex items-center space-x-2">
             <input
               type="radio"
               name="direction"
@@ -75,15 +77,17 @@ function SortSetting() {
               checked={direction === "DESC"}
               onChange={() => setDirection("DESC")}
             />
-            내림차순
+            <span>내림차순</span>
           </label>
         </div>
+      </div>
 
-        {/* 페이지 크기 */}
-        <div className="pageSize">
-          <h4>페이지 크기</h4>
+      {/* 페이지 크기 */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-bold">페이지 크기</h4>
+        <div>
           <select
-            className=""
+            className="form-select border border-gray-300 rounded-md p-2"
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value) as 4 | 8 | 12)}
           >

@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
-import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
@@ -11,6 +10,7 @@ import SortSetting from "@/components/sortsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
+import { formStyles } from "@/app/styles/forms";
 
 interface PostData {
   id?: number;
@@ -39,11 +39,12 @@ const BoardDetailBody = () => {
   const { openModal } = useModalStore();
   const { boardState } = useBoardStore();
   const [keyword, setKeyword] = useState("");
-  const [pageNo, SetPageNo] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
     boardId: Number(boardId),
-    keyword,
+    keyword: searchKeyword,
     page: pageNo,
     size: pageSize,
     sort: `${sortBy},${direction}`,
@@ -70,33 +71,37 @@ const BoardDetailBody = () => {
       postId: post.id,
     })
   );
-
+  const handleSerarch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchKeyword(keyword);
+  };
+  const resetPage = () => {
+    setPageNo(0);
+  };
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>{boardTitle} 게시글</h1>
       <div style={styles.filterContainer}>
-        <InputField
-          $label="검색어를 입력하세요"
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={styles.input}
-        />
-        <CustomButton
-          $label="검색"
-          $sizeType="normal"
-          onClick={() => SetPageNo(0)} // 검색 시 첫 페이지로 이동
-        />
+        <form style={styles.input} onSubmit={handleSerarch}>
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="제목을 입력하세요"
+            style={formStyles.input}
+            required
+          />
+        </form>
         <CustomButton
           $label="검색설정"
           $sizeType="normal"
           onClick={openModal}
+          className="mt-2"
         />
         <Modal>
           <SortSetting />
         </Modal>
       </div>
-
       <div style={styles.cardContainer}>
         {posts.length > 0 ? (
           posts.map((post: PostData) => (
@@ -118,17 +123,26 @@ const BoardDetailBody = () => {
       </div>
       <div style={styles.pagination}>
         <CustomButton
-          $label="이전"
+          $label="처음으로"
           $sizeType="normal"
-          onClick={() => SetPageNo} // 이전 페이지로 이동
-          disabled={pageNo === 0} // 첫 페이지에서는 비활성화
+          onClick={resetPage}
         />
-        <CustomButton
-          $label="다음"
-          $sizeType="normal"
-          onClick={() => SetPageNo} // 다음 페이지로 이동
-          disabled={pageNo === 0} // 마지막 페이지에서는 비활성화
-        />
+
+        <span className="mt-5 ml-20"> 현 페이지입니다 : {pageNo + 1}</span>
+        <div className="flex gap-3">
+          <CustomButton
+            $label="이전"
+            $sizeType="normal"
+            onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))} // 이전 페이지로 이동
+            disabled={pageNo === 0} // 첫 페이지에서는 비활성화
+          />
+          <CustomButton
+            $label="다음"
+            $sizeType="normal"
+            onClick={() => setPageNo((prev) => prev + 1)} // 다음 페이지로 이동
+            disabled={posts.length < pageSize} // 마지막 페이지에서 비활성화
+          />
+        </div>
       </div>
     </div>
   );
