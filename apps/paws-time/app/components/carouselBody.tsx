@@ -1,110 +1,78 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import { Card } from "@/components/utils/card";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
-const Carousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+import "../styles/css/carousel.css";
+
+interface Post {
+  id: number;
+  title: string;
+  contentPreview: string;
+  createdAt: string;
+  updatedAt: string;
+  views: number;
+  likesCount: number;
+}
+
+const CarouselBody = () => {
+  const { boardId } = useParams(); // boardId 파라미터 가져오기
+  const [posts, setPosts] = useState<Post[]>([]); // 타입 지정
+
   const params = {
-    boardId: 1, // 현재 0으로 전체 조회 안됨.
+    boardId: boardId ? Number(boardId) : undefined, // boardId가 존재하면 숫자로 변환
     page: 0,
-    size: 5,
+    size: 10,
     sort: "createdAt,desc",
   };
 
   // 게시글 목록 가져오기
   const { data, isLoading, error } = useGetPosts(params, {
     query: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 5 * 60 * 1000, // 캐싱 시간
     },
   });
-  const posts = data?.data || [];
 
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? posts.length - 1 : prevIndex - 1
-    );
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === posts.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  useEffect(() => {
+    if (data?.data) {
+      console.log("Fetched Data:", data.data); // 데이터 출력
+      setPosts(data.data as Post[]); // data 배열 처리
+    }
+  }, [data]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: 데이터를 불러오는 중 문제가 발생했습니다.</div>;
+  if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
   return (
-    <div style={styles.carouselContainer}>
-      <button
-        onClick={prevSlide}
-        style={{ ...styles.arrowButton, ...styles.prevButton }}
+    <div>
+      <h2 style={{ textAlign: "center" }}>최신 글</h2>
+      <Swiper
+        pagination={{ clickable: true }}
+        navigation={true}
+        modules={[Navigation, Pagination]}
+        className="mySwiper"
       >
-        이전
-      </button>
-      <div style={styles.carouselContent}>
-        {posts.map((post, index) => (
-          <div
-            key={post.id}
-            style={{
-              ...styles.slide,
-              display: currentIndex === index ? "block" : "none",
-            }}
-          >
-            <h3>{post.title}</h3>
-            <p>{post.contentPreview}</p>
-          </div>
+        {posts.map((post) => (
+          <SwiperSlide key={post.id}>
+            <Card
+              $title={post.title}
+              $contentPreview={post.contentPreview}
+              views={post.views}
+              likesCount={post.likesCount}
+              onClick={() => console.log(`Post clicked: ${post.id}`)} // 클릭 시 동작
+            />
+          </SwiperSlide>
         ))}
-      </div>
-      <button
-        onClick={nextSlide}
-        style={{ ...styles.arrowButton, ...styles.nextButton }}
-      >
-        다음
-      </button>
+      </Swiper>
     </div>
   );
 };
 
-const styles: { [key: string]: React.CSSProperties } = {
-  carouselContainer: {
-    width: "100%",
-    maxWidth: "600px",
-    margin: "0 auto",
-    position: "relative",
-    overflow: "hidden",
-  },
-  carouselContent: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    transition: "transform 0.5s ease",
-  },
-  slide: {
-    width: "100%",
-    textAlign: "center",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  arrowButton: {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontSize: "2rem",
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    zIndex: 10, // 버튼이 슬라이드 위에 표시되도록 함
-  },
-  prevButton: {
-    left: "10px", // 좌측 여백 설정
-  },
-  nextButton: {
-    right: "10px", // 우측 여백 설정
-  },
-};
-
-export default Carousel;
+export default CarouselBody;

@@ -1,38 +1,33 @@
 import React from "react";
 import Image from "next/image";
-import Carousel from "./components/carouselBody"; // 캐러셀 컴포넌트
+import CarouselBody from "./components/carouselBody";
 import PopularPostsBody from "./components/hotpostsBody";
-import { Test } from "./Test";
+import "./styles/MainPage.css";
 
-// import "./styles.css";
 const MainPage = () => {
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="main-page-container">
       {/* 상단 섹션 */}
-      <div style={{ display: "flex", marginBottom: "40px" }}>
-        {/* 좌측 최신 글 섹션 */}
-        <div style={{ flex: 2, marginRight: "20px" }}>
-          <h2>최신 글</h2>
-          {/* <Carousel /> */}
+      <div className="top-section">
+        <div className="left-carousel">
+          <CarouselBody />
         </div>
-        <Test />
-
-        {/* 우측 이미지 섹션 */}
-        <div style={{ flex: 1, textAlign: "center" }}>
-          <h2>등록된 사진</h2>
+        <div className="right-image">
+          <h2>이미지</h2>
           <Image
             src="/aaa.jpg"
             alt="사용자 등록 사진"
             width={300}
             height={300}
-            style={{ borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{ borderRadius: "8px", border: "1px solid black" }}
           />
         </div>
       </div>
 
-      {/* 하단 인기 게시글 섹션 */}
-      <div>
-        <PopularPostsBody />
+      {/* 하단 섹션 */}
+      <div className="bottom-section">
+        {/* <PopularPostsBody /> */}
+        인기 게시글
       </div>
     </div>
   );
