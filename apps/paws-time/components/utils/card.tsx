@@ -1,13 +1,15 @@
 "use client";
+import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
 import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 
 type CardProps = {
   $title?: string;
+  postId: number;
   $contentPreview?: string;
   imageUrl?: string;
-  views?: number;
-  likesCount?: number;
+  $views?: number;
+  $likeCount?: number;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
@@ -15,25 +17,26 @@ type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
 const DEFAULT_IMAGE_URL = "/logo.png";
 export function Card({
   $title,
+  postId,
   $contentPreview,
   imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
-  views,
-  likesCount,
+  $views,
+  $likeCount,
   ...rest
 }: Props) {
+  const { data } = useGetCommentByPost(postId);
+  const commentCount = data?.data?.length;
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
-      <div className="call-menu" onClick={() => {}}>
-        ...
-      </div>
       <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} alt={$title} loading="lazy" />
+        <img src={imageUrl} loading="lazy" />
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
-        <span className="views">💬 {views} reviews</span>
-        <span className="likesCount">👍 {likesCount} likes</span>
+        <span className="views">💬 {$views} 조회수</span>
+        <span className="likesCount">👍{$likeCount} 좋아요</span>
+        <span className="comments">💬{commentCount} 댓글수</span>
       </div>
     </CardWrapper>
   );
@@ -43,10 +46,8 @@ const CardWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  height: 270px;
-  margin-bottom: 18px;
+  width: 350px;
+  height: 320px;
   border-radius: 15px;
   background-color: ${theme.colors.comp.card.primary};
   box-shadow: ${theme.shadow.primary};
@@ -63,43 +64,28 @@ const CardWrapper = styled.div`
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
   }
 
-  .call-menu {
-    font-size: ${theme.fontSize.text.xl};
-    color: ${theme.colors.ref.base.black};
-    margin-top: 8px;
-    margin-right: 20px;
-    text-align: right;
-    align-self: flex-end;
-  }
-
   .title {
-    font-size: ${theme.fontSize.text.sm};
-    font-size: 15px;
     color: ${theme.colors.ref.base.black};
-    margin-left: 20px;
-    text-align: left;
-    align-self: flex-start;
-    display: flex;
+    width: 340px;
+    height: 40px;
+    margin-top: 5px;
+    text-align: center;
+    font-size: ${theme.fontSize.display.xs};
   }
 
   .image-field {
-    width: 100%;
-    max-width: 300px;
-    height: 140px;
-    margin-left: 6px;
-    border: 1px solid black;
+    width: 350px;
+    height: 200px;
     border-radius: 15px;
     background-color: ${theme.colors.ref.base.white};
     overflow: hidden;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 
     img {
-      margin-left: 0;
-      max-width: 260px;
-      width: 100%;
-      height: 100%;
+      width: 330px;
+      height: 190px;
       object-fit: cover;
       object-position: center;
       border-radius: inherit;
@@ -108,40 +94,32 @@ const CardWrapper = styled.div`
   }
 
   .contentPreview {
-    display: flex;
-    font-size: ${theme.fontSize.text.xs};
-    font-size: 15px; // fontSize 안 정해짐
     color: ${theme.colors.ref.base.black};
-    width: 90%;
-    max-width: 300px;
-    padding-left: 5px;
-    margin-top: 10px;
-    margin-bottom: 3px;
-    margin-left: 20px;
+    width: 340px;
+    height: 40px;
+    margin-left: 10px;
     text-align: center;
-    align-self: flex-start;
+    font-size: ${theme.fontSize.text.xs};
   }
 
   .foot {
-    display: flex;
-    width: 100%;
-    height: 16px;
-    margin-left: 20px;
-    margin-top: 10px;
+    flex-direction: column; /* 열 방향으로 변경 */
+    width: 340px;
+    height: 30px;
+    text-align: center;
     font-size: ${theme.fontSize.text.xs};
+
     .reviews {
-      display: flex;
-      width: 100px;
-      height: 16px;
-      margin-left: 100px;
-      margin-right: 15px;
+      margin-left: 20px; /* 정렬 조정 */
       color: ${theme.colors.ref.base.black};
     }
-    .like {
-      display: flex;
-      width: 90px;
-      height: 16px;
-      margin-right: 18px;
+
+    .likesCount {
+      margin-left: 20px; /* 정렬 조정 */
+      color: ${theme.colors.ref.base.black};
+    }
+    .comments {
+      margin-left: 20px; /* 정렬 조정 */
       color: ${theme.colors.ref.base.black};
     }
   }

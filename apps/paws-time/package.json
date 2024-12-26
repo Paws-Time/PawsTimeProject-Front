@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "4",
     "axios": "^1.7.9",
+    "api-hook": "app/lib/codegen/hooks/",
     "design-system": "workspace:*",
     "next": "15.1.0",
     "react": "^19.0.0",

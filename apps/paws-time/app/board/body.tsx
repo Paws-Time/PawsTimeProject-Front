@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useGetBoardList } from "../lib/codegen/hooks/board/board";
 import useSideBarStore from "../hooks/sidebarStore";
 import useBoardStore from "../hooks/boardStore";
+import { useState } from "react";
+import { CustomButton } from "@/components/utils/button";
 
 interface Board {
   boardId: number;
@@ -18,15 +20,15 @@ export default function BoardList() {
   const router = useRouter();
   const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
-  const { boardState } = useBoardStore();
-  const { pageNo, pageSize, sortBy, direction } = boardState;
+  const [pageNo, setPageNo] = useState(0);
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [direction, setDirection] = useState("DESC");
   // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
 
   const params = {
-    pageNo, // 여기서 숫자 값으로 바로 사용
-    pageSize,
-    sortBy,
-    direction,
+    pageNo,
+    pageSize: 10,
+    sortBy: `${sortBy},${direction}`,
   };
 
   // 보더 데이터 가져오기
@@ -48,7 +50,10 @@ export default function BoardList() {
   if (isError) {
     return <div>Error occurred while fetching boards.</div>;
   }
-
+  //페이지 넘기기
+  const handlePage = () => {
+    setPageNo((prev) => prev + 1);
+  };
   return (
     <div className="flex w-full h-custom-boardh">
       {isShow && <div className="flex w-custom-sidew" />}
@@ -67,6 +72,7 @@ export default function BoardList() {
             </p>
           </div>
         ))}
+        <CustomButton $label="더보기" $sizeType="long" onClick={handlePage} />
       </div>
     </div>
   );

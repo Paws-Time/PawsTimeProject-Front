@@ -1,82 +1,109 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { postFormStyles } from "@/app/styles/postforms";
+import {
+  useDeletePost,
+  useGetDetailPost,
+} from "@/app/lib/codegen/hooks/post/post";
 import { useParams, useRouter } from "next/navigation";
-import { useFetchPost, useDeletePost } from "../hooks/postHooks"; // codegen에서 생성된 훅 사용
-import "../styles/css/write.css";
+import Count from "@/components/count";
+import Review from "@/components/review";
+
+interface PostData {
+  post_id?: number;
+  title?: string;
+  content?: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
 const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
-
-  // codegen에서 생성된 React-Query 훅으로 게시글 데이터 가져오기
-  const { data: post, isLoading, error } = useFetchPost(postId);
-
-  // codegen에서 생성된 React-Query 훅으로 게시글 삭제
-  const { mutate: deletePost } = useDeletePost({
-    onSuccess: () => {
-      alert("게시글이 삭제되었습니다.");
-      router.push("/board");
-    },
-    onError: () => {
-      alert("게시글 삭제 중 오류가 발생했습니다.");
+  const [post, setPost] = useState<PostData | null>(null);
+  const { isLoading, isError } = useGetDetailPost(Number(postId), {
+    query: {
+      onSuccess: (data) => {
+        if (data) {
+          setPost({
+            post_id: data?.data?.postId,
+            title: data?.data?.title,
+            content: data?.data?.content,
+            created_at: data?.data?.createdAt,
+            updated_at: data?.data?.updatedAt,
+          });
+        }
+      },
+      onError: () => {
+        alert("잘못된 경로입니다.");
+        console.log(isError);
+      },
     },
   });
-
-  const handleDelete = () => {
-    if (!postId) return;
-
-    if (window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
-      deletePost(postId);
-    }
+  if (isLoading) console.log("로딩중입니다.");
+  const { mutate: deletePost } = useDeletePost({
+    mutation: {
+      onSuccess: () => {
+        alert("게시글이 삭제되었습니다."); // 알림 표시
+        router.push(`/board/boards/${boardId}`);
+      },
+    },
+  });
+  const handleDeletePost = (postId: number) => {
+    deletePost({ postId });
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error || !post) return <div>게시글을 불러올 수 없습니다.</div>;
-
   return (
-    <div className="container">
-      <div className="imageSection">
-        <img
-          src="/aaa.jpg"
-          alt="이미지"
-          className="w-full h-full object-cover border-r-10"
-        />
+    <div style={postFormStyles.container}>
+      <div style={postFormStyles.imageButtonSection}>
+        <div style={postFormStyles.imageSection}>
+          <img
+            src="/aaa.jpg"
+            alt="이미지"
+            className="w-full h-full object-cover border-r-10"
+          />
+        </div>
+        <div style={postFormStyles.buttonBox}>
+          <Count boardId={Number(boardId)} postId={Number(postId)} />
+        </div>
       </div>
-      <div className="contentSection">
+      <div style={postFormStyles.contentSection}>
         <div>
-          <div className="titleBox">
-            <h2 className="title">{post.title}</h2>
+          <div style={postFormStyles.buttonBox}>
+            <button
+              style={{
+                ...postFormStyles.button,
+                ...postFormStyles.deleteButton,
+              }}
+              onClick={() => handleDeletePost(Number(postId))}
+            >
+              삭제
+            </button>
+            <button
+              style={{ ...postFormStyles.button, ...postFormStyles.editButton }}
+              onClick={() =>
+                router.push(`/board/boards/${boardId}/posts/${postId}/edit`)
+              }
+            >
+              수정
+            </button>
+          </div>
+          <div style={postFormStyles.titleBox}>
+            <h2 style={postFormStyles.title}>{post?.title}</h2>
             <span>
-              작성일: {new Date(post.created_at).toLocaleDateString()}
+              작성일:{" "}
+              {post?.created_at
+                ? new Date(post.created_at).toLocaleDateString()
+                : "로딩 중입니다."}
             </span>
           </div>
-          <div className="textBox">
-            <p>{post.content}</p>
-          </div>
+          <div style={postFormStyles.textBox}>
+            <p>{post?.content}</p>
+          </div>{" "}
         </div>
-        <div className="buttonBox">
-          <button className="button deleteButton" onClick={handleDelete}>
-            삭제
-          </button>
-          <button
-            className="button editButton"
-            onClick={() =>
-              router.push(`/board/boards/${boardId}/posts/${postId}/edit`)
-            }
-          >
-            수정
-          </button>
+
+        <div style={postFormStyles.textBox}>
+          <Review postId={Number(postId)} />
         </div>
-      </div>
-      <div className="footer">
-        <div className="likesAndComments">
-          <span>좋아요 15</span>
-          <span>댓글 6</span>
-        </div>
-      </div>
-      <div className="commentSection">
-        <div className="commentBox">USER1: 댓글 내용입니다.</div>
-        <div className="commentBox">USER2: 댓글 내용입니다.</div>
       </div>
     </div>
   );

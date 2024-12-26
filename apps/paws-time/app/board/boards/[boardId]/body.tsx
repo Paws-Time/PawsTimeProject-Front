@@ -5,7 +5,12 @@ import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
-import usePostStore from "@/app/hooks/postStore";
+import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
+import { useModalStore } from "@/app/hooks/modalStore";
+import SortSetting from "@/components/sortsetting";
+import Modal from "@/components/modal";
+import useBoardStore from "@/app/hooks/boardStore";
+import { useState } from "react";
 
 interface PostData {
   id?: number;
@@ -31,29 +36,35 @@ interface GetListPostRespDto {
 const BoardDetailBody = () => {
   const router = useRouter();
   const { boardId } = useParams();
-  const numberBoardId = Number(boardId);
-  const { postState, postAction } = usePostStore();
-  const { keyword, page, size, sort } = postState;
-  const { setKeyword, setPage, setPageSize, setSortBy } = postAction;
+  const { openModal } = useModalStore();
+  const { boardState } = useBoardStore();
+  const [keyword, setKeyword] = useState("");
+  const [pageNo, SetPageNo] = useState(0);
+  const { pageSize, sortBy, direction } = boardState;
   const params = {
-    boardId: numberBoardId,
-    ...(keyword && { keyword }),
-    page,
-    size,
-    sort,
+    boardId: Number(boardId),
+    keyword,
+    page: pageNo,
+    size: pageSize,
+    sort: `${sortBy},${direction}`,
   };
 
+  const { data: boardData } = useGetBoard(Number(boardId));
+  const boardTitle = boardData?.data?.title;
   // 게시글 목록 가져오기
-  const { data, isLoading, error } = useGetPosts(params, {
+  const {
+    data: postData,
+    isLoading,
+    error,
+  } = useGetPosts(params, {
     query: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
     },
   });
-
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
-  const posts: PostData[] = (data?.data || []).map(
+  const posts: PostData[] = (postData?.data || []).map(
     (post: GetListPostRespDto) => ({
       ...post,
       postId: post.id,
@@ -62,7 +73,7 @@ const BoardDetailBody = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>게시판 {boardId}의 게시글 목록</h1>
+      <h1 style={styles.heading}>{boardTitle} 게시글</h1>
       <div style={styles.filterContainer}>
         <InputField
           $label="검색어를 입력하세요"
@@ -74,25 +85,16 @@ const BoardDetailBody = () => {
         <CustomButton
           $label="검색"
           $sizeType="normal"
-          onClick={() => setPage(0)} // 검색 시 첫 페이지로 이동
+          onClick={() => SetPageNo(0)} // 검색 시 첫 페이지로 이동
         />
-        <select
-          value={size}
-          onChange={(e) => setPageSize(Number(e.target.value) as 3 | 5 | 10)}
-          style={styles.select}
-        >
-          <option value={3}>3개씩 조회</option>
-          <option value={5}>5개씩 조회</option>
-          <option value={10}>10개씩 조회</option>
-        </select>
-        <select
-          value={sort}
-          onChange={(e) => setSortBy(e.target.value)}
-          style={styles.select}
-        >
-          <option value="desc">최신순</option>
-          <option value="createdAt">과거순</option>
-        </select>
+        <CustomButton
+          $label="검색설정"
+          $sizeType="normal"
+          onClick={openModal}
+        />
+        <Modal>
+          <SortSetting />
+        </Modal>
       </div>
 
       <div style={styles.cardContainer}>
@@ -100,10 +102,11 @@ const BoardDetailBody = () => {
           posts.map((post: PostData) => (
             <Card
               key={post.id}
+              postId={post.id!}
               $title={post.title}
               $contentPreview={post.contentPreview}
-              views={post.views}
-              likesCount={post.likesCount}
+              $views={post.views}
+              $likeCount={post.likesCount}
               onClick={() =>
                 router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }
@@ -117,14 +120,14 @@ const BoardDetailBody = () => {
         <CustomButton
           $label="이전"
           $sizeType="normal"
-          onClick={() => setPage} // 이전 페이지로 이동
-          disabled={page === 0} // 첫 페이지에서는 비활성화
+          onClick={() => SetPageNo} // 이전 페이지로 이동
+          disabled={pageNo === 0} // 첫 페이지에서는 비활성화
         />
         <CustomButton
           $label="다음"
           $sizeType="normal"
-          onClick={() => setPage} // 다음 페이지로 이동
-          disabled={page === 0} // 마지막 페이지에서는 비활성화
+          onClick={() => SetPageNo} // 다음 페이지로 이동
+          disabled={pageNo === 0} // 마지막 페이지에서는 비활성화
         />
       </div>
     </div>
@@ -183,7 +186,8 @@ const styles = {
   cardContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "20px",
+    gap: "50px",
+    marginBottom: "20px",
   },
 };
 

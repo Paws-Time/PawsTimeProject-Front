@@ -3,6 +3,7 @@
 import { useCreateBoard } from "@/app/lib/codegen/hooks/board/board";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface BoardProps {
@@ -13,6 +14,7 @@ interface BoardProps {
 export default function CreateBoardComponent() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const router = useRouter();
 
   const { mutate, isLoading, isError } = useCreateBoard({
     mutation: {
@@ -20,6 +22,7 @@ export default function CreateBoardComponent() {
         alert("게시판이 성공적으로 생성되었습니다!");
         setTitle("");
         setDescription("");
+        router.push(`/board`);
       },
       onError: (error) => {
         console.error(error);
