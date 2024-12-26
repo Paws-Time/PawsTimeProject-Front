@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
-import { InputField } from "@/components/utils/input";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
@@ -11,7 +10,8 @@ import SortSetting from "@/components/sortsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
-import "@/app/styles/css/board.css";
+import { formStyles } from "@/app/styles/forms";
+// import "@/app/styles/css/board.css";
 
 interface PostData {
   id?: number;
@@ -39,8 +39,11 @@ const BoardDetailBody = () => {
   const { boardId } = useParams();
   const { openModal } = useModalStore();
   const { boardState } = useBoardStore();
-  const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
-  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("")
+  /*const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
+  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태 
+  **/
   const [pageNo, SetPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
@@ -72,42 +75,44 @@ const BoardDetailBody = () => {
       postId: post.id,
     })
   );
-  const handleSearch = () => {
+
+  /*const handleSearch = () => {
     setSearchKeyword(inputKeyword); // 타이핑된 키워드를 실제 검색 키워드로 설정
     SetPageNo(0); // 검색 시 첫 페이지로 이동
+  }; **/
+
+  const handleSerarch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchKeyword(keyword);
+  };
+  const resetPage = () => {
+    setPageNo(0);
   };
   return (
-    <div className="container">
-      <h1 className="heading">{boardTitle} 게시글</h1>
-      <div className="filter-container">
-        <InputField
-          $label="검색어를 입력하세요"
-          type="text"
-          value={inputKeyword}
-          onChange={(e) => setInputKeyword(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") handleSearch(); // 엔터 키 입력 시 검색 실행
-          }}
-          className="input"
-        />
-        <CustomButton
-          $label="검색"
-          $sizeType="normal"
-          onClick={handleSearch} // 검색 시 첫 페이지로 이동
-          className="button"
-        />
+    <div style={styles.container}>
+      <h1 style={styles.heading}>{boardTitle} 게시글</h1>
+      <div style={styles.filterContainer}>
+        <form style={styles.input} onSubmit={handleSerarch}>
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="제목을 입력하세요"
+            style={formStyles.input}
+            required
+          />
+        </form>
         <CustomButton
           $label="검색설정"
           $sizeType="normal"
           onClick={openModal}
-          className="button"
+          className="mt-2"
         />
         <Modal>
           <SortSetting />
         </Modal>
       </div>
-
-      <div className="card-container">
+      <div style={styles.cardContainer}>
         {posts.length > 0 ? (
           posts.map((post: PostData) => (
             <Card
@@ -128,18 +133,26 @@ const BoardDetailBody = () => {
       </div>
       <div className="pagination">
         <CustomButton
-          $label="이전"
+          $label="처음으로"
           $sizeType="normal"
-          onClick={() => SetPageNo(pageNo - 1)} // 이전 페이지로 이동
-          disabled={pageNo === 0} // 첫 페이지에서는 비활성화
-          className="button"
+          onClick={resetPage}
         />
-        <CustomButton
-          $label="다음"
-          $sizeType="normal"
-          onClick={() => SetPageNo(pageNo + 1)} // 다음 페이지로 이동
-          className="button"
-        />
+
+        <span className="mt-5 ml-20"> 현 페이지입니다 : {pageNo + 1}</span>
+        <div className="flex gap-3">
+          <CustomButton
+            $label="이전"
+            $sizeType="normal"
+            onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))} // 이전 페이지로 이동
+            disabled={pageNo === 0} // 첫 페이지에서는 비활성화
+          />
+          <CustomButton
+            $label="다음"
+            $sizeType="normal"
+            onClick={() => setPageNo((prev) => prev + 1)} // 다음 페이지로 이동
+            disabled={posts.length < pageSize} // 마지막 페이지에서 비활성화
+          />
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import useSideBarStore from "../hooks/sidebarStore";
 import useBoardStore from "../hooks/boardStore";
 import { useState } from "react";
 import { CustomButton } from "@/components/utils/button";
+import { postFormStyles } from "../styles/postforms";
+import { getPosts, useGetPosts } from "../lib/codegen/hooks/post/post";
 
 interface Board {
   boardId: number;
@@ -20,15 +22,15 @@ export default function BoardList() {
   const router = useRouter();
   const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
-  const [pageNo, setPageNo] = useState(0);
-  const [sortBy, setSortBy] = useState("createdAt");
+  const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState("DESC");
   // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
 
   const params = {
-    pageNo,
-    pageSize: 10,
-    sortBy: `${sortBy},${direction}`,
+    pageNo: 0,
+    pageSize,
+    sortBy: "createdAt",
+    direction,
   };
 
   // 보더 데이터 가져오기
@@ -40,7 +42,6 @@ export default function BoardList() {
 
   // 데이터가 없는 경우 빈 배열로 설정
   const boards = data?.data || [];
-
   // 로딩 상태 처리
   if (isLoading) {
     return <div>Loading...</div>;
@@ -52,13 +53,21 @@ export default function BoardList() {
   }
   //페이지 넘기기
   const handlePage = () => {
-    setPageNo((prev) => prev + 1);
+    setPageSize((prev) => prev + 5);
   };
   return (
     <div className="flex w-full h-custom-boardh">
       {isShow && <div className="flex w-custom-sidew" />}
       {/* 보더 목록 */}
       <div className="p-4 gap-4 flex flex-col w-4/5">
+        <select
+          value={direction}
+          onChange={(e) => setDirection(e.target.value)}
+          style={postFormStyles.select}
+        >
+          <option value="desc">최신순</option>
+          <option value="asc">오래된순</option>
+        </select>
         {boards.map((board) => (
           <div
             key={board.boardId}

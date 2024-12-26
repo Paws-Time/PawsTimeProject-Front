@@ -135,7 +135,7 @@ export function PostEditBody() {
             style={formStyles.input}
             required
           />
-        </div>
+        </div>{" "}
         <div style={formStyles.field}>
           <label style={formStyles.label}>내용</label>
           <textarea

@@ -78,6 +78,7 @@ const CardWrapper = styled.div`
     width: 350px;
     height: 200px;
     border-radius: 15px;
+    border: 2px solid ${theme.colors.ref.base.black};
     background-color: ${theme.colors.ref.base.white};
     overflow: hidden;
     display: flex;

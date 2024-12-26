@@ -10,7 +10,7 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <button onClick={closeModal} style={styles.closeButton}>
-          ✖
+          닫기
         </button>
         {children}
       </div>
@@ -46,7 +46,7 @@ const styles = {
     right: "10px",
     background: "none",
     border: "none",
-    fontSize: "20px",
+    fontSize: "18px",
     cursor: "pointer",
   },
 };
