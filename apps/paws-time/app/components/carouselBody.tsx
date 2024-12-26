@@ -14,6 +14,7 @@ import "../styles/css/carousel.css";
 
 interface Post {
   id: number;
+  postId?: number;
   title: string;
   contentPreview: string;
   createdAt: string;
@@ -51,9 +52,11 @@ const CarouselBody = () => {
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
   return (
-    <div>
-      <h2 style={{ textAlign: "center" }}>최신 글</h2>
+    <>
+      <h2>최신 글</h2>
       <Swiper
+        slidesPerView={3}
+        spaceBetween={5}
         pagination={{ clickable: true }}
         navigation={true}
         modules={[Navigation, Pagination]}
@@ -62,16 +65,17 @@ const CarouselBody = () => {
         {posts.map((post) => (
           <SwiperSlide key={post.id}>
             <Card
+              postId={post.id!}
               $title={post.title}
               $contentPreview={post.contentPreview}
-              views={post.views}
-              likesCount={post.likesCount}
+              $views={post.views}
+              $likeCount={post.likesCount}
               onClick={() => console.log(`Post clicked: ${post.id}`)} // 클릭 시 동작
             />
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </>
   );
 };
 

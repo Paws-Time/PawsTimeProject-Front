@@ -11,6 +11,7 @@ import SortSetting from "@/components/sortsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
+import "@/app/styles/css/board.css";
 
 interface PostData {
   id?: number;
@@ -38,12 +39,13 @@ const BoardDetailBody = () => {
   const { boardId } = useParams();
   const { openModal } = useModalStore();
   const { boardState } = useBoardStore();
-  const [keyword, setKeyword] = useState("");
+  const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
+  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태
   const [pageNo, SetPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
     boardId: Number(boardId),
-    keyword,
+    keyword: searchKeyword,
     page: pageNo,
     size: pageSize,
     sort: `${sortBy},${direction}`,
@@ -70,34 +72,42 @@ const BoardDetailBody = () => {
       postId: post.id,
     })
   );
-
+  const handleSearch = () => {
+    setSearchKeyword(inputKeyword); // 타이핑된 키워드를 실제 검색 키워드로 설정
+    SetPageNo(0); // 검색 시 첫 페이지로 이동
+  };
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>{boardTitle} 게시글</h1>
-      <div style={styles.filterContainer}>
+    <div className="container">
+      <h1 className="heading">{boardTitle} 게시글</h1>
+      <div className="filter-container">
         <InputField
           $label="검색어를 입력하세요"
           type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={styles.input}
+          value={inputKeyword}
+          onChange={(e) => setInputKeyword(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") handleSearch(); // 엔터 키 입력 시 검색 실행
+          }}
+          className="input"
         />
         <CustomButton
           $label="검색"
           $sizeType="normal"
-          onClick={() => SetPageNo(0)} // 검색 시 첫 페이지로 이동
+          onClick={handleSearch} // 검색 시 첫 페이지로 이동
+          className="button"
         />
         <CustomButton
           $label="검색설정"
           $sizeType="normal"
           onClick={openModal}
+          className="button"
         />
         <Modal>
           <SortSetting />
         </Modal>
       </div>
 
-      <div style={styles.cardContainer}>
+      <div className="card-container">
         {posts.length > 0 ? (
           posts.map((post: PostData) => (
             <Card
@@ -116,79 +126,23 @@ const BoardDetailBody = () => {
           <div>게시글이 없습니다.</div>
         )}
       </div>
-      <div style={styles.pagination}>
+      <div className="pagination">
         <CustomButton
           $label="이전"
           $sizeType="normal"
-          onClick={() => SetPageNo} // 이전 페이지로 이동
+          onClick={() => SetPageNo(pageNo - 1)} // 이전 페이지로 이동
           disabled={pageNo === 0} // 첫 페이지에서는 비활성화
+          className="button"
         />
         <CustomButton
           $label="다음"
           $sizeType="normal"
-          onClick={() => SetPageNo} // 다음 페이지로 이동
-          disabled={pageNo === 0} // 마지막 페이지에서는 비활성화
+          onClick={() => SetPageNo(pageNo + 1)} // 다음 페이지로 이동
+          className="button"
         />
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  heading: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  filterContainer: {
-    display: "flex",
-    gap: "10px",
-    marginBottom: "20px",
-  },
-  input: {
-    flex: 1,
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-  },
-  select: {
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-    backgroundColor: "#fff",
-  },
-  button: {
-    padding: "10px 20px",
-    fontSize: "16px",
-    color: "#fff",
-    backgroundColor: "#007bff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-  pagination: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px",
-  },
-  cardContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "50px",
-    marginBottom: "20px",
-  },
 };
 
 export default BoardDetailBody;

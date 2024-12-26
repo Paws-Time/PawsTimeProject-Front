@@ -25,18 +25,19 @@ export function Card({
   ...rest
 }: Props) {
   const { data } = useGetCommentByPost(postId);
-  const commentCount = data?.data?.length;
+  const commentCount = data?.data?.length ?? 0; // 댓글 수 기본값 0 처리
+
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
       <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} loading="lazy" />
+        <img src={imageUrl} alt={$title || "이미지"} loading="lazy" />
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
-        <span className="views">💬 {$views} 조회수</span>
-        <span className="likesCount">👍{$likeCount} 좋아요</span>
-        <span className="comments">💬{commentCount} 댓글수</span>
+        <span className="views">💬 {$views ?? 0} 조회수</span>
+        <span className="likesCount">👍 {$likeCount ?? 0} 좋아요</span>
+        <span className="comments">💬 {commentCount} 댓글수</span>
       </div>
     </CardWrapper>
   );

@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getPosts, useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getPosts } from "@/app/lib/codegen/hooks/post/post";
 import { Card } from "@/components/utils/card";
-import { ApiResponseListGetListPostRespDto } from "../lib/codegen/dtos";
+import "@/app/components/css/styles.css";
+import axios from "axios";
 
 interface PostData {
   id?: number;
@@ -15,107 +18,109 @@ interface PostData {
   likesCount?: number;
 }
 
-interface GetListPostRespDto {
-  id?: number;
-  title?: string;
-  contentPreview?: string;
-  createdAt?: string;
-  views?: number;
-  likesCount?: number;
+interface BoardData {
+  boardId: number;
+  title: string;
 }
 
-const boardIds = [1, 2, 3]; // 게시판 ID들
-const PopularPostsBody = () => {
-  const [posts, setPosts] = useState<ApiResponseListGetListPostRespDto[]>();
+// 게시판 목록 조회 함수
+const fetchBoardList = async () => {
+  const response = await axios.get("http://43.200.46.13:8080/board/list", {
+    params: {
+      pageNo: 0,
+      pageSize: 10,
+      sortBy: "createdAt",
+      direction: "ASC",
+    },
+  });
+  return response.data.data as BoardData[];
+};
+
+const HotPostsBody = () => {
+  const router = useRouter();
+  const [postsByBoard, setPostsByBoard] = useState<Record<number, PostData[]>>(
+    {}
+  ); // 게시판별 게시글 상태
+
+  // React Query를 사용해 게시판 목록 가져오기
+  const {
+    data: boards,
+    isLoading: isLoadingBoards,
+    isError: isBoardListError,
+  } = useQuery(["boardList"], fetchBoardList);
 
   useEffect(() => {
-    const fetchPostsByBoard = async () => {
-      const data = await Promise.all(
-        boardIds.map((boardId) =>
-          getPosts({ boardId, page: 0, size: 3, sort: "createdAt,desc" })
-        )
-      );
+    if (!boards || boards.length === 0) return;
 
-      console.log(data);
-      setPosts(data);
+    const fetchPostsByBoard = async () => {
+      try {
+        const data = await Promise.all(
+          boards.map(async (board) => {
+            const response = await getPosts({
+              boardId: board.boardId,
+              keyword: "",
+              page: 0,
+              size: 3,
+              sort: "likesCount,desc",
+            });
+            return { boardId: board.boardId, posts: response.data ?? [] };
+          })
+        );
+
+        // 게시판별 데이터를 상태로 저장
+        const newPostsByBoard = data.reduce(
+          (acc, { boardId, posts }) => {
+            acc[boardId] = posts;
+            return acc;
+          },
+          {} as Record<number, PostData[]>
+        );
+
+        setPostsByBoard(newPostsByBoard);
+      } catch (error) {
+        console.error("Error fetching popular posts:", error);
+      }
     };
+
     fetchPostsByBoard();
-  }, []);
+  }, [boards]);
+
+  if (isLoadingBoards) return <div>Loading...</div>;
+  if (isBoardListError)
+    return <div>Error: 게시판 목록을 가져오는 중 문제가 발생했습니다.</div>;
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>최신 인기 게시글</h1>
-
-      <div style={styles.boardContainer}>
-        {posts?.map(({ boardId, posts, isLoading, error }) => (
-          <div key={boardId} style={styles.boardSection}>
-            <h3 style={styles.boardTitle}>게시판 {boardId}</h3>
-            <div style={styles.cardRow}>
-              {isLoading && <div>Loading...</div>}
-              {error && (
-                <div>Error: 데이터를 가져오는 중 문제가 발생했습니다.</div>
-              )}
-              {posts.length > 0 ? (
-                posts.map((post: PostData) => (
+    <div>
+      <h1 className="heading">최신 인기 게시글</h1>
+      <div className="board-container">
+        {Object.entries(postsByBoard)
+          .filter(([, posts]) => posts.length > 0) // 빈 배열 필터링
+          .map(([boardId, posts], index) => (
+            <div key={boardId} className="board-section">
+              {/* boardId와 boards 배열의 인덱스를 사용해 제목 표시 */}
+              <h3 className="board-title">
+                {boards?.[index]?.title || `게시판 ${boardId}`} 게시판
+              </h3>
+              <div className="card-row">
+                {posts.map((post) => (
                   <Card
-                    key={post.postId}
+                    key={post.id}
+                    postId={post.id!}
                     $title={post.title}
                     $contentPreview={post.contentPreview}
-                    views={post.views}
-                    likesCount={post.likesCount}
+                    $views={post.views}
+                    $likeCount={post.likesCount}
                     onClick={() =>
-                      console.log(
-                        `게시글 ID: ${post.postId}, 게시판 ID: ${boardId}`
-                      )
+                      router.push(`/board/boards/${boardId}/posts/${post.id}`)
                     }
                   />
-                ))
-              ) : (
-                <div>게시글이 없습니다.</div>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
 };
 
-const styles = {
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  heading: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  boardContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "40px",
-  },
-  boardSection: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  boardTitle: {
-    marginBottom: "10px",
-    fontSize: "20px",
-    fontWeight: "bold",
-  },
-  cardRow: {
-    display: "flex",
-    gap: "20px",
-    flexWrap: "wrap",
-  },
-};
-
-export default PopularPostsBody;
+export default HotPostsBody;

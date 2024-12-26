@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import CarouselBody from "./components/carouselBody";
-import PopularPostsBody from "./components/hotpostsBody";
-import "./styles/MainPage.css";
+import HotPostsBody from "./components/hotpostsBody";
+import "./styles/css/mainPage.css";
 
 const MainPage = () => {
   return (
@@ -26,8 +26,7 @@ const MainPage = () => {
 
       {/* 하단 섹션 */}
       <div className="bottom-section">
-        {/* <PopularPostsBody /> */}
-        인기 게시글
+        <HotPostsBody />
       </div>
     </div>
   );
