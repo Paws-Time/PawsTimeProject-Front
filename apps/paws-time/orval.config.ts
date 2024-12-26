@@ -8,7 +8,7 @@ export default defineConfig({
       target: "app/lib/codegen/hooks", // ? 만들어질 hook들의 경로
       schemas: "app/lib/codegen/dtos", // ? 만들어질 hook에 사용될 type들의 경로
       mode: "tags-split",
-      prettier: true,
+      prettier: true, 
 
       override: {
         query: {

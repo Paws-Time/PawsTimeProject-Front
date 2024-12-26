@@ -3,6 +3,8 @@
 import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
+import { CustomButton } from "@/components/utils/button";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface BoardResDto {
@@ -22,6 +24,7 @@ const BoardWriteBody = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
+  const router = useRouter();
 
   const { data } = useGetBoardList();
 
@@ -42,6 +45,7 @@ const BoardWriteBody = () => {
         alert("게시글이 성공적으로 생성되었습니다.");
         setTitle("");
         setContent("");
+        router.push(`/board/boards/${boardId}`);
       },
       onError: (error) => {
         console.error(error);
@@ -134,9 +138,7 @@ const BoardWriteBody = () => {
             required
           />
         </div>
-        <button type="submit" style={formStyles.button}>
-          작성하기
-        </button>
+        <CustomButton $label="작성하기" $sizeType="long" type="submit" />
       </form>
     </div>
   );
