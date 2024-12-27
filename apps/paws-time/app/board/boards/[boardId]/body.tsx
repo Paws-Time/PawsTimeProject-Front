@@ -40,11 +40,11 @@ const BoardDetailBody = () => {
   const { openModal } = useModalStore();
   const { boardState } = useBoardStore();
   const [keyword, setKeyword] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("")
+  const [searchKeyword, setSearchKeyword] = useState("");
   /*const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
   const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태 
   **/
-  const [pageNo, SetPageNo] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
     boardId: Number(boardId),
