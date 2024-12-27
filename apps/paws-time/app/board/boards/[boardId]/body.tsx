@@ -40,11 +40,11 @@ const BoardDetailBody = () => {
   const { openModal } = useModalStore();
   const { boardState } = useBoardStore();
   const [keyword, setKeyword] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("")
+  const [searchKeyword, setSearchKeyword] = useState("");
   /*const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
   const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태 
   **/
-  const [pageNo, SetPageNo] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
     boardId: Number(boardId),
@@ -131,7 +131,7 @@ const BoardDetailBody = () => {
           <div>게시글이 없습니다.</div>
         )}
       </div>
-      <div className="pagination">
+      <div style={styles.pagination}>
         <CustomButton
           $label="처음으로"
           $sizeType="normal"
@@ -157,5 +157,61 @@ const BoardDetailBody = () => {
     </div>
   );
 };
-
 export default BoardDetailBody;
+
+const styles = {
+  container: {
+    width: "80%",
+    margin: "20px auto",
+    padding: "20px",
+    backgroundColor: "#f9f9f9",
+    borderRadius: "10px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  heading: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "#333",
+  },
+  filterContainer: {
+    display: "flex",
+    gap: "10px",
+    marginBottom: "20px",
+  },
+  input: {
+    flex: 1,
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ddd",
+  },
+  select: {
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+  },
+  button: {
+    padding: "10px 20px",
+    fontSize: "16px",
+    color: "#fff",
+    backgroundColor: "#007bff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+  },
+  cardContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "50px",
+    marginBottom: "20px",
+  },
+};

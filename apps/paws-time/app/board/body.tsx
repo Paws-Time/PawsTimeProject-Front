@@ -1,13 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useGetBoardList } from "../lib/codegen/hooks/board/board";
 import useSideBarStore from "../hooks/sidebarStore";
-import useBoardStore from "../hooks/boardStore";
 import { useState } from "react";
 import { CustomButton } from "@/components/utils/button";
 import { postFormStyles } from "../styles/postforms";
-import { getPosts, useGetPosts } from "../lib/codegen/hooks/post/post";
+import { useGetBoardList } from "../lib/codegen/hooks/board/board";
 
 interface Board {
   boardId: number;
