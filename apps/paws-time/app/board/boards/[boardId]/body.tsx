@@ -11,7 +11,7 @@ import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
 import { formStyles } from "@/app/styles/forms";
-// import "@/app/styles/css/board.css";
+import "@/app/styles/css/board.css";
 
 interface PostData {
   id?: number;
@@ -81,7 +81,7 @@ const BoardDetailBody = () => {
     SetPageNo(0); // 검색 시 첫 페이지로 이동
   }; **/
 
-  const handleSerarch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchKeyword(keyword);
   };
@@ -89,10 +89,10 @@ const BoardDetailBody = () => {
     setPageNo(0);
   };
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>{boardTitle} 게시글</h1>
-      <div style={styles.filterContainer}>
-        <form style={styles.input} onSubmit={handleSerarch}>
+    <div className="container">
+      <h1 className="heading">{boardTitle} 게시글</h1>
+      <div className="filter-container">
+        <form className="input" onSubmit={handleSearch}>
           <input
             type="text"
             value={keyword}
@@ -112,7 +112,7 @@ const BoardDetailBody = () => {
           <SortSetting />
         </Modal>
       </div>
-      <div style={styles.cardContainer}>
+      <div className="card-container">
         {posts.length > 0 ? (
           posts.map((post: PostData) => (
             <Card
@@ -131,7 +131,7 @@ const BoardDetailBody = () => {
           <div>게시글이 없습니다.</div>
         )}
       </div>
-      <div style={styles.pagination}>
+      <div className="pagination">
         <CustomButton
           $label="처음으로"
           $sizeType="normal"
@@ -157,61 +157,5 @@ const BoardDetailBody = () => {
     </div>
   );
 };
-export default BoardDetailBody;
 
-const styles = {
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  heading: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  filterContainer: {
-    display: "flex",
-    gap: "10px",
-    marginBottom: "20px",
-  },
-  input: {
-    flex: 1,
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-  },
-  select: {
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-    backgroundColor: "#fff",
-  },
-  button: {
-    padding: "10px 20px",
-    fontSize: "16px",
-    color: "#fff",
-    backgroundColor: "#007bff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-  pagination: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px",
-  },
-  cardContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "50px",
-    marginBottom: "20px",
-  },
-};
+export default BoardDetailBody;
