@@ -11,7 +11,7 @@ import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
 import { formStyles } from "@/app/styles/forms";
-// import "@/app/styles/css/board.css";
+import "@/app/styles/css/board.css";
 
 interface PostData {
   id?: number;
@@ -81,7 +81,7 @@ const BoardDetailBody = () => {
     SetPageNo(0); // 검색 시 첫 페이지로 이동
   }; **/
 
-  const handleSerarch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchKeyword(keyword);
   };
@@ -89,10 +89,10 @@ const BoardDetailBody = () => {
     setPageNo(0);
   };
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>{boardTitle} 게시글</h1>
-      <div style={styles.filterContainer}>
-        <form style={styles.input} onSubmit={handleSerarch}>
+    <div className="container">
+      <h1 className="heading">{boardTitle} 게시글</h1>
+      <div className="filter-container">
+        <form className="input" onSubmit={handleSearch}>
           <input
             type="text"
             value={keyword}
@@ -112,7 +112,7 @@ const BoardDetailBody = () => {
           <SortSetting />
         </Modal>
       </div>
-      <div style={styles.cardContainer}>
+      <div className="card-container">
         {posts.length > 0 ? (
           posts.map((post: PostData) => (
             <Card

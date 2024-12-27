@@ -7,7 +7,6 @@ import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewProps {
   postId: number;
@@ -25,7 +24,6 @@ interface ReviewResDto {
 }
 function Review({ postId }: ReviewProps) {
   const [pageSize, setPageSize] = useState(5);
-  const [sortBy, setSortBy] = useState("createdAt");
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
   const [pageNo, setPageNo] = useState(0);
@@ -34,7 +32,7 @@ function Review({ postId }: ReviewProps) {
   const [params, setParams] = useState<ReviewReqParams>({
     pageNo,
     pageSize,
-    sortBy,
+    sortBy: "createdAt",
     direction,
   });
 
@@ -80,10 +78,10 @@ function Review({ postId }: ReviewProps) {
       ...prev, // 기존 상태를 복사
       pageNo,
       pageSize, // 업데이트할 값
-      sortBy,
+      sortBy: "createdAt",
       direction,
     }));
-  }, [pageNo, pageSize, sortBy, direction]);
+  }, [pageNo, pageSize, direction]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
