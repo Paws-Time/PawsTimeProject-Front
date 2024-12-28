@@ -1,5 +1,5 @@
 .main-page-container {
-  margin: 0 300px;
+  margin-left: 300px;
   display: flex;
   flex-direction: column;
   gap: 40px;

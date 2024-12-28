@@ -51,15 +51,6 @@ export const CarouselImgBody = () => {
         </SwiperSlide>
         <SwiperSlide>
           <Image
-            src="/bbb.jpg"
-            alt="사용자 등록 사진"
-            width={300}
-            height={300}
-            style={{ borderRadius: "8px", border: "1px solid black" }}
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
             src="/ccc.jpg"
             alt="사용자 등록 사진"
             width={300}
