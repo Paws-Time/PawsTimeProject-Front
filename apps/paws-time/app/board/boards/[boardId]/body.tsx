@@ -81,7 +81,7 @@ const BoardDetailBody = () => {
     SetPageNo(0); // 검색 시 첫 페이지로 이동
   }; **/
 
-  const handleSerarch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchKeyword(keyword);
   };
@@ -92,7 +92,7 @@ const BoardDetailBody = () => {
     <div className="container">
       <h1 className="heading">{boardTitle} 게시글</h1>
       <div className="filter-container">
-        <form className="input" onSubmit={handleSerarch}>
+        <form className="input" onSubmit={handleSearch}>
           <input
             type="text"
             value={keyword}
