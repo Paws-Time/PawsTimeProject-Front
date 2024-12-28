@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "api-hook": ["./app/lib/codejen/hooks"]
+      "api-hook": ["./app/lib/codegen/hooks"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

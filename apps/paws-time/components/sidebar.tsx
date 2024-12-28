@@ -17,6 +17,7 @@ export default function Sidebar() {
     { id: 2, path: "/board", name: "게시판" },
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
     { id: 4, path: "/board/write", name: "게시글 작성" },
+    { id: 5, path: "/infoboard", name: "장소 게시판" },
   ];
   return (
     <aside
