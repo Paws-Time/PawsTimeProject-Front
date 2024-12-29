@@ -6,6 +6,7 @@ import { useState } from "react";
 import { CustomButton } from "@/components/utils/button";
 import { postFormStyles } from "../styles/postforms";
 import { useGetBoardList } from "../lib/codegen/hooks/board/board";
+import { Direction, directionDescription } from "@/app/lib/policy";
 
 interface Board {
   boardId: number;
@@ -15,15 +16,6 @@ interface Board {
   isDelete?: boolean;
   updatedAt?: string;
 }
-
-enum Direction {
-  DESC = "DESC",
-  ASC = "ASC",
-}
-const directionDescription: Record<Direction, string> = {
-  [Direction.DESC]: "최신순",
-  [Direction.ASC]: "오래된순",
-};
 
 export default function BoardList() {
   const router = useRouter();
@@ -72,7 +64,7 @@ export default function BoardList() {
           onChange={(e) => setDirection(e.target.value as Direction)}
           style={postFormStyles.select}
         >
-          <option value={Direction.DESC}>최신순</option>
+          <option value={Direction.DESC}>{directionDescription.DESC}</option>
           <option value={Direction.ASC}>{directionDescription.ASC}</option>
         </select>
         {boards.map((board) => (
