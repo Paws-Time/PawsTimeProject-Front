@@ -16,12 +16,21 @@ interface Board {
   updatedAt?: string;
 }
 
+enum Direction {
+  DESC = "DESC",
+  ASC = "ASC",
+}
+const directionDescription: Record<Direction, string> = {
+  [Direction.DESC]: "최신순",
+  [Direction.ASC]: "오래된순",
+};
+
 export default function BoardList() {
   const router = useRouter();
   const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
   const [pageSize, setPageSize] = useState(5);
-  const [direction, setDirection] = useState("DESC");
+  const [direction, setDirection] = useState<Direction>(Direction.DESC);
   // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
 
   const params = {
@@ -60,11 +69,11 @@ export default function BoardList() {
       <div className="p-4 gap-4 flex flex-col w-4/5">
         <select
           value={direction}
-          onChange={(e) => setDirection(e.target.value)}
+          onChange={(e) => setDirection(e.target.value as Direction)}
           style={postFormStyles.select}
         >
-          <option value="desc">최신순</option>
-          <option value="asc">오래된순</option>
+          <option value={Direction.DESC}>최신순</option>
+          <option value={Direction.ASC}>{directionDescription.ASC}</option>
         </select>
         {boards.map((board) => (
           <div
