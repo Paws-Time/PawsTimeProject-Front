@@ -1,0 +1,27 @@
+# FROM 어떤 베이스 이미지 (우리가 최종적으로 만들 도커 IMAGE의 근간이 되는 이미지 - 메타 이미지) 를 사용할 것인가?
+# 지금부터 이미지를 빌드할 건데, 우리가 만들 것은 node.js 기반의 프로젝트야. 그러니까 그 기반의 것들 C++ 모듈 등 다 세팅해줘.
+FROM node:20
+
+# 환경변수를 이미지를 빌드할 때 같이 넣을 것이다. 왜냐하면 우리에겐 axios client로 API baseUrl을 넣고 있기 때문이다.
+# let NEXT_PUBLIC_API_URL; <선언>
+ARG NEXT_PUBLIC_API_URL
+
+# 환경변수를 <사용> 하겠다고 <등록>
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# cd 폴더 없으면 생성하고 있으면 이동
+WORKDIR /app
+
+# 도커에서는 각 COPY마다 "레이어"를 가져요. => 캐싱의 단위
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+
+COPY apps/paws-time apps/paws-time
+COPY packages/ packages/
+
+# RUN : 이미지를 빌드할 때 사용되는 명령어
+RUN npm install -g pnpm && pnpm install
+RUN pnpm paws-time:build --no-lint
+
+# CMD : 빌드 다 끝났고, 이제 생성된 그 이미지를 실제로 실행할 때 사용되는 명령어
+CMD ["pnpm", "paws-time:start"]
