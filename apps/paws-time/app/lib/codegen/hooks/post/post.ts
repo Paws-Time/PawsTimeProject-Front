@@ -21,7 +21,7 @@ import type {
   ApiResponseInteger,
   ApiResponseListGetListPostRespDto,
   ApiResponseVoid,
-  CreatePostReqDto,
+  CreatePostBody,
   GetPostsParams,
   UpdatePostReqDto,
 } from "../../dtos";
@@ -493,16 +493,22 @@ export function useGetPosts<
  * @summary 게시글 생성
  */
 export const createPost = (
-  createPostReqDto: BodyType<CreatePostReqDto>,
+  createPostBody: BodyType<CreatePostBody>,
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(createPostBody.data));
+  if (createPostBody.images !== undefined) {
+    createPostBody.images.forEach((value) => formData.append("images", value));
+  }
+
   return customInstance<ApiResponseVoid>(
     {
       url: `/post`,
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: createPostReqDto,
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
       signal,
     },
     options,
@@ -516,21 +522,21 @@ export const getCreatePostMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createPost>>,
     TError,
-    { data: BodyType<CreatePostReqDto> },
+    { data: BodyType<CreatePostBody> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createPost>>,
   TError,
-  { data: BodyType<CreatePostReqDto> },
+  { data: BodyType<CreatePostBody> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createPost>>,
-    { data: BodyType<CreatePostReqDto> }
+    { data: BodyType<CreatePostBody> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -543,7 +549,7 @@ export const getCreatePostMutationOptions = <
 export type CreatePostMutationResult = NonNullable<
   Awaited<ReturnType<typeof createPost>>
 >;
-export type CreatePostMutationBody = BodyType<CreatePostReqDto>;
+export type CreatePostMutationBody = BodyType<CreatePostBody>;
 export type CreatePostMutationError = ErrorType<unknown>;
 
 /**
@@ -556,14 +562,14 @@ export const useCreatePost = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createPost>>,
     TError,
-    { data: BodyType<CreatePostReqDto> },
+    { data: BodyType<CreatePostBody> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof createPost>>,
   TError,
-  { data: BodyType<CreatePostReqDto> },
+  { data: BodyType<CreatePostBody> },
   TContext
 > => {
   const mutationOptions = getCreatePostMutationOptions(options);

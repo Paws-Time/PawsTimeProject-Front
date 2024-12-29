@@ -4,8 +4,11 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
+import type { CreateBoardReqDtoBoardType } from "./createBoardReqDtoBoardType";
 
 export interface CreateBoardReqDto {
+  /** 게시판 유형 */
+  boardType?: CreateBoardReqDtoBoardType;
   /** 게시판 설명 */
   description?: string;
   /** 게시판 제목 */
