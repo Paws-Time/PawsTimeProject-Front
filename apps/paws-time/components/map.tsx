@@ -10,12 +10,12 @@ declare global {
 
 // Props 타입 정의
 type MapProps = {
-  title?: string; // 마커에 표시할 제목
   latitude: number; // 위도
   longitude: number; // 경도
+  name: string;
 };
 
-function MapApiData({ title, latitude, longitude }: MapProps) {
+function MapApiData({ latitude, longitude, name }: MapProps) {
   const kakaoApiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT;
 
   useEffect(() => {
@@ -23,15 +23,15 @@ function MapApiData({ title, latitude, longitude }: MapProps) {
     const script = document.createElement("script");
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=false`;
     script.async = true;
-    console.log(process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT);
-    console.log("Kakao maps object:", window.kakao?.maps);
+    // console.log(process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT);
+    // console.log("Kakao maps object:", window.kakao?.maps);
     script.onload = () => {
-      console.log("Kakao Maps SDK 로드 성공");
+      // console.log("Kakao Maps SDK 로드 성공");
       // SDK 로드 후 지도 초기화
       if (window.kakao) {
-        console.log("Kakao Maps SDK 로드 성공");
+        // console.log("Kakao Maps SDK 로드 성공");
         window.kakao.maps.load(() => {
-          console.log("window.kakao 객체 확인:", window.kakao);
+          // console.log("window.kakao 객체 확인:", window.kakao);
           const container = document.getElementById("map"); // 지도 컨테이너
           const options = {
             center: new window.kakao.maps.LatLng(latitude, longitude), // 중심 좌표
@@ -45,7 +45,7 @@ function MapApiData({ title, latitude, longitude }: MapProps) {
           const marker = new window.kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
             position: new window.kakao.maps.LatLng(latitude, longitude), // 마커 위치
-            title: title, // 마커에 표시할 제목
+            name,
           });
           console.log("마커 생성:", marker);
         });
@@ -61,7 +61,7 @@ function MapApiData({ title, latitude, longitude }: MapProps) {
         mapContainer.innerHTML = ""; // 지도 초기화
       }
     };
-  }, [latitude, longitude, title]);
+  }, [latitude, longitude]);
 
   return <div id="map" className="w-[900px] h-[700px]" />; // 지도 표시 영역
 }
