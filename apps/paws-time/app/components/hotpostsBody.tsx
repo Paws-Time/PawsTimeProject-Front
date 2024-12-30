@@ -60,7 +60,7 @@ const HotPostsBody = () => {
               boardId: board.boardId,
               keyword: "",
               page: 0,
-              size: 3,
+              size: 4,
               sort: "likesCount,desc",
             });
             return { boardId: board.boardId, posts: response.data ?? [] };
