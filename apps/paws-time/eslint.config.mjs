@@ -11,16 +11,6 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    rules: {
-      "unicorn/filename-case": [
-        "error",
-        {
-          case: "kebabCase", // 또는 camelCase
-        },
-      ],
-    },
-  },
 ];
 
 export default eslintConfig;

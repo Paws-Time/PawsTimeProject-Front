@@ -40,7 +40,7 @@ jobs:
           ${{ vars.DOCKERHUB_REPONAME }}:latest 
           ${{ vars.DOCKERHUB_REPONAME }}:${{ github.sha }}
         platforms: linux/amd64,linux/arm64
-        cache-from: type=registry,ref=${{ vars.DOCKERHUB_REPONAME }}:latest
-        cache-to: type=inline
+        # cache-from: type=registry,ref=${{ vars.DOCKERHUB_REPONAME }}:latest
+        # cache-to: type=inline
         build-args: |
           NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
