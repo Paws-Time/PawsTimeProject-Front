@@ -22,12 +22,94 @@ import type {
   CreateCommentReqDto,
   GetCommentAllParams,
   GetCommentByPostParams,
+  UpdateCommentReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
 import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
+/**
+ * 선택한 댓글을 수정합니다.
+ * @summary 댓글 수정
+ */
+export const updateComment = (
+  commentId: number,
+  updateCommentReqDto: BodyType<UpdateCommentReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/comments/${commentId}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updateCommentReqDto,
+    },
+    options,
+  );
+};
+
+export const getUpdateCommentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateComment>>,
+    TError,
+    { commentId: number; data: BodyType<UpdateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateComment>>,
+  TError,
+  { commentId: number; data: BodyType<UpdateCommentReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateComment>>,
+    { commentId: number; data: BodyType<UpdateCommentReqDto> }
+  > = (props) => {
+    const { commentId, data } = props ?? {};
+
+    return updateComment(commentId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateCommentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateComment>>
+>;
+export type UpdateCommentMutationBody = BodyType<UpdateCommentReqDto>;
+export type UpdateCommentMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 댓글 수정
+ */
+export const useUpdateComment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateComment>>,
+    TError,
+    { commentId: number; data: BodyType<UpdateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateComment>>,
+  TError,
+  { commentId: number; data: BodyType<UpdateCommentReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdateCommentMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * 선택한 댓글을 삭제합니다.
  * @summary 댓글 삭제
@@ -37,7 +119,7 @@ export const deleteComment = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/comments/${commentId}`, method: "PUT" },
+    { url: `/comments/${commentId}`, method: "DELETE" },
     options,
   );
 };

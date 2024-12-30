@@ -16,10 +16,11 @@ type Location = {
 export default function InfoBoardBody() {
   // State 관리
   const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null
+  );
   const [regionFilter, setRegionFilter] = useState(6);
   const [nameFilter, setNameFilter] = useState("");
-  const [latitude, setLatitude] = useState(37.5665); // 서울
-  const [longitude, setLongitude] = useState(126.978); // 서울
 
   // 데이터 로드
   useEffect(() => {
@@ -42,9 +43,7 @@ export default function InfoBoardBody() {
 
   // 장소 클릭 핸들러
   const handleLocationClick = (location: Location) => {
-    setNameFilter(location.name);
-    setLatitude(location.latitude);
-    setLongitude(location.longitude);
+    setSelectedLocation(location);
   };
 
   return (
@@ -115,11 +114,15 @@ export default function InfoBoardBody() {
 
       {/* 지도 컴포넌트 */}
       <aside className="w-[800px] border-l h-full border-gray-300 ml-10">
-        <MapApiData
-          latitude={latitude}
-          longitude={longitude}
-          name={nameFilter}
-        />
+        {selectedLocation && (
+          <MapApiData
+            latitude={selectedLocation?.latitude}
+            longitude={selectedLocation?.longitude}
+            name={selectedLocation?.name}
+            tel={selectedLocation?.tel ?? "연락처없음"}
+            address={selectedLocation?.address}
+          />
+        )}
       </aside>
     </div>
   );

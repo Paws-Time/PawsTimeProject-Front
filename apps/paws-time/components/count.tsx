@@ -1,6 +1,10 @@
 "use client";
 import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
-import { useGetPosts, useToggleLike } from "@/app/lib/codegen/hooks/post/post";
+import {
+  getGetPostsQueryKey,
+  useGetPosts,
+  useToggleLike,
+} from "@/app/lib/codegen/hooks/post/post";
 import { postFormStyles } from "@/app/styles/postforms";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -19,7 +23,10 @@ function Count({ boardId, postId }: CountProps) {
     mutation: {
       onSuccess: () => {
         setIsLiked((prev) => !prev);
-        queryClient.refetchQueries();
+        // queryClient.refetchQueries(); // ! React Tree 내의 모든 쿼리를 재실행
+        queryClient.refetchQueries({
+          queryKey: [...getGetPostsQueryKey({ boardId })],
+        });
       },
     },
   });
