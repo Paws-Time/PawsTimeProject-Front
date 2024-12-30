@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useCreateUser } from "../../lib/codegen/hooks/user-api/user-api";
+import { useRouter } from "next/navigation";
 
 // interface PostData {
 //   email: string;
@@ -14,6 +15,7 @@ import { useCreateUser } from "../../lib/codegen/hooks/user-api/user-api";
 // useCreateUser가 이미 타입을 관리하는 중
 
 const SignupBody = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [nick, setNick] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ const SignupBody = () => {
     mutation: {
       onSuccess: () => {
         alert("회원가입이 완료되었습니다.");
-        // router.push("/auth/login"); // 회원가입 성공 후 로그인 페이지로 이동
+        router.push("/auth/login"); // 회원가입 성공 후 로그인 페이지로 이동
       },
       onError: (error: any) => {
         alert(`회원가입에 실패했습니다: ${error.message}`);
@@ -41,7 +43,9 @@ const SignupBody = () => {
 
     mutation.mutate({ data: { email, nick, password } });
   };
-
+  // const loginHandel = () => {
+  //   router.push("/auth/login");
+  // };
   return (
     <div
       className="flex"

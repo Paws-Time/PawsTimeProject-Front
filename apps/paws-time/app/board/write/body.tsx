@@ -135,6 +135,10 @@ const BoardWriteBody = () => {
             required
           />
         </div>
+        <div style={formStyles.field}>
+          <label style={formStyles.label}>이미지</label>
+            <input ></input>
+        </div>
         <div></div>
         <CustomButton $label="작성하기" $sizeType="long" type="submit" />
       </form>
