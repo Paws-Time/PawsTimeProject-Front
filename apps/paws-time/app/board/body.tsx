@@ -1,12 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import useSideBarStore from "../hooks/sidebarStore";
 import { useState } from "react";
 import { CustomButton } from "@/components/utils/button";
-import { postFormStyles } from "../styles/postforms";
 import { useGetBoardList } from "../lib/codegen/hooks/board/board";
-import { Direction, directionDescription } from "@/app/lib/policy";
+import { Direction, directionBoardDescription } from "@/app/lib/policy";
 
 interface Board {
   boardId: number;
@@ -19,68 +17,90 @@ interface Board {
 
 export default function BoardList() {
   const router = useRouter();
-  const { sideBarState } = useSideBarStore();
-  const { isShow } = sideBarState;
-  const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
-  // const { setPageNo, setPageSize, setSortBy, setDirection } = boardAction;
+  const [pageSize, setPageSize] = useState(5);
 
   const params = {
     pageNo: 0,
     pageSize,
-    sortBy: "createdAt",
+    sortBy: "createdAt", // 항상 날짜순 정렬
     direction,
   };
 
-  // 보더 데이터 가져오기
+  const handleDirectionChange = (newDirection: Direction) => {
+    setDirection(newDirection);
+  };
+
   const { data, isLoading, isError } = useGetBoardList<{
     status: string;
     message: string | null;
     data: Board[];
   }>(params);
 
-  // 데이터가 없는 경우 빈 배열로 설정
   const boards = data?.data || [];
-  // 로딩 상태 처리
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // 에러 상태 처리
   if (isError) {
     return <div>Error occurred while fetching boards.</div>;
   }
-  //페이지 넘기기
+
+  // 페이지 넘기기
   const handlePage = () => {
     setPageSize((prev) => prev + 5);
   };
+
   return (
-    <div className="flex w-full h-custom-boardh">
-      {isShow && <div className="flex w-custom-sidew" />}
-      {/* 보더 목록 */}
-      <div className="p-4 gap-4 flex flex-col w-4/5">
-        <select
-          value={direction}
-          onChange={(e) => setDirection(e.target.value as Direction)}
-          style={postFormStyles.select}
-        >
-          <option value={Direction.DESC}>{directionDescription.DESC}</option>
-          <option value={Direction.ASC}>{directionDescription.ASC}</option>
-        </select>
-        {boards.map((board) => (
-          <div
-            key={board.boardId}
-            onClick={() => router.push(`board/boards/${board.boardId}`)}
-            className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
-          >
-            <h2 className="text-lg font-bold">{board.title}</h2>
-            <p className="text-sm text-gray-600">{board.description}</p>
-            <p className="text-xs text-gray-400">
-              생성일: {new Date(board.createdAt).toLocaleDateString()}
-            </p>
+    <div className="flex w-full h-screen overflow-hidden">
+      <div className="w-custom-sidew mr-3" />
+      <div className="p-4 gap-4 w-full flex flex-col overflow-y-auto">
+        {/* 정렬 방향 선택 */}
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex space-x-4">
+            {Object.entries(directionBoardDescription).map(
+              ([key, description]) => (
+                <label key={key} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="direction"
+                    value={key}
+                    checked={direction === key}
+                    onChange={() => handleDirectionChange(key as Direction)}
+                  />
+                  <span>{description}</span>
+                </label>
+              )
+            )}
           </div>
-        ))}
-        <CustomButton $label="더보기" $sizeType="long" onClick={handlePage} />
+          <CustomButton
+            $label="새글 쓰기"
+            $sizeType="normal"
+            onClick={() => router.push(`/board/createBoard`)}
+          />
+        </div>
+
+        {/* 게시판 목록 */}
+        <div className="flex flex-col space-y-4">
+          {boards.map((board) => (
+            <div
+              key={board.boardId}
+              onClick={() => router.push(`board/boards/${board.boardId}`)}
+              className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
+            >
+              <h2 className="text-lg font-bold">{board.title}</h2>
+              <p className="text-sm text-gray-600">{board.description}</p>
+              <p className="text-xs text-gray-400">
+                생성일: {new Date(board.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <CustomButton $label="더보기" $sizeType="long" onClick={handlePage} />
+        </div>
       </div>
     </div>
   );
