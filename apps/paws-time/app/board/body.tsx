@@ -54,7 +54,7 @@ export default function BoardList() {
 
   return (
     <div className="flex w-full h-screen overflow-hidden">
-      <div className="w-custom-sidew" />
+      <div className="w-custom-sidew mr-3" />
       <div className="p-4 gap-4 w-full flex flex-col overflow-y-auto">
         {/* 정렬 방향 선택 */}
         <div className="flex justify-between items-center mb-4">

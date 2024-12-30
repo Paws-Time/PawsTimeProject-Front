@@ -46,7 +46,7 @@ const styles = {
     right: "10px",
     background: "none",
     border: "none",
-    fontSize: "18px",
+    fontSize: "16px",
     cursor: "pointer",
   },
 };
