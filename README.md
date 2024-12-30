@@ -13,7 +13,7 @@ pnpm paws-time:codegen
 그런데 이 과정을 자동화하면 편하다 => CI/CD => github action
 
 이미지
-=> 통일된 개발/배포 환경을 밀봉하는 환경 그 자체 (\*.exe)
+=> 통일된 개발/배포 환경을 밀봉하는 환경 그 자체 (*.exe)
 => `Dockerfile` 라는 이름을 가진 파일을 생성
 
 컨테이너
