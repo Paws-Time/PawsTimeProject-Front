@@ -1,4 +1,11 @@
 import useBoardStore from "@/app/hooks/boardStore";
+import {
+  directionDescription,
+  SortBy,
+  sortByDescription,
+  Direction,
+} from "@/app/lib/policy";
+
 import React from "react";
 
 function SortSetting() {
@@ -12,46 +19,18 @@ function SortSetting() {
       <div className="space-y-4">
         <h4 className="text-lg font-bold">정렬 기준</h4>
         <div className="space-y-2">
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="sortBy"
-              value="title"
-              checked={sortBy === "title"}
-              onChange={() => setSortBy("title")}
-            />
-            <span>제목순</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="sortBy"
-              value="likes_count"
-              checked={sortBy === "likesCount"}
-              onChange={() => setSortBy("likesCount")}
-            />
-            <span>좋아요순</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="sortBy"
-              value="views"
-              checked={sortBy === "views"}
-              onChange={() => setSortBy("views")}
-            />
-            <span>조회순</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="sortBy"
-              value="create_At"
-              checked={sortBy === "createdAt"}
-              onChange={() => setSortBy("createdAt")}
-            />
-            <span>작성일자순</span>
-          </label>
+          {Object.entries(sortByDescription).map(([key, description]) => (
+            <label key={key} className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name={sortBy}
+                value={key}
+                checked={sortBy === key}
+                onChange={() => setSortBy(key as SortBy)}
+              />
+              <span>{description}</span>
+            </label>
+          ))}
         </div>
       </div>
 
@@ -59,26 +38,18 @@ function SortSetting() {
       <div className="space-y-4">
         <h4 className="text-lg font-bold">정렬 방향</h4>
         <div className="space-y-2">
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="direction"
-              value="ASC"
-              checked={direction === "ASC"}
-              onChange={() => setDirection("ASC")}
-            />
-            <span>오름차순</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="direction"
-              value="DESC"
-              checked={direction === "DESC"}
-              onChange={() => setDirection("DESC")}
-            />
-            <span>내림차순</span>
-          </label>
+          {Object.entries(directionDescription).map(([key, description]) => (
+            <label key={key} className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="direction"
+                value={key}
+                checked={direction === key}
+                onChange={() => setDirection(key as Direction)}
+              />
+              <span>{description}</span>
+            </label>
+          ))}
         </div>
       </div>
 

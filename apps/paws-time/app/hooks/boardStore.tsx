@@ -1,9 +1,8 @@
 import { create } from "zustand";
+import { SortBy, Direction } from "../lib/policy";
 
 // 타입 정의
 type PageSize = 4 | 8 | 12;
-type SortBy = "views" | "likesCount" | "title" | "createdAt";
-type Direction = "DESC" | "ASC";
 
 interface AppState {
   // 상태 (state)
@@ -25,8 +24,8 @@ interface AppState {
 const useBoardStore = create<AppState>((set) => ({
   boardState: {
     pageSize: 8,
-    sortBy: "createdAt",
-    direction: "DESC",
+    sortBy: SortBy.CREATED_AT,
+    direction: Direction.ASC,
   },
   boardActions: {
     setPageSize: (pageSize) =>

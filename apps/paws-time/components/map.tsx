@@ -1,5 +1,8 @@
 "use client";
+import { useModalStore } from "@/app/hooks/modalStore";
 import React, { useEffect } from "react";
+import Modal from "./modal";
+import Mapdetail from "./mapdetail";
 
 // Kakao 지도 타입 선언
 declare global {
@@ -13,25 +16,23 @@ type MapProps = {
   latitude: number; // 위도
   longitude: number; // 경도
   name: string;
+  tel: string;
+  address: string;
 };
 
-function MapApiData({ latitude, longitude, name }: MapProps) {
+function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
   const kakaoApiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT;
-
+  const { openModal } = useModalStore();
+  console.log(name, tel, address);
   useEffect(() => {
     // Kakao 지도 SDK 로드
     const script = document.createElement("script");
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=false`;
     script.async = true;
-    // console.log(process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT);
-    // console.log("Kakao maps object:", window.kakao?.maps);
     script.onload = () => {
-      // console.log("Kakao Maps SDK 로드 성공");
       // SDK 로드 후 지도 초기화
       if (window.kakao) {
-        // console.log("Kakao Maps SDK 로드 성공");
         window.kakao.maps.load(() => {
-          // console.log("window.kakao 객체 확인:", window.kakao);
           const container = document.getElementById("map"); // 지도 컨테이너
           const options = {
             center: new window.kakao.maps.LatLng(latitude, longitude), // 중심 좌표
@@ -45,9 +46,22 @@ function MapApiData({ latitude, longitude, name }: MapProps) {
           const marker = new window.kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
             position: new window.kakao.maps.LatLng(latitude, longitude), // 마커 위치
-            name,
+            clickable: true,
           });
-          console.log("마커 생성:", marker);
+          const iwContent = '<div style="padding:5px;">세부정보보기</div>';
+          // 인포윈도우를 생성합니다
+          const infowindow = new window.kakao.maps.InfoWindow({
+            content: iwContent,
+          });
+          window.kakao.maps.event.addListener(marker, "mouseover", () => {
+            infowindow.open(map, marker);
+          });
+          window.kakao.maps.event.addListener(marker, "mouseout", () => {
+            infowindow.close();
+          });
+          window.kakao.maps.event.addListener(marker, "click", () => {
+            openModal();
+          });
         });
       }
     };
@@ -61,9 +75,16 @@ function MapApiData({ latitude, longitude, name }: MapProps) {
         mapContainer.innerHTML = ""; // 지도 초기화
       }
     };
-  }, [latitude, longitude]);
+  }, [latitude, longitude, kakaoApiKey, openModal]);
 
-  return <div id="map" className="w-[900px] h-[700px]" />; // 지도 표시 영역
+  return (
+    <>
+      <div id="map" className="w-[900px] h-[700px]" />;
+      <Modal>
+        <Mapdetail name={name} tel={tel} address={address} />
+      </Modal>
+    </>
+  );
 }
 
 export default MapApiData;

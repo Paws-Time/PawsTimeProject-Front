@@ -4,7 +4,7 @@ pnpm i or pnpm install
 
 pnpm paws-time:dev or pnpm --filter paws-time dev
 
-pnpm paws-time:codegen 
+pnpm paws-time:codegen
 //api 훅관리 업데이트.
 
 배포 : 서비스의 릴리즈 (버전업) => 개발상으로는 브랜치 push === main 브랜치의 최신화
