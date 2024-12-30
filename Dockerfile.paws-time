@@ -5,9 +5,11 @@ FROM node:20
 # 환경변수를 이미지를 빌드할 때 같이 넣을 것이다. 왜냐하면 우리에겐 axios client로 API baseUrl을 넣고 있기 때문이다.
 # let NEXT_PUBLIC_API_URL; <선언>
 ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT
 
 # 환경변수를 <사용> 하겠다고 <등록>
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT=$NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT
 
 # cd 폴더 없으면 생성하고 있으면 이동
 WORKDIR /app
