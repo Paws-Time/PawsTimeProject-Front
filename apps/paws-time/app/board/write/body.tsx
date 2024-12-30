@@ -1,5 +1,6 @@
 "use client";
 
+import { CreatePostBody, CreatePostReqDto } from "@/app/lib/codegen/dtos";
 import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
@@ -11,14 +12,6 @@ interface BoardResDto {
   boardId: number;
   title: string;
 }
-
-interface PostReqDto {
-  title: string;
-  content: string;
-  boardId: number;
-  likesCount: number;
-}
-
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>(1);
   const [title, setTitle] = useState<string>("");
@@ -80,14 +73,18 @@ const BoardWriteBody = () => {
       return;
     }
 
-    const postData: PostReqDto = {
+    const postData: CreatePostReqDto = {
       title: trimmedTitle,
       content: trimmedContent,
       boardId: boardId,
       likesCount: 0,
     };
+    const requestBody: CreatePostBody = {
+      data: postData,
+      images: undefined, // 이미지가 없으면 undefined로 설정
+    };
 
-    mutate({ data: postData });
+    mutate({ data: requestBody });
   };
 
   if (isLoading) {
@@ -138,6 +135,7 @@ const BoardWriteBody = () => {
             required
           />
         </div>
+        <div></div>
         <CustomButton $label="작성하기" $sizeType="long" type="submit" />
       </form>
     </div>
