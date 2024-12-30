@@ -6,7 +6,7 @@ import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
 import { useModalStore } from "@/app/hooks/modalStore";
-import SortSetting from "@/components/sortsetting";
+import SortSetting from "@/components/postsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
@@ -88,6 +88,7 @@ const BoardDetailBody = () => {
   const resetPage = () => {
     setPageNo(0);
   };
+  console.log(boardId);
   return (
     <div className="container">
       <h1 className="heading">{boardTitle} 게시글</h1>
@@ -102,6 +103,12 @@ const BoardDetailBody = () => {
             required
           />
         </form>
+        <CustomButton
+          $label="새글 쓰기"
+          $sizeType="normal"
+          onClick={() => router.push(`/board/write?boardId=${boardId}`)}
+          className="mt-2"
+        />
         <CustomButton
           $label="검색설정"
           $sizeType="normal"

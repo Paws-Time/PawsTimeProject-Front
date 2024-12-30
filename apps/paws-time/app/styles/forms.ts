@@ -22,7 +22,7 @@ export const formStyles = {
     padding: "30px",
     borderRadius: "10px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-    height: "800px",
+    height: "900px",
     overflow: "auto",
     display: "flex",
     flexDirection: "column" as const,

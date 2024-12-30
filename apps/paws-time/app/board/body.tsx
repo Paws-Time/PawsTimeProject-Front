@@ -64,8 +64,8 @@ export default function BoardList() {
           onChange={(e) => setDirection(e.target.value as Direction)}
           style={postFormStyles.select}
         >
-          <option value={Direction.DESC}>{directionDescription.DESC}</option>
-          <option value={Direction.ASC}>{directionDescription.ASC}</option>
+          <option value={Direction.DESC}>최신순</option>
+          <option value={Direction.ASC}>오래된순</option>
         </select>
         {boards.map((board) => (
           <div

@@ -1,18 +1,19 @@
 "use client";
 
+import {
+  CreateBoardReqDto,
+  CreateBoardReqDtoBoardType,
+} from "@/app/lib/codegen/dtos";
 import { useCreateBoard } from "@/app/lib/codegen/hooks/board/board";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-interface BoardProps {
-  title: string;
-  description: string;
-}
-
 export default function CreateBoardComponent() {
   const [title, setTitle] = useState<string>("");
+  const [boardType, setBoardType] =
+    useState<CreateBoardReqDtoBoardType>("GENERAL");
   const [description, setDescription] = useState<string>("");
   const router = useRouter();
 
@@ -30,14 +31,15 @@ export default function CreateBoardComponent() {
       },
     },
   });
+
   const handleCreateBoard = () => {
-    const params: BoardProps = { title, description };
+    const params: CreateBoardReqDto = { title, description, boardType };
     mutate({ data: params });
     console.log(params);
   };
 
   if (isLoading) {
-    return <div>게시판판을 생성 중입니다...</div>;
+    return <div>게시판을 생성 중입니다...</div>;
   }
 
   if (isError) {
@@ -49,6 +51,19 @@ export default function CreateBoardComponent() {
       <div style={formStyles.background}></div>
       <form style={formStyles.form} onSubmit={(e) => e.preventDefault()}>
         <h1 style={formStyles.heading}>게시판 만들기</h1>
+        <div style={formStyles.field}>
+          <label style={formStyles.label}>게시판 유형</label>
+          <select
+            value={boardType}
+            onChange={(e) =>
+              setBoardType(e.target.value as CreateBoardReqDtoBoardType)
+            }
+            style={formStyles.select}
+          >
+            <option value="GENERAL">일반게시판</option>
+            <option value="INFORMATION">정보게시판</option>
+          </select>
+        </div>
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판 이름</label>
           <input

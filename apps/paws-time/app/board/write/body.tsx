@@ -5,22 +5,27 @@ import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface BoardResDto {
   boardId: number;
   title: string;
 }
+
 const BoardWriteBody = () => {
-  const [boardId, setBoardId] = useState<number>(1);
+  const searchParams = useSearchParams();
+  const boardIdParam = searchParams.get("boardId"); // URL 쿼리에서 boardId 가져오기
+  const [boardId, setBoardId] = useState<number | undefined>(
+    Number(boardIdParam) || undefined
+  );
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
   const router = useRouter();
+  const { data, isLoading: boardLoading } = useGetBoardList();
 
-  const { data } = useGetBoardList();
-
+  // 게시판 목록 로드 및 기본값 설정
   useEffect(() => {
     if (data) {
       const boardList =
@@ -29,8 +34,12 @@ const BoardWriteBody = () => {
           title: board.title,
         })) || [];
       setBoardOption(boardList);
+
+      if (!boardId && boardList.length > 0) {
+        setBoardId(boardList[0].boardId); // 첫 번째 게시판을 기본값으로 설정
+      }
     }
-  }, [data]);
+  }, [data, boardId]);
 
   const { mutate, isLoading, isError } = useCreatePost({
     mutation: {
@@ -38,7 +47,7 @@ const BoardWriteBody = () => {
         alert("게시글이 성공적으로 생성되었습니다.");
         setTitle("");
         setContent("");
-        router.push(`/board/boards/${boardId}`);
+        router.push(`/board/boards/${boardId}`); // 게시판 상세 페이지로 이동
       },
       onError: (error) => {
         console.error(error);
@@ -50,13 +59,8 @@ const BoardWriteBody = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      alert("제목을 입력해주세요.");
-      return;
-    }
-
-    if (!content.trim()) {
-      alert("내용을 입력해주세요.");
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
@@ -73,6 +77,11 @@ const BoardWriteBody = () => {
       return;
     }
 
+    if (!boardId) {
+      alert("게시판을 선택해주세요.");
+      return;
+    }
+
     const postData: CreatePostReqDto = {
       title: trimmedTitle,
       content: trimmedContent,
@@ -81,14 +90,14 @@ const BoardWriteBody = () => {
     };
     const requestBody: CreatePostBody = {
       data: postData,
-      images: undefined, // 이미지가 없으면 undefined로 설정
+      images: undefined,
     };
 
     mutate({ data: requestBody });
   };
 
-  if (isLoading) {
-    return <div>게시글을 생성 중입니다...</div>;
+  if (boardLoading || isLoading) {
+    return <div>로딩 중...</div>;
   }
 
   if (isError) {
@@ -106,6 +115,7 @@ const BoardWriteBody = () => {
             value={boardId}
             onChange={(e) => setBoardId(Number(e.target.value))}
             style={formStyles.select}
+            required
           >
             {boardOption.map((board) => (
               <option key={board.boardId} value={board.boardId}>
@@ -135,11 +145,6 @@ const BoardWriteBody = () => {
             required
           />
         </div>
-        <div style={formStyles.field}>
-          <label style={formStyles.label}>이미지</label>
-            <input ></input>
-        </div>
-        <div></div>
         <CustomButton $label="작성하기" $sizeType="long" type="submit" />
       </form>
     </div>
