@@ -1,6 +1,6 @@
 "use client";
 
-import { CreatePostBody, CreatePostReqDto } from "@/app/lib/codegen/dtos";
+import { CreatePostBody } from "@/app/lib/codegen/dtos";
 import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
@@ -15,15 +15,15 @@ interface BoardResDto {
 
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>(1);
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [title, setTitle] = useState<string>(""); // 게시글 제목
+  const [content, setContent] = useState<string>(""); // 게시글 내용
+  const [images, setImages] = useState<File[]>([]); // 이미지 파일 배열
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
 
-  const [images, setImages] = useState([]);
   const router = useRouter();
   const { data, isLoading: boardLoading } = useGetBoardList();
 
-  // 게시판 목록 로드 및 기본값 설정
+  // 게시판 목록 로드
   useEffect(() => {
     if (data) {
       const boardList =
@@ -43,8 +43,9 @@ const BoardWriteBody = () => {
     mutation: {
       onSuccess: () => {
         alert("게시글이 성공적으로 생성되었습니다.");
-        setTitle("");
-        setContent("");
+        setTitle(""); // 제목 초기화
+        setContent(""); // 내용 초기화
+        setImages([]); // 이미지 초기화
         router.push(`/board/boards/${boardId}`); // 게시판 상세 페이지로 이동
       },
       onError: (error) => {
@@ -54,6 +55,13 @@ const BoardWriteBody = () => {
     },
   });
 
+  // 이미지 파일 변경 핸들러
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환
+    setImages(files); // 상태에 저장
+  };
+
+  // 게시글 작성 핸들러
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -65,33 +73,17 @@ const BoardWriteBody = () => {
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
 
-    if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
-      alert("제목은 5자 이상 20자 이하로 작성해주세요.");
-      return;
-    }
-
-    if (trimmedContent.length < 5) {
-      alert("내용은 최소 5자 이상이어야 합니다.");
-      return;
-    }
-
-    if (!boardId) {
-      alert("게시판을 선택해주세요.");
-      return;
-    }
-
-    const postData: CreatePostReqDto = {
-      title: trimmedTitle,
-      content: trimmedContent,
-      boardId: boardId,
-      likesCount: 0,
-    };
     const requestBody: CreatePostBody = {
-      data: postData,
-      images: undefined,
+      data: {
+        boardId: boardId,
+        title: trimmedTitle,
+        content: trimmedContent,
+        likesCount: 0,
+      },
+      images: images.map((image) => image as Blob), // File을 Blob으로 변환
     };
 
-    mutate({ data: requestBody });
+    mutate({ data: requestBody }); // CreatePostBody를 mutate에 전달
   };
 
   if (boardLoading || isLoading) {
@@ -101,9 +93,6 @@ const BoardWriteBody = () => {
   if (isError) {
     return <div>게시글 생성 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
   }
-  // const handleImage = async (e) => {
-  //   const files = Array.from(e.target.file || []);
-  // };
 
   return (
     <div style={formStyles.container}>
@@ -144,7 +133,7 @@ const BoardWriteBody = () => {
             <input
               id="image"
               type="file"
-              onChange={() => {}}
+              onChange={handleImageChange} // 이미지 파일 변경 핸들러
               multiple
               style={formStyles.posttextarea}
             />

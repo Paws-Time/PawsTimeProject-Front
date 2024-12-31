@@ -23,7 +23,6 @@ type MapProps = {
 function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
   const kakaoApiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT;
   const { openModal } = useModalStore();
-  console.log(name, tel, address);
   useEffect(() => {
     // Kakao 지도 SDK 로드
     const script = document.createElement("script");
@@ -41,7 +40,6 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
 
           // 지도 생성
           const map = new window.kakao.maps.Map(container, options);
-          console.log("지도생성", map);
           // 마커 생성
           const marker = new window.kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
