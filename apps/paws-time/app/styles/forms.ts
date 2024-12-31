@@ -31,7 +31,6 @@ export const formStyles = {
   heading: {
     textAlign: "center" as const,
     fontSize: "24px",
-    marginBottom: "5px",
     color: "#333",
   },
   field: {
@@ -39,7 +38,6 @@ export const formStyles = {
   },
   label: {
     display: "block",
-    marginBottom: "5px",
     fontSize: "16px",
     fontWeight: "bold" as const,
     color: "#555",
@@ -54,7 +52,7 @@ export const formStyles = {
   },
   textarea: {
     width: "100%",
-    height: "350px",
+    height: "380px",
     minHeight: "150px",
     padding: "10px",
     fontSize: "16px",
@@ -66,7 +64,7 @@ export const formStyles = {
   },
   postimagelabel: {
     width: "100%",
-    height: "50px",
+    height: "30px",
     minHeight: "50px",
     fontSize: "16px",
     borderRadius: "5px",
@@ -76,19 +74,19 @@ export const formStyles = {
   },
   postimagefield: {
     display: "flex",
-    flexDirection: "row" as const, // 가로 정렬
-    alignItems: "center", // 세로 중앙 정렬
-    justifyContent: "flex-start", // 내용물 왼쪽 정렬
-    flexWrap: "wrap" as const, // 가로 길이를 넘어가면 줄바꿈
-    width: "100%", // 부모 컨테이너 너비 제한
-    padding: "10px",
+    flexDirection: "row" as const,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexWrap: "wrap" as const,
+    width: "100%",
+    padding: "5px",
     boxSizing: "border-box" as const,
-    gap: "10px", // 이미지와 버튼 사이의 간격
-    overflowY: "auto" as const, // 넘치는 내용 숨김
+    gap: "16px",
+    overflowY: "auto" as const,
   },
   posttextarea: {
     width: "100%",
-    height: "350px",
+    height: "380px",
     minHeight: "150px",
     padding: "10px",
     fontSize: "16px",
@@ -100,11 +98,11 @@ export const formStyles = {
   },
   imagePreview: {
     display: "flex",
-    flexDirection: "column" as const, // 버튼을 이미지 아래에 배치
+    flexDirection: "column" as const,
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: "100px", // 이미지 최대 너비
-    gap: "5px", // 이미지와 버튼 사이의 간격
+    maxWidth: "100px",
+    gap: "5px",
   },
   select: {
     width: "100%",
@@ -114,7 +112,7 @@ export const formStyles = {
     border: "1px solid #ddd",
     boxSizing: "border-box" as const,
     backgroundColor: "#fff",
-    appearance: "none" as const, // 기본 화살표 제거
+    appearance: "none" as const,
   },
   button: {
     marginTop: "auto",

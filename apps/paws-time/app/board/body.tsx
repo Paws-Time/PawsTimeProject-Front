@@ -18,7 +18,7 @@ interface Board {
 export default function BoardList() {
   const router = useRouter();
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(3);
 
   const params = {
     pageNo: 0,
@@ -53,9 +53,9 @@ export default function BoardList() {
   };
 
   return (
-    <div className="flex w-full h-screen overflow-hidden">
-      <div className="w-custom-sidew mr-3" />
-      <div className="p-4 gap-4 w-full flex flex-col overflow-y-auto">
+    <div className="flex w-full justify-center overflow-x-hidden">
+      <div className="w-custom-sidew" />
+      <div className="p-4 gap-4 w-full flex flex-col">
         {/* 정렬 방향 선택 */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-4">
