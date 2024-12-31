@@ -88,6 +88,7 @@ const BoardDetailBody = () => {
   console.log(boardId);
   return (
     <div className="container">
+      <div className="w-custom-sidew" />
       <div className="flex">
         <h1 className="heading">{boardTitle} 게시글</h1>
         <div className="ml-5">
