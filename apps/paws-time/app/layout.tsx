@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./styles/globals.css";
 import ReactQueryProvider from "./lib/providers/ReactQueryProvider";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Hearder";
 
 export const metadata: Metadata = {
   title: "Paws-Time",
@@ -17,20 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col w-full h-screen">
         <ReactQueryProvider>
-          <header className="sticky top-0 z-50 flex items-center justify-between w-full bg-gray-200 px-6 shadow-md">
-            <div className="flex items-center">
-              <div className="w-20 h-20 bg-gray-400 rounded-full"></div>
-              <span className="ml-4 font-bold text-lg">PAWS TIME</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-gray-400 rounded-full"></div>
-              <div className="ml-3 hidden sm:block">
-                <p className="text-sm font-medium">Olivia Rhye</p>
-                <p className="text-xs text-gray-500">olivia@untitledui.com</p>
-              </div>
-            </div>
-          </header>
-
+          <Header />
           <div className="flex flex-row flex-1">
             <Sidebar />
             <main className="flex-1 bg-white p-6 overflow-auto">

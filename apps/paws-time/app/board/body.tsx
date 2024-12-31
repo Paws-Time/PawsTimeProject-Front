@@ -55,7 +55,7 @@ export default function BoardList() {
     setPageSize((prev) => prev + 5);
   };
   return (
-    <div className="flex w-full h-custom-boardh">
+    <div className="flex justify-center w-custom-boardw h-custom-boardh">
       {isShow && <div className="flex w-custom-sidew" />}
       {/* 보더 목록 */}
       <div className="p-4 gap-4 flex flex-col w-4/5">
