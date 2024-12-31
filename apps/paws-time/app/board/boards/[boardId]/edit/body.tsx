@@ -3,7 +3,6 @@
 import { UpdateBoardReqDto } from "@/app/lib/codegen/dtos";
 import {
   deleteBoard,
-  useDeleteBoard,
   useUpdateBoard,
 } from "@/app/lib/codegen/hooks/board/board";
 import { formStyles } from "@/app/styles/forms";

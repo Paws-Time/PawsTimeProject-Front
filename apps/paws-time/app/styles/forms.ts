@@ -31,15 +31,15 @@ export const formStyles = {
   heading: {
     textAlign: "center" as const,
     fontSize: "24px",
-    marginBottom: "20px",
+    marginBottom: "5px",
     color: "#333",
   },
   field: {
-    marginBottom: "20px",
+    marginBottom: "5px",
   },
   label: {
     display: "block",
-    marginBottom: "10px",
+    marginBottom: "5px",
     fontSize: "16px",
     fontWeight: "bold" as const,
     color: "#555",
@@ -64,6 +64,28 @@ export const formStyles = {
     lineHeight: "1.5",
     resize: "none" as const,
   },
+  postimagelabel: {
+    width: "100%",
+    height: "50px",
+    minHeight: "50px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    boxSizing: "border-box" as const,
+    lineHeight: "1.5",
+    resize: "none" as const,
+  },
+  postimagefield: {
+    display: "flex",
+    flexDirection: "row" as const, // 가로 정렬
+    alignItems: "center", // 세로 중앙 정렬
+    justifyContent: "flex-start", // 내용물 왼쪽 정렬
+    flexWrap: "wrap" as const, // 가로 길이를 넘어가면 줄바꿈
+    width: "100%", // 부모 컨테이너 너비 제한
+    padding: "10px",
+    boxSizing: "border-box" as const,
+    gap: "10px", // 이미지와 버튼 사이의 간격
+    overflowY: "auto" as const, // 넘치는 내용 숨김
+  },
   posttextarea: {
     width: "100%",
     height: "350px",
@@ -75,6 +97,14 @@ export const formStyles = {
     boxSizing: "border-box" as const,
     lineHeight: "1.5",
     resize: "none" as const,
+  },
+  imagePreview: {
+    display: "flex",
+    flexDirection: "column" as const, // 버튼을 이미지 아래에 배치
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: "100px", // 이미지 최대 너비
+    gap: "5px", // 이미지와 버튼 사이의 간격
   },
   select: {
     width: "100%",
