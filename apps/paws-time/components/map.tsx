@@ -77,7 +77,7 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
 
   return (
     <>
-      <div id="map" className="w-[900px] h-[700px]" />;
+      <div id="map" className="w-[900px] h-[850px] ml-20 mt-10" />;
       <Modal>
         <Mapdetail name={name} tel={tel} address={address} />
       </Modal>

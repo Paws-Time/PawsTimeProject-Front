@@ -12,12 +12,16 @@ interface BoardResDto {
   boardId: number;
   title: string;
 }
+interface ImagePreview {
+  file: File;
+  url: string;
+}
 
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>(1);
   const [title, setTitle] = useState<string>(""); // 게시글 제목
   const [content, setContent] = useState<string>(""); // 게시글 내용
-  const [images, setImages] = useState<File[]>([]); // 이미지 파일 배열
+  const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
 
   const router = useRouter();
@@ -58,7 +62,16 @@ const BoardWriteBody = () => {
   // 이미지 파일 변경 핸들러
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환
-    setImages(files); // 상태에 저장
+    const newImages = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file), //이미지를 url 주소 생성하는 메서드
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]); // 상태에 저장
+  };
+
+  //이미지 삭제 핸들러
+  const handleRemoveImage = (url: string) => {
+    setImages((prevImages) => prevImages.filter((image) => image.url !== url));
   };
 
   // 게시글 작성 핸들러
@@ -80,10 +93,10 @@ const BoardWriteBody = () => {
         content: trimmedContent,
         likesCount: 0,
       },
-      images: images.map((image) => image as Blob), // File을 Blob으로 변환
+      images: images.map((image) => image.file as Blob),
     };
 
-    mutate({ data: requestBody }); // CreatePostBody를 mutate에 전달
+    mutate({ data: requestBody });
   };
 
   if (boardLoading || isLoading) {
@@ -133,10 +146,39 @@ const BoardWriteBody = () => {
             <input
               id="image"
               type="file"
-              onChange={handleImageChange} // 이미지 파일 변경 핸들러
+              onChange={handleImageChange}
               multiple
-              style={formStyles.posttextarea}
+              style={formStyles.postimagelabel}
             />
+            <div style={formStyles.postimagefield}>
+              {images.map((image) => (
+                <div key={image.url} style={formStyles.imagePreview}>
+                  <img
+                    src={image.url}
+                    alt="미리보기"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      marginBottom: "10px",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(image.url)}
+                    style={{
+                      backgroundColor: "#ff4d4d",
+                      color: "#fff",
+                      padding: "5px 10px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
