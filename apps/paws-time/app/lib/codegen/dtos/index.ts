@@ -43,3 +43,5 @@ export * from "./updateBoardReqDto";
 export * from "./updateCommentReqDto";
 export * from "./updatePostReqDto";
 export * from "./userCreateReqDto";
+export * from "./apiResponseString";
+export * from "./apiResponseStringStatus";

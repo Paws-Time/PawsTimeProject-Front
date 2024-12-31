@@ -6,7 +6,7 @@ import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useRouter } from "next/navigation";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface BoardResDto {
   boardId: number;
@@ -18,6 +18,8 @@ const BoardWriteBody = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
+
+  const [images, setImages] = useState([]);
   const router = useRouter();
   const { data, isLoading: boardLoading } = useGetBoardList();
 
@@ -99,53 +101,68 @@ const BoardWriteBody = () => {
   if (isError) {
     return <div>게시글 생성 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
   }
+  // const handleImage = async (e) => {
+  //   const files = Array.from(e.target.file || []);
+  // };
 
   return (
-    <Suspense>
-      <div style={formStyles.container}>
-        <div style={formStyles.background}></div>
-        <form onSubmit={handleSubmit} style={formStyles.form}>
-          <h2 style={formStyles.heading}>글 작성하기</h2>
-          <div style={formStyles.field}>
-            <label style={formStyles.label}>게시판</label>
-            <select
-              value={boardId}
-              onChange={(e) => setBoardId(Number(e.target.value))}
-              style={formStyles.select}
-              required
-            >
-              {boardOption.map((board) => (
-                <option key={board.boardId} value={board.boardId}>
-                  {board.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={formStyles.field}>
-            <label style={formStyles.label}>제목</label>
+    <div style={formStyles.container}>
+      <div style={formStyles.background}></div>
+      <form onSubmit={handleSubmit} style={formStyles.form}>
+        <h2 style={formStyles.heading}>글 작성하기</h2>
+        <div style={formStyles.field}>
+          <label style={formStyles.label}>게시판</label>
+          <select
+            value={boardId}
+            onChange={(e) => setBoardId(Number(e.target.value))}
+            style={formStyles.select}
+            required
+          >
+            {boardOption.map((board) => (
+              <option key={board.boardId} value={board.boardId}>
+                {board.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div style={formStyles.field}>
+          <label style={formStyles.label}>제목</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="제목을 입력하세요"
+            style={formStyles.input}
+            required
+          />
+        </div>
+        <div style={formStyles.field} className="flex">
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
+            <label htmlFor="image" style={formStyles.label}>
+              이미지
+            </label>
             <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="제목을 입력하세요"
-              style={formStyles.input}
-              required
+              id="image"
+              type="file"
+              onChange={() => {}}
+              multiple
+              style={formStyles.posttextarea}
             />
           </div>
-          <div style={formStyles.field}>
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="내용을 입력하세요"
-              style={formStyles.textarea}
+              style={formStyles.posttextarea}
               required
             />
           </div>
-          <CustomButton $label="작성하기" $sizeType="long" type="submit" />
-        </form>
-      </div>
-    </Suspense>
+        </div>
+        <CustomButton $label="작성하기" $sizeType="long" type="submit" />
+      </form>
+    </div>
   );
 };
 

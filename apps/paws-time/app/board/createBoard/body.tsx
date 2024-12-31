@@ -38,6 +38,7 @@ export default function CreateBoardComponent() {
     console.log(params);
   };
 
+  
   if (isLoading) {
     return <div>게시판을 생성 중입니다...</div>;
   }

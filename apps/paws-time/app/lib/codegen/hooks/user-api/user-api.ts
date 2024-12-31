@@ -11,10 +11,9 @@ import type {
   UseMutationResult,
 } from "@tanstack/react-query";
 import type {
-  CreateUser200,
-  LoginUser200,
+  ApiResponseString,
+  ApiResponseVoid,
   LoginUserReqDto,
-  LogoutUser200,
   UserCreateReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
@@ -30,7 +29,7 @@ export const createUser = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<CreateUser200>(
+  return customInstance<ApiResponseVoid>(
     {
       url: `/api/v1/member`,
       method: "POST",
@@ -110,7 +109,7 @@ export const logoutUser = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<LogoutUser200>(
+  return customInstance<ApiResponseVoid>(
     { url: `/api/v1/logout`, method: "POST", signal },
     options,
   );
@@ -183,7 +182,7 @@ export const loginUser = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<LoginUser200>(
+  return customInstance<ApiResponseString>(
     {
       url: `/api/v1/login`,
       method: "POST",

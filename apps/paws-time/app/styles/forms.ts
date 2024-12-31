@@ -64,6 +64,18 @@ export const formStyles = {
     lineHeight: "1.5",
     resize: "none" as const,
   },
+  posttextarea: {
+    width: "100%",
+    height: "350px",
+    minHeight: "150px",
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ddd",
+    boxSizing: "border-box" as const,
+    lineHeight: "1.5",
+    resize: "none" as const,
+  },
   select: {
     width: "100%",
     padding: "10px",
