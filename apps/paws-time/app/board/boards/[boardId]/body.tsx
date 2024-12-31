@@ -41,9 +41,6 @@ const BoardDetailBody = () => {
   const { boardState } = useBoardStore();
   const [keyword, setKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
-  /*const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
-  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태 
-  **/
   const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
@@ -91,7 +88,16 @@ const BoardDetailBody = () => {
   console.log(boardId);
   return (
     <div className="container">
-      <h1 className="heading">{boardTitle} 게시글</h1>
+      <div className="flex">
+        <h1 className="heading">{boardTitle} 게시글</h1>
+        <div className="ml-5">
+          <CustomButton
+            $label="수정"
+            $sizeType="normal"
+            onClick={() => router.push(`${boardId}/edit`)}
+          />
+        </div>
+      </div>
       <div className="filter-container">
         <form className="input" onSubmit={handleSearch}>
           <input
@@ -106,7 +112,8 @@ const BoardDetailBody = () => {
         <CustomButton
           $label="새글 쓰기"
           $sizeType="normal"
-          onClick={() => router.push(`/board/write?boardId=${boardId}`)}
+          value={boardTitle}
+          onClick={() => router.push(`/board/write/`)}
           className="mt-2"
         />
         <CustomButton

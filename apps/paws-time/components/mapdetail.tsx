@@ -7,8 +7,6 @@ type MapInfo = {
 };
 
 function Mapdetail({ name, address, tel }: MapInfo) {
-  console.log(name, address, tel);
-
   const handleNaverSearch = () => {
     const naverUrl = `https://map.naver.com/v5/search/${encodeURIComponent(address)}`;
     window.open(naverUrl, "_blank");
