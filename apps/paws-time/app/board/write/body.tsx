@@ -1,6 +1,6 @@
 "use client";
 
-import { CreatePostBody, CreatePostReqDto } from "@/app/lib/codegen/dtos";
+import { CreatePostBody } from "@/app/lib/codegen/dtos";
 import { useGetBoardList } from "@/app/lib/codegen/hooks/board/board";
 import { useCreatePost } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
@@ -12,15 +12,22 @@ interface BoardResDto {
   boardId: number;
   title: string;
 }
+interface ImagePreview {
+  file: File;
+  url: string;
+}
+
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>(1);
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [title, setTitle] = useState<string>(""); // 게시글 제목
+  const [content, setContent] = useState<string>(""); // 게시글 내용
+  const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
   const [boardOption, setBoardOption] = useState<BoardResDto[]>([]);
+
   const router = useRouter();
+  const { data, isLoading: boardLoading } = useGetBoardList();
 
-  const { data } = useGetBoardList();
-
+  // 게시판 목록 로드
   useEffect(() => {
     if (data) {
       const boardList =
@@ -29,16 +36,21 @@ const BoardWriteBody = () => {
           title: board.title,
         })) || [];
       setBoardOption(boardList);
+
+      if (!boardId && boardList.length > 0) {
+        setBoardId(boardList[0].boardId); // 첫 번째 게시판을 기본값으로 설정
+      }
     }
-  }, [data]);
+  }, [data, boardId]);
 
   const { mutate, isLoading, isError } = useCreatePost({
     mutation: {
       onSuccess: () => {
         alert("게시글이 성공적으로 생성되었습니다.");
-        setTitle("");
-        setContent("");
-        router.push(`/board/boards/${boardId}`);
+        setTitle(""); // 제목 초기화
+        setContent(""); // 내용 초기화
+        setImages([]); // 이미지 초기화
+        router.push(`/board/boards/${boardId}`); // 게시판 상세 페이지로 이동
       },
       onError: (error) => {
         console.error(error);
@@ -47,48 +59,48 @@ const BoardWriteBody = () => {
     },
   });
 
+  // 이미지 파일 변경 핸들러
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환
+    const newImages = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file), //이미지를 url 주소 생성하는 메서드
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]); // 상태에 저장
+  };
+
+  //이미지 삭제 핸들러
+  const handleRemoveImage = (url: string) => {
+    setImages((prevImages) => prevImages.filter((image) => image.url !== url));
+  };
+
+  // 게시글 작성 핸들러
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      alert("제목을 입력해주세요.");
-      return;
-    }
-
-    if (!content.trim()) {
-      alert("내용을 입력해주세요.");
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
 
-    if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
-      alert("제목은 5자 이상 20자 이하로 작성해주세요.");
-      return;
-    }
-
-    if (trimmedContent.length < 5) {
-      alert("내용은 최소 5자 이상이어야 합니다.");
-      return;
-    }
-
-    const postData: CreatePostReqDto = {
-      title: trimmedTitle,
-      content: trimmedContent,
-      boardId: boardId,
-      likesCount: 0,
-    };
     const requestBody: CreatePostBody = {
-      data: postData,
-      images: undefined, // 이미지가 없으면 undefined로 설정
+      data: {
+        boardId: boardId,
+        title: trimmedTitle,
+        content: trimmedContent,
+        likesCount: 0,
+      },
+      images: images.map((image) => image.file as Blob),
     };
 
     mutate({ data: requestBody });
   };
 
-  if (isLoading) {
-    return <div>게시글을 생성 중입니다...</div>;
+  if (boardLoading || isLoading) {
+    return <div>로딩 중...</div>;
   }
 
   if (isError) {
@@ -106,6 +118,7 @@ const BoardWriteBody = () => {
             value={boardId}
             onChange={(e) => setBoardId(Number(e.target.value))}
             style={formStyles.select}
+            required
           >
             {boardOption.map((board) => (
               <option key={board.boardId} value={board.boardId}>
@@ -125,17 +138,59 @@ const BoardWriteBody = () => {
             required
           />
         </div>
-        <div style={formStyles.field}>
-          <label style={formStyles.label}>내용</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-            style={formStyles.textarea}
-            required
-          />
+        <div style={formStyles.field} className="flex">
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
+            <label htmlFor="image" style={formStyles.label}>
+              이미지
+            </label>
+            <input
+              id="image"
+              type="file"
+              onChange={handleImageChange}
+              multiple
+              style={formStyles.postimagelabel}
+            />
+            <div style={formStyles.postimagefield}>
+              {images.map((image) => (
+                <div key={image.url} style={formStyles.imagePreview}>
+                  <img
+                    src={image.url}
+                    alt="미리보기"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      marginBottom: "10px",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(image.url)}
+                    style={{
+                      backgroundColor: "#ff4d4d",
+                      color: "#fff",
+                      padding: "5px 10px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
+            <label style={formStyles.label}>내용</label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="내용을 입력하세요"
+              style={formStyles.posttextarea}
+              required
+            />
+          </div>
         </div>
-        <div></div>
         <CustomButton $label="작성하기" $sizeType="long" type="submit" />
       </form>
     </div>

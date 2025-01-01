@@ -1,5 +1,6 @@
 import React from "react";
 import { useModalStore } from "@/app/hooks/modalStore";
+import { relative } from "path";
 
 const Modal = ({ children }: { children: React.ReactNode }) => {
   const { modalState, closeModal } = useModalStore();
@@ -42,11 +43,12 @@ const styles = {
   },
   closeButton: {
     position: "absolute" as const,
-    top: "10px",
-    right: "10px",
+    top: "5px",
+    right: "5px",
     background: "none",
     border: "none",
-    fontSize: "18px",
+    fontSize: "16px",
+    color: "gray",
     cursor: "pointer",
   },
 };

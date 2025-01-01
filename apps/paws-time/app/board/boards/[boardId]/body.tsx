@@ -6,7 +6,7 @@ import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
 import { useModalStore } from "@/app/hooks/modalStore";
-import SortSetting from "@/components/sortsetting";
+import SortSetting from "@/components/postsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
 import { useState } from "react";
@@ -41,9 +41,6 @@ const BoardDetailBody = () => {
   const { boardState } = useBoardStore();
   const [keyword, setKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
-  /*const [inputKeyword, setInputKeyword] = useState(""); // 타이핑 상태
-  const [searchKeyword, setSearchKeyword] = useState(""); // 실제 검색에 사용될 상태 
-  **/
   const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const params = {
@@ -88,9 +85,20 @@ const BoardDetailBody = () => {
   const resetPage = () => {
     setPageNo(0);
   };
+  console.log(boardId);
   return (
     <div className="container">
-      <h1 className="heading">{boardTitle} 게시글</h1>
+      <div className="w-custom-sidew" />
+      <div className="flex">
+        <h1 className="heading">{boardTitle} 게시글</h1>
+        <div className="ml-5">
+          <CustomButton
+            $label="수정"
+            $sizeType="normal"
+            onClick={() => router.push(`${boardId}/edit`)}
+          />
+        </div>
+      </div>
       <div className="filter-container">
         <form className="input" onSubmit={handleSearch}>
           <input
@@ -102,6 +110,13 @@ const BoardDetailBody = () => {
             required
           />
         </form>
+        <CustomButton
+          $label="새글 쓰기"
+          $sizeType="normal"
+          value={boardTitle}
+          onClick={() => router.push(`/board/write/`)}
+          className="mt-2"
+        />
         <CustomButton
           $label="검색설정"
           $sizeType="normal"

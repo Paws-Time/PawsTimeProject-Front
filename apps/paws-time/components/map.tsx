@@ -13,17 +13,16 @@ declare global {
 
 // Props 타입 정의
 type MapProps = {
-  latitude: number; // 위도
-  longitude: number; // 경도
-  name: string;
-  tel: string;
+  latitude?: number; // 위도
+  longitude?: number; // 경도
+  name?: string;
+  tel?: string;
   address: string;
 };
 
 function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
   const kakaoApiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_JAVASCRIPT;
   const { openModal } = useModalStore();
-  console.log(name, tel, address);
   useEffect(() => {
     // Kakao 지도 SDK 로드
     const script = document.createElement("script");
@@ -41,7 +40,6 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
 
           // 지도 생성
           const map = new window.kakao.maps.Map(container, options);
-          console.log("지도생성", map);
           // 마커 생성
           const marker = new window.kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
@@ -79,7 +77,7 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
 
   return (
     <>
-      <div id="map" className="w-[900px] h-[700px]" />;
+      <div id="map" className="w-[900px] h-[850px] ml-20 mt-10" />;
       <Modal>
         <Mapdetail name={name} tel={tel} address={address} />
       </Modal>
