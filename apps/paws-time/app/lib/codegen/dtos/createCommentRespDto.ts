@@ -5,4 +5,8 @@
  * OpenAPI spec version: v1
  */
 
-export type CreateUser200 = { [key: string]: unknown };
+export interface CreateCommentRespDto {
+  content?: string;
+  createdAt?: string;
+  id?: number;
+}

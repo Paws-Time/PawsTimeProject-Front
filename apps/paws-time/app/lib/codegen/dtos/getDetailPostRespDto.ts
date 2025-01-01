@@ -6,6 +6,8 @@
  */
 
 export interface GetDetailPostRespDto {
+  boardId?: number;
+  commentCount?: number;
   content?: string;
   createdAt?: string;
   postId?: number;

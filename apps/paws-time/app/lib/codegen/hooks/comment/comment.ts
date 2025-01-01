@@ -17,6 +17,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  ApiResponseCreateCommentRespDto,
   ApiResponseListGetCommentRespDto,
   ApiResponseVoid,
   CreateCommentReqDto,
@@ -195,7 +196,7 @@ export const createComment = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ApiResponseVoid>(
+  return customInstance<ApiResponseCreateCommentRespDto>(
     {
       url: `/comments/${postId}`,
       method: "POST",

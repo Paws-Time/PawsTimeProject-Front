@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CustomButton } from "@/components/utils/button";
-import { useGetBoardList } from "../lib/codegen/hooks/board/board";
+import { deleteBoard, useGetBoardList } from "../lib/codegen/hooks/board/board";
 import { Direction, directionBoardDescription } from "@/app/lib/policy";
+import { postFormStyles } from "../styles/postforms";
 
 interface Board {
   boardId: number;
@@ -19,6 +20,7 @@ export default function BoardList() {
   const router = useRouter();
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
   const [pageSize, setPageSize] = useState(3);
+  const [boardId, setBoardId] = useState(0);
 
   const params = {
     pageNo: 0,
@@ -26,7 +28,6 @@ export default function BoardList() {
     sortBy: "createdAt", // 항상 날짜순 정렬
     direction,
   };
-
   const handleDirectionChange = (newDirection: Direction) => {
     setDirection(newDirection);
   };
@@ -53,7 +54,6 @@ export default function BoardList() {
   };
 
   return (
-
     <div className="flex w-full justify-center overflow-x-hidden">
       <div className="w-custom-sidew" />
       <div className="p-4 gap-4 w-full flex flex-col">
@@ -75,8 +75,9 @@ export default function BoardList() {
               )
             )}
           </div>
+
           <CustomButton
-            $label="새글 쓰기"
+            $label="새 게시판"
             $sizeType="normal"
             onClick={() => router.push(`/board/createBoard`)}
           />
@@ -88,13 +89,39 @@ export default function BoardList() {
             <div
               key={board.boardId}
               onClick={() => router.push(`board/boards/${board.boardId}`)}
-              className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
+              className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100 flex justify-between"
             >
-              <h2 className="text-lg font-bold">{board.title}</h2>
-              <p className="text-sm text-gray-600">{board.description}</p>
-              <p className="text-xs text-gray-400">
-                생성일: {new Date(board.createdAt).toLocaleDateString()}
-              </p>
+              <div className="flex flex-col">
+                <h2 className="text-lg font-bold">{board.title}</h2>
+                <p className="text-sm text-gray-600">{board.description}</p>
+                <p className="text-xs text-gray-400">
+                  생성일: {new Date(board.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div style={postFormStyles.buttonBox}>
+                <button
+                  style={{
+                    ...postFormStyles.button,
+                    ...postFormStyles.deleteButton,
+                  }}
+                  onClick={() => {
+                    deleteBoard(board.boardId);
+                  }}
+                >
+                  삭제
+                </button>
+                <button
+                  style={{
+                    ...postFormStyles.button,
+                    ...postFormStyles.editButton,
+                  }}
+                  onClick={() => {
+                    router.push(`/boards/${board.boardId}/edit`);
+                  }}
+                >
+                  수정
+                </button>
+              </div>
             </div>
           ))}
         </div>
