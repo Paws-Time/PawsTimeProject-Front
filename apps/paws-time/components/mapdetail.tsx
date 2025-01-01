@@ -1,9 +1,9 @@
 import React from "react";
 
 type MapInfo = {
-  name: string;
+  name?: string;
   address: string;
-  tel: string;
+  tel?: string;
 };
 
 function Mapdetail({ name, address, tel }: MapInfo) {
@@ -18,8 +18,8 @@ function Mapdetail({ name, address, tel }: MapInfo) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 w-[450px] h-[200px]">
-      <div className="flex justify-between">
+    <div className="bg-white shadow-md rounded-lg p-6 w-[460px] h-[200px]">
+      <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold">{name}</h2>
       </div>
       <p className="text-sm text-gray-600 mt-2">{address}</p>

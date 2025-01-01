@@ -2,50 +2,64 @@
 import MapApiData from "@/components/map";
 import { useEffect, useState } from "react";
 import { formStyles } from "../styles/forms";
+import { getHospitalInfo } from "../lib/codegen/hooks/info/info";
+import { CustomButton } from "@/components/utils/button";
 
-type Location = {
-  id: string;
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  regionCode: number;
+interface GetHospitalInfoRespDto {
+  add1?: string;
+  add2?: string;
+  addNum?: number;
+  id?: number;
+  name?: string;
   tel?: string;
-};
+  type?: string;
+  x?: number;
+  y?: number;
+}
 
 export default function InfoBoardBody() {
   // State 관리
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
-  );
+  const [locations, setLocations] = useState<GetHospitalInfoRespDto[]>([]);
+  const [selectedLocation, setSelectedLocation] =
+    useState<GetHospitalInfoRespDto | null>(null);
   const [regionFilter, setRegionFilter] = useState(6);
   const [nameFilter, setNameFilter] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [sortBy, setSortBy] = useState("");
+  const [direction, setDirection] = useState("DESC");
+  const [pageNo, setPageNo] = useState(0);
 
-  // 데이터 로드
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/data/locations.json");
-      const data = await response.json();
-      setLocations(data.data);
+    const fetchHospitalInfo = async () => {
+      try {
+        const response = await getHospitalInfo(regionFilter, {
+          pageNo,
+          pageSize,
+          sortBy,
+          direction,
+        });
+        setLocations(response?.data || []);
+      } catch (error) {
+        console.error("Error fetching hospital info:", error);
+      }
     };
-    fetchData();
-  }, []);
-
-  console.log("패치이후 데이터", locations);
+    fetchHospitalInfo();
+  }, [regionFilter, pageNo, pageSize, sortBy]);
 
   // 필터링 로직
   const filteredLocations = locations
-    .filter((location) => location.regionCode === regionFilter) // 1차 필터: 지역별
+    .filter((location) => location.addNum === regionFilter) // 1차 필터: 지역별
     .filter(
-      (location) => (nameFilter ? location.name.includes(nameFilter) : true) // 2차 필터: 이름 검색
+      (location) => (nameFilter ? location?.name?.includes(nameFilter) : true) // 2차 필터: 이름 검색
     );
 
   // 장소 클릭 핸들러
-  const handleLocationClick = (location: Location) => {
+  const handleLocationClick = (location: GetHospitalInfoRespDto) => {
     setSelectedLocation(location);
   };
-
+  const handleSearchPageSize = () => {
+    setPageSize((prev) => prev + 5);
+  };
   return (
     <div className="flex w-custom-width">
       <div className="w-custom-sidew"></div>
@@ -109,6 +123,12 @@ export default function InfoBoardBody() {
               </li>
             ))}
           </ul>
+          <CustomButton
+            $label="더보기"
+            $sizeType="long"
+            onClick={handleSearchPageSize}
+            className="mt-10"
+          />
         </section>
       </article>
 
@@ -116,11 +136,15 @@ export default function InfoBoardBody() {
       <aside className="w-[800px] border-l h-full border-gray-300 ml-10">
         {selectedLocation && (
           <MapApiData
-            latitude={selectedLocation?.latitude}
-            longitude={selectedLocation?.longitude}
+            latitude={selectedLocation?.y}
+            longitude={selectedLocation?.x}
             name={selectedLocation?.name}
             tel={selectedLocation?.tel ?? "연락처없음"}
-            address={selectedLocation?.address}
+            address={
+              selectedLocation?.add2 ??
+              selectedLocation.add1 ??
+              "주소 정보 없음"
+            }
           />
         )}
       </aside>
