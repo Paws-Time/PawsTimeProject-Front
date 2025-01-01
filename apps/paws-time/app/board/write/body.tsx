@@ -86,6 +86,16 @@ const BoardWriteBody = () => {
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
 
+    if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
+      alert("제목은 5자 이상 20자 이하로 작성해주세요.");
+      return;
+    }
+
+    if (trimmedContent.length < 5) {
+      alert("내용은 최소 5자 이상이어야 합니다.");
+      return;
+    }
+
     const requestBody: CreatePostBody = {
       data: {
         boardId: boardId,
