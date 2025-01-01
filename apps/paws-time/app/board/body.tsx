@@ -53,6 +53,7 @@ export default function BoardList() {
   };
 
   return (
+
     <div className="flex w-full justify-center overflow-x-hidden">
       <div className="w-custom-sidew" />
       <div className="p-4 gap-4 w-full flex flex-col">

@@ -26,7 +26,7 @@ export default {
         "custom-width": "1550px", // 사용자 정의 너비
         "custom-height": "900px", // 사용자 정의 높이
         "custom-headerw": "1480px", //전체 헤더
-        "custom-headerh": "180px", //전체 헤더
+        "custom-headerh": "80px", //전체 헤더
       },
     },
   },

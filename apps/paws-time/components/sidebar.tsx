@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { CustomButton } from "./utils/button";
 import useSideBarStore from "@/app/hooks/sidebarStore";
+import { useAuthStore } from "@/app/hooks/authStore";
 
 export default function Sidebar() {
   const { sideBarState, sideBarActions } = useSideBarStore();
@@ -11,6 +12,17 @@ export default function Sidebar() {
 
   // const [isShow, setShow] = useState(true);
   const router = useRouter();
+  const email = useAuthStore((state) => state.email); // Zustand에서 이메일 상태 가져오기
+  const clearToken = useAuthStore((state) => state.clearToken);
+  const clearEmail = useAuthStore((state) => state.clearEmail);
+
+  const handleLogout = () => {
+    if (confirm("정말 로그아웃하시겠습니까?")) {
+      clearToken();
+      clearEmail();
+      router.push("/");
+    }
+  };
 
   const menus = [
     { id: 1, path: "/", name: "메인페이지" },
@@ -18,6 +30,14 @@ export default function Sidebar() {
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
     { id: 4, path: "/board/write", name: "게시글 작성" },
     { id: 5, path: "/infoboard", name: "장소 게시판" },
+    email
+      ? { id: 6, path: "#", name: "로그아웃하기", onClick: handleLogout }
+      : {
+          id: 6,
+          path: "/auth/login",
+          name: "로그인하기",
+          onClick: () => router.push("/auth/login"),
+        },
   ];
   return (
     <aside
@@ -64,7 +84,11 @@ export default function Sidebar() {
               <CustomButton
                 $label={menu.name}
                 $sizeType="menu"
-                onClick={() => router.push(menu.path)}
+                onClick={
+                  menu.onClick
+                    ? menu.onClick // 로그아웃의 경우 handleLogout 사용
+                    : () => router.push(menu.path) // 나머지 메뉴는 path로 이동
+                }
               />
             </li>
           ))}
