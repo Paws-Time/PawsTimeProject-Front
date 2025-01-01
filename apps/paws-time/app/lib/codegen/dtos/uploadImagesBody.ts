@@ -5,4 +5,6 @@
  * OpenAPI spec version: v1
  */
 
-export type LogoutUser200 = { [key: string]: unknown };
+export type UploadImagesBody = {
+  images: Blob[];
+};

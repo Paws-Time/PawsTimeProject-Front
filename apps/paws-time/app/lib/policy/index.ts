@@ -4,8 +4,8 @@ export enum Direction {
   ASC = "ASC",
 }
 export const directionDescription: Record<Direction, string> = {
-  [Direction.DESC]: "내림차순",
-  [Direction.ASC]: "오름차순",
+  [Direction.DESC]: "▼",
+  [Direction.ASC]: "▲",
 };
 export const directionBoardDescription: Record<Direction, string> = {
   [Direction.DESC]: "최신순",

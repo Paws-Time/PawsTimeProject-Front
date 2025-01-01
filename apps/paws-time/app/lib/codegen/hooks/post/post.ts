@@ -21,9 +21,10 @@ import type {
   ApiResponseInteger,
   ApiResponseListGetListPostRespDto,
   ApiResponseVoid,
-  CreatePostBody,
+  CreatePostReqDto,
   GetPostsParams,
   UpdatePostReqDto,
+  UploadImagesBody,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
 import type { ErrorType, BodyType } from "../../../axios-client/customClient";
@@ -268,6 +269,92 @@ export const useUpdatePost = <
   return useMutation(mutationOptions);
 };
 /**
+ * 이미지 업로드 후 게시글과 연결합니다.
+ * @summary 게시글 이미지 업로드
+ */
+export const uploadImages = (
+  postId: number,
+  uploadImagesBody: BodyType<UploadImagesBody>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  uploadImagesBody.images.forEach((value) => formData.append("images", value));
+
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/post/${postId}`,
+      method: "POST",
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getUploadImagesMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadImages>>,
+    TError,
+    { postId: number; data: BodyType<UploadImagesBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadImages>>,
+  TError,
+  { postId: number; data: BodyType<UploadImagesBody> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadImages>>,
+    { postId: number; data: BodyType<UploadImagesBody> }
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return uploadImages(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UploadImagesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadImages>>
+>;
+export type UploadImagesMutationBody = BodyType<UploadImagesBody>;
+export type UploadImagesMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글 이미지 업로드
+ */
+export const useUploadImages = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadImages>>,
+    TError,
+    { postId: number; data: BodyType<UploadImagesBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof uploadImages>>,
+  TError,
+  { postId: number; data: BodyType<UploadImagesBody> },
+  TContext
+> => {
+  const mutationOptions = getUploadImagesMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
  * 게시글을 삭제할 수 있습니다.
  * @summary 게시글 삭제
  */
@@ -489,26 +576,20 @@ export function useGetPosts<
 }
 
 /**
- * 게시글을 생성 할 수 있습니다.
+ * 게시글을 생성할 수 있습니다.
  * @summary 게시글 생성
  */
 export const createPost = (
-  createPostBody: BodyType<CreatePostBody>,
+  createPostReqDto: BodyType<CreatePostReqDto>,
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  const formData = new FormData();
-  formData.append("data", JSON.stringify(createPostBody.data));
-  if (createPostBody.images !== undefined) {
-    createPostBody.images.forEach((value) => formData.append("images", value));
-  }
-
   return customInstance<ApiResponseVoid>(
     {
       url: `/post`,
       method: "POST",
-      headers: { "Content-Type": "multipart/form-data" },
-      data: formData,
+      headers: { "Content-Type": "application/json" },
+      data: createPostReqDto,
       signal,
     },
     options,
@@ -522,21 +603,21 @@ export const getCreatePostMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createPost>>,
     TError,
-    { data: BodyType<CreatePostBody> },
+    { data: BodyType<CreatePostReqDto> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createPost>>,
   TError,
-  { data: BodyType<CreatePostBody> },
+  { data: BodyType<CreatePostReqDto> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createPost>>,
-    { data: BodyType<CreatePostBody> }
+    { data: BodyType<CreatePostReqDto> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -549,7 +630,7 @@ export const getCreatePostMutationOptions = <
 export type CreatePostMutationResult = NonNullable<
   Awaited<ReturnType<typeof createPost>>
 >;
-export type CreatePostMutationBody = BodyType<CreatePostBody>;
+export type CreatePostMutationBody = BodyType<CreatePostReqDto>;
 export type CreatePostMutationError = ErrorType<unknown>;
 
 /**
@@ -562,14 +643,14 @@ export const useCreatePost = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createPost>>,
     TError,
-    { data: BodyType<CreatePostBody> },
+    { data: BodyType<CreatePostReqDto> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof createPost>>,
   TError,
-  { data: BodyType<CreatePostBody> },
+  { data: BodyType<CreatePostReqDto> },
   TContext
 > => {
   const mutationOptions = getCreatePostMutationOptions(options);
@@ -586,7 +667,7 @@ export const toggleLike = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseInteger>(
-    { url: `/post/${postId}/like`, method: "POST", signal },
+    { url: `/post/${postId}/likes`, method: "POST", signal },
     options,
   );
 };

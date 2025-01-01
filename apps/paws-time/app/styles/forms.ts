@@ -95,6 +95,8 @@ export const formStyles = {
     boxSizing: "border-box" as const,
     lineHeight: "1.5",
     resize: "none" as const,
+    overflowWrap: "break-word" as const,
+    overflowY: "auto" as const,
   },
   imagePreview: {
     display: "flex",
