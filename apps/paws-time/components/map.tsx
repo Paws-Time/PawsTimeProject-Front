@@ -13,10 +13,10 @@ declare global {
 
 // Props 타입 정의
 type MapProps = {
-  latitude: number; // 위도
-  longitude: number; // 경도
-  name: string;
-  tel: string;
+  latitude?: number; // 위도
+  longitude?: number; // 경도
+  name?: string;
+  tel?: string;
   address: string;
 };
 
