@@ -55,7 +55,12 @@ export default function Header() {
       <div className="flex-1"></div>
 
       {/* 브랜드 로고 - 중앙 정렬 */}
-      <BrandLogo onClick={() => router.push("/")}>
+      <BrandLogo
+        onClick={() => {
+          router.push("/");
+          router.refresh(); // 페이지 강제 새로고침
+        }}
+      >
         <p className="text-center">PAWS TIME</p>
       </BrandLogo>
 

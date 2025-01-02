@@ -1,7 +1,10 @@
+"use client";
+
 import {
   useCreateComment,
   useDeleteComment,
   useGetCommentByPost,
+  useUpdateComment, // 수정 API 훅 추가
 } from "@/app/lib/codegen/hooks/comment/comment";
 import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
@@ -23,10 +26,13 @@ interface ReviewResDto {
   content?: string;
   createAt?: string;
 }
+
 function Review({ postId }: ReviewProps) {
   const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState("");
   const [pageNo, setPageNo] = useState(0);
   const [reviews, setReviews] = useState<ReviewResDto[]>([]);
   const [params, setParams] = useState<ReviewReqParams>({
@@ -35,24 +41,51 @@ function Review({ postId }: ReviewProps) {
     sortBy: "createdAt",
     direction,
   });
-  //댓글작성
+  const queryClient = useQueryClient();
+
+  // 댓글 작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
-      onSuccess: () => {
-        alert("댓글이 추가되었습니다.");
+      onSuccess: (newComment) => {
+        if (newComment.data) {
+          const newReview = newComment.data as ReviewResDto;
+          setReviews((prev) => [newReview, ...prev]);
+        }
         setContent("");
       },
     },
   });
-  // 댓글삭제
+
+  // 댓글 수정
+  const { mutate: updateComment } = useUpdateComment({
+    mutation: {
+      onSuccess: (updatedComment) => {
+        if (updatedComment.data) {
+          const updatedReview = updatedComment.data as ReviewResDto;
+          setReviews((prev) =>
+            prev.map((review) =>
+              review.commentId === updatedReview.commentId
+                ? updatedReview
+                : review
+            )
+          );
+        }
+        setEditingCommentId(null);
+        setEditingContent("");
+        alert("댓글이 수정되었습니다.");
+      },
+    },
+  });
+
+  // 댓글 삭제
   const { mutate: deleteComment } = useDeleteComment({
     mutation: {
       onSuccess: (_, { commentId }) => {
-        // 댓글 삭제 성공 시 상태 업데이트
         setReviews((prev) =>
           prev.filter((review) => review.commentId !== commentId)
         );
         alert("댓글이 삭제되었습니다.");
+        queryClient.refetchQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -61,7 +94,20 @@ function Review({ postId }: ReviewProps) {
     deleteComment({ commentId });
   };
 
-  // 댓글조회
+  const handleEditReviews = (commentId: number, content: string) => {
+    setEditingCommentId(commentId);
+    setEditingContent(content);
+  };
+
+  const handleUpdateSubmit = () => {
+    if (!editingContent.trim() || editingCommentId === null) return;
+    updateComment({
+      commentId: editingCommentId,
+      data: { content: editingContent },
+    });
+  };
+
+  // 댓글 조회
   const { data } = useGetCommentByPost(postId, params);
 
   useEffect(() => {
@@ -72,9 +118,9 @@ function Review({ postId }: ReviewProps) {
 
   useEffect(() => {
     setParams((prev) => ({
-      ...prev, // 기존 상태를 복사
+      ...prev,
       pageNo,
-      pageSize, // 업데이트할 값
+      pageSize,
       sortBy: "createdAt",
       direction,
     }));
@@ -88,26 +134,64 @@ function Review({ postId }: ReviewProps) {
       data: { content },
     });
   };
+
   return (
     <>
-      {reviews.map((review) => (
+      {reviews.map((review, index) => (
         <div
-          key={review.commentId}
+          key={review.commentId ?? `review-${index}`}
           className="w-full flex flex-row items-center justify-between"
           style={postFormStyles.commentBox}
         >
-          <div className="flex-1">{review.content}</div>
-          <div className="flex gap-2">
-            <CustomButton
-              $label="x"
-              $sizeType="mini"
-              onClick={() => {
-                if (review.commentId !== undefined) {
-                  handleDeleteReviews(review.commentId);
-                }
-              }}
-            />
-          </div>
+          {editingCommentId === review.commentId ? (
+            <div className="flex flex-1">
+              <InputField
+                $label="수정 내용"
+                type="text"
+                value={editingContent}
+                onChange={(e) => setEditingContent(e.target.value)}
+              />
+              <CustomButton
+                $label="✔️"
+                $sizeType="mini"
+                style={{ marginLeft: "4px" }}
+                onClick={handleUpdateSubmit}
+              />
+              <CustomButton
+                $label="❌"
+                $sizeType="mini"
+                style={{ marginLeft: "4px" }}
+                onClick={() => {
+                  setEditingCommentId(null);
+                  setEditingContent("");
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="flex-1">{review.content}</div>
+              <div className="flex gap-2">
+                <CustomButton
+                  $label="✏️"
+                  $sizeType="mini"
+                  onClick={() => {
+                    if (review.commentId !== undefined) {
+                      handleEditReviews(review.commentId, review.content ?? "");
+                    }
+                  }}
+                />
+                <CustomButton
+                  $label="x"
+                  $sizeType="mini"
+                  onClick={() => {
+                    if (review.commentId !== undefined) {
+                      handleDeleteReviews(review.commentId);
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
       <div>

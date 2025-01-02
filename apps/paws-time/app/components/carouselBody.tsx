@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetPosts, getDetailPost } from "@/app/lib/codegen/hooks/post/post";
-import { GetDetailPostRespDto } from "../lib/codegen/dtos";
+import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Card } from "@/components/utils/card";
@@ -14,6 +13,7 @@ import "../styles/css/carousel.css";
 
 interface Post {
   id: number;
+  boardId: number;
   title: string;
   contentPreview: string;
   createdAt: string;
@@ -47,23 +47,9 @@ const CarouselBody = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
-  const handlePostClick = async (postId: number) => {
-    try {
-      const response = await getDetailPost(postId);
-      const data = response.data as GetDetailPostRespDto; // 명시적으로 타입 설정
-      const { boardId } = data;
-
-      if (boardId) {
-        router.push(`/board/boards/${boardId}/posts/${postId}`);
-      } else {
-        console.error("bordId를 가져올 수 없습니다.");
-      }
-    } catch (error) {
-      console.error(
-        "게시글 상세 정보를 가져오는 중 문제가 발생했습니다:",
-        error
-      );
-    }
+  // 게시글 클릭 핸들러
+  const handlePostClick = (postId: number, boardId: number) => {
+    router.push(`/board/boards/${boardId}/posts/${postId}`);
   };
 
   return (
@@ -85,7 +71,7 @@ const CarouselBody = () => {
               $contentPreview={post.contentPreview}
               $views={post.views}
               $likeCount={post.likesCount}
-              onClick={() => handlePostClick(post.id)} // 게시글 클릭 핸들러
+              onClick={() => handlePostClick(post.id, post.boardId)} // boardId와 postId 전달
             />
           </SwiperSlide>
         ))}

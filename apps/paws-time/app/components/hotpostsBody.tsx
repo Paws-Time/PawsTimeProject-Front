@@ -9,6 +9,7 @@ import "@/app/components/css/styles.css";
 
 interface Post {
   id: number;
+  boardId: number;
   title: string;
   contentPreview: string;
   createdAt: string;
@@ -43,23 +44,8 @@ const HotPostsBody = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
 
-  const handlePostClick = async (postId: number) => {
-    try {
-      const response = await getDetailPost(postId);
-      const data = response.data as GetDetailPostRespDto;
-      const { boardId } = data;
-
-      if (boardId) {
-        router.push(`/board/boards/${boardId}/posts/${postId}`);
-      } else {
-        console.error("boardId를 가져올 수 없습니다.");
-      }
-    } catch (error) {
-      console.error(
-        "게시글 상세 정보를 가져오는 중 문제가 발생했습니다:",
-        error
-      );
-    }
+  const handlePostClick = (postId: number, boardId: number) => {
+    router.push(`/board/boards/${boardId}/posts/${postId}`);
   };
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -86,7 +72,7 @@ const HotPostsBody = () => {
               $contentPreview={post.contentPreview}
               $views={post.views}
               $likeCount={post.likesCount}
-              onClick={() => handlePostClick(post.id)}
+              onClick={() => handlePostClick(post.id, post.boardId)}
             />
           ))}
         </div>
