@@ -60,7 +60,7 @@ export default function CreateBoardComponent() {
             style={formStyles.select}
           >
             <option value="GENERAL">일반게시판</option>
-            <option value="INFORMATION">정보게시판</option>
+            <option value="INFO">정보게시판</option>
           </select>
         </div>
         <div style={formStyles.field}>

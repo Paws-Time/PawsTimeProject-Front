@@ -4,11 +4,12 @@ import { postFormStyles } from "@/app/styles/postforms";
 import {
   useDeletePost,
   useGetDetailPost,
-  useGetThumbnail,
+  useGetImages,
 } from "@/app/lib/codegen/hooks/post/post";
 import { useParams, useRouter } from "next/navigation";
 import Count from "@/components/count";
 import Review from "@/components/review";
+import { CustomButton } from "@/components/utils/button";
 
 interface PostData {
   post_id?: number;
@@ -21,6 +22,7 @@ interface PostData {
 const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
+  const [curImageNum, setCurImageNum] = useState<number>(1);
   const [post, setPost] = useState<PostData | null>(null);
   const {} = useGetDetailPost(Number(postId), {
     query: {
@@ -49,16 +51,34 @@ const PostDetailBody = () => {
     deletePost({ postId });
   };
 
-  const { data: imageData } = useGetThumbnail(Number(postId));
-  const imagesData = imageData?.data?.[0].imageUrl;
+  const { data: imageData } = useGetImages(Number(postId));
+  const imagesUrl = imageData?.data?.map((image) => image.imageUrl) || [];
+  console.log(curImageNum);
+  const imagePrevHandle = () => {
+    setCurImageNum((prev) => (prev > 0 ? prev - 1 : imagesUrl.length - 1));
+  };
+
+  const imageNextHandle = () => {
+    setCurImageNum((prev) => (prev < imagesUrl.length - 1 ? prev + 1 : 0));
+  };
   return (
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
+          <CustomButton
+            $label="◀"
+            $sizeType="mini"
+            onClick={imagePrevHandle}
+          />
           <img
-            src={imagesData}
-            alt="이미지"
-            className="w-full h-full object-cover border-r-10"
+            src={imagesUrl[curImageNum]}
+            alt=""
+            className="w-[650px] h-[550px]"
+          />
+          <CustomButton
+            $label="▶"
+            $sizeType="mini"
+            onClick={imageNextHandle}
           />
         </div>
         <div style={postFormStyles.buttonBox}>
