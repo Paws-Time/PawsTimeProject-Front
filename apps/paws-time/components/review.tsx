@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewProps {
   postId: number;
+  setCommentsCount: React.Dispatch<React.SetStateAction<number>>; // 업데이트 함수 타입 정의
 }
 interface ReviewReqParams {
   pageNo?: number;
