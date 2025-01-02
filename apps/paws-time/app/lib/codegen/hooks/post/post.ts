@@ -40,11 +40,11 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 export const getDetailPost = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseGetDetailPostRespDto>(
     { url: `/post/${postId}`, method: "GET", signal },
-    options,
+    options
   );
 };
 
@@ -64,7 +64,7 @@ export const getGetDetailPostInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -107,7 +107,7 @@ export function useGetDetailPostInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostInfiniteQueryOptions(postId, options);
 
@@ -133,7 +133,7 @@ export const getGetDetailPostQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -176,7 +176,7 @@ export function useGetDetailPost<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostQueryOptions(postId, options);
 
@@ -196,7 +196,7 @@ export function useGetDetailPost<
 export const updatePost = (
   postId: number,
   updatePostReqDto: BodyType<UpdatePostReqDto>,
-  options?: SecondParameter<typeof customInstance>,
+  options?: SecondParameter<typeof customInstance>
 ) => {
   return customInstance<ApiResponseVoid>(
     {
@@ -205,7 +205,7 @@ export const updatePost = (
       headers: { "Content-Type": "application/json" },
       data: updatePostReqDto,
     },
-    options,
+    options
   );
 };
 
@@ -362,11 +362,11 @@ export const useUploadImages = <
  */
 export const deletePost = (
   postId: number,
-  options?: SecondParameter<typeof customInstance>,
+  options?: SecondParameter<typeof customInstance>
 ) => {
   return customInstance<ApiResponseVoid>(
     { url: `/post/${postId}`, method: "DELETE" },
-    options,
+    options
   );
 };
 
@@ -438,11 +438,11 @@ export const useDeletePost = <
 export const getPosts = (
   params?: GetPostsParams,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseListGetListPostRespDto>(
     { url: `/post`, method: "GET", params, signal },
-    options,
+    options
   );
 };
 
@@ -462,7 +462,7 @@ export const getGetPostsInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -500,7 +500,7 @@ export function useGetPostsInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsInfiniteQueryOptions(params, options);
 
@@ -526,7 +526,7 @@ export const getGetPostsQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -564,7 +564,7 @@ export function useGetPosts<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsQueryOptions(params, options);
 
@@ -584,7 +584,7 @@ export function useGetPosts<
 export const createPost = (
   createPostReqDto: BodyType<CreatePostReqDto>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseLong>(
     {
@@ -594,7 +594,7 @@ export const createPost = (
       data: createPostReqDto,
       signal,
     },
-    options,
+    options
   );
 };
 
@@ -666,7 +666,7 @@ export const useCreatePost = <
 export const toggleLike = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseInteger>(
     { url: `/post/${postId}/likes`, method: "POST", signal },
