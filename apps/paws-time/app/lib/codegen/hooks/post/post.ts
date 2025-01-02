@@ -19,7 +19,9 @@ import type {
 import type {
   ApiResponseGetDetailPostRespDto,
   ApiResponseInteger,
+  ApiResponseListGetImageRespDto,
   ApiResponseListGetListPostRespDto,
+  ApiResponseLong,
   ApiResponseVoid,
   CreatePostReqDto,
   GetPostsParams,
@@ -38,11 +40,11 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 export const getDetailPost = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseGetDetailPostRespDto>(
     { url: `/post/${postId}`, method: "GET", signal },
-    options,
+    options
   );
 };
 
@@ -62,7 +64,7 @@ export const getGetDetailPostInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -105,7 +107,7 @@ export function useGetDetailPostInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostInfiniteQueryOptions(postId, options);
 
@@ -131,7 +133,7 @@ export const getGetDetailPostQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -174,7 +176,7 @@ export function useGetDetailPost<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostQueryOptions(postId, options);
 
@@ -194,7 +196,7 @@ export function useGetDetailPost<
 export const updatePost = (
   postId: number,
   updatePostReqDto: BodyType<UpdatePostReqDto>,
-  options?: SecondParameter<typeof customInstance>,
+  options?: SecondParameter<typeof customInstance>
 ) => {
   return customInstance<ApiResponseVoid>(
     {
@@ -203,7 +205,7 @@ export const updatePost = (
       headers: { "Content-Type": "application/json" },
       data: updatePostReqDto,
     },
-    options,
+    options
   );
 };
 
@@ -276,7 +278,7 @@ export const uploadImages = (
   postId: number,
   uploadImagesBody: BodyType<UploadImagesBody>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   const formData = new FormData();
   uploadImagesBody.images.forEach((value) => formData.append("images", value));
@@ -289,7 +291,7 @@ export const uploadImages = (
       data: formData,
       signal,
     },
-    options,
+    options
   );
 };
 
@@ -360,11 +362,11 @@ export const useUploadImages = <
  */
 export const deletePost = (
   postId: number,
-  options?: SecondParameter<typeof customInstance>,
+  options?: SecondParameter<typeof customInstance>
 ) => {
   return customInstance<ApiResponseVoid>(
     { url: `/post/${postId}`, method: "DELETE" },
-    options,
+    options
   );
 };
 
@@ -436,11 +438,11 @@ export const useDeletePost = <
 export const getPosts = (
   params?: GetPostsParams,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseListGetListPostRespDto>(
     { url: `/post`, method: "GET", params, signal },
-    options,
+    options
   );
 };
 
@@ -460,7 +462,7 @@ export const getGetPostsInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -498,7 +500,7 @@ export function useGetPostsInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsInfiniteQueryOptions(params, options);
 
@@ -524,7 +526,7 @@ export const getGetPostsQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -562,7 +564,7 @@ export function useGetPosts<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  },
+  }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsQueryOptions(params, options);
 
@@ -582,9 +584,9 @@ export function useGetPosts<
 export const createPost = (
   createPostReqDto: BodyType<CreatePostReqDto>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseVoid>(
+  return customInstance<ApiResponseLong>(
     {
       url: `/post`,
       method: "POST",
@@ -592,7 +594,7 @@ export const createPost = (
       data: createPostReqDto,
       signal,
     },
-    options,
+    options
   );
 };
 
@@ -664,11 +666,11 @@ export const useCreatePost = <
 export const toggleLike = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) => {
   return customInstance<ApiResponseInteger>(
     { url: `/post/${postId}/likes`, method: "POST", signal },
-    options,
+    options
   );
 };
 
@@ -733,3 +735,157 @@ export const useToggleLike = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+export const getThumbnail = (
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal
+) => {
+  return customInstance<ApiResponseListGetImageRespDto>(
+    { url: `/post/${postId}/thumbnail`, method: "GET", signal },
+    options
+  );
+};
+
+export const getGetThumbnailQueryKey = (postId: number) => {
+  return [`/post/${postId}/thumbnail`] as const;
+};
+
+export const getGetThumbnailInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetThumbnailQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getThumbnail>>> = ({
+    signal,
+  }) => getThumbnail(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getThumbnail>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetThumbnailInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getThumbnail>>
+>;
+export type GetThumbnailInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+
+export function useGetThumbnailInfinite<
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  }
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetThumbnailInfiniteQueryOptions(postId, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetThumbnailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetThumbnailQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getThumbnail>>> = ({
+    signal,
+  }) => getThumbnail(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getThumbnail>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetThumbnailQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getThumbnail>>
+>;
+export type GetThumbnailQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+
+export function useGetThumbnail<
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetThumbnailQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}

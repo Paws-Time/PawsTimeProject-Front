@@ -14,48 +14,49 @@ function SortSetting() {
   const { setPageSize, setSortBy, setDirection } = boardActions;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 flex-col">
       {/* 정렬 기준 */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-bold">정렬 기준</h4>
-        <div className="space-y-2">
-          {Object.entries(sortByDescription).map(([key, description]) => (
-            <label key={key} className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name={sortBy}
-                value={key}
-                checked={sortBy === key}
-                onChange={() => setSortBy(key as SortBy)}
-              />
-              <span>{description}</span>
-            </label>
-          ))}
+      <div className="flex justify-around border-t border-gray-300">
+        <div className="space-y-4  ">
+          <h4 className="text-lg font-bold mt-3">정렬 기준</h4>
+          <div className="space-y-2">
+            {Object.entries(sortByDescription).map(([key, description]) => (
+              <label key={key} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name={sortBy}
+                  value={key}
+                  checked={sortBy === key}
+                  onChange={() => setSortBy(key as SortBy)}
+                />
+                <span>{description}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* 정렬 방향 */}
+        <div className="space-y-4">
+          <h4 className="text-lg font-bold mt-3">정렬 방향</h4>
+          <div className="space-y-2">
+            {Object.entries(directionDescription).map(([key, description]) => (
+              <label key={key} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="direction"
+                  value={key}
+                  checked={direction === key}
+                  onChange={() => setDirection(key as Direction)}
+                />
+                <span>{description}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* 정렬 방향 */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-bold">정렬 방향</h4>
-        <div className="space-y-2">
-          {Object.entries(directionDescription).map(([key, description]) => (
-            <label key={key} className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="direction"
-                value={key}
-                checked={direction === key}
-                onChange={() => setDirection(key as Direction)}
-              />
-              <span>{description}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       {/* 페이지 크기 */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-bold">페이지 크기</h4>
+      <div className="space-y-4 border-t border-gray-300">
+        <h4 className="text-lg font-bold mt-3">페이지 크기</h4>
         <div>
           <select
             className="form-select border border-gray-300 rounded-md p-2"

@@ -1,10 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomButton } from "@/components/utils/button";
-import { useGetBoardList } from "../lib/codegen/hooks/board/board";
+import {
+  deleteBoard,
+  getBoardList,
+  useGetBoardList,
+} from "../lib/codegen/hooks/board/board";
 import { Direction, directionBoardDescription } from "@/app/lib/policy";
+import { postFormStyles } from "../styles/postforms";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Board {
   boardId: number;
@@ -19,25 +25,27 @@ export default function BoardList() {
   const router = useRouter();
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
   const [pageSize, setPageSize] = useState(3);
-
+  const [boardList, setBoardList] = useState<Board[]>([]);
   const params = {
     pageNo: 0,
     pageSize,
     sortBy: "createdAt", // 항상 날짜순 정렬
     direction,
   };
-
+  const queryClient = useQueryClient();
   const handleDirectionChange = (newDirection: Direction) => {
     setDirection(newDirection);
   };
-
   const { data, isLoading, isError } = useGetBoardList<{
     status: string;
     message: string | null;
     data: Board[];
   }>(params);
-
-  const boards = data?.data || [];
+  useEffect(() => {
+    if (data?.data) {
+      setBoardList(data?.data);
+    }
+  }, [data]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -51,9 +59,21 @@ export default function BoardList() {
   const handlePage = () => {
     setPageSize((prev) => prev + 5);
   };
+  const handleDelete = async (boardId: number) => {
+    try {
+      await deleteBoard(boardId); // 삭제 API 호출
+      alert(`${boardId}게시판이 삭제되었습니다.`);
+      setBoardList((prevList) =>
+        prevList.filter((board) => board.boardId !== boardId)
+      );
+      queryClient.invalidateQueries({ queryKey: [getBoardList(params)] }); // ReactQuery의 캐시를 무효화
+    } catch (error) {
+      console.error("게시판 삭제 중 에러 발생:", error);
+      alert("게시판 삭제에 실패했습니다.");
+    }
+  };
 
   return (
-
     <div className="flex w-full justify-center overflow-x-hidden">
       <div className="w-custom-sidew" />
       <div className="p-4 gap-4 w-full flex flex-col">
@@ -75,8 +95,9 @@ export default function BoardList() {
               )
             )}
           </div>
+
           <CustomButton
-            $label="새글 쓰기"
+            $label="새 게시판"
             $sizeType="normal"
             onClick={() => router.push(`/board/createBoard`)}
           />
@@ -84,17 +105,45 @@ export default function BoardList() {
 
         {/* 게시판 목록 */}
         <div className="flex flex-col space-y-4">
-          {boards.map((board) => (
+          {boardList.map((board) => (
             <div
               key={board.boardId}
-              onClick={() => router.push(`board/boards/${board.boardId}`)}
-              className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100"
+              className="border border-gray-300 p-4 rounded cursor-pointer hover:bg-gray-100 flex justify-between"
             >
-              <h2 className="text-lg font-bold">{board.title}</h2>
-              <p className="text-sm text-gray-600">{board.description}</p>
-              <p className="text-xs text-gray-400">
-                생성일: {new Date(board.createdAt).toLocaleDateString()}
-              </p>
+              <div
+                className="flex flex-col w-4/5"
+                onClick={() => router.push(`board/boards/${board.boardId}`)}
+              >
+                <h2 className="text-lg font-bold">{board.title}</h2>
+                <p className="text-sm text-gray-600">{board.description}</p>
+                <p className="text-xs text-gray-400">
+                  생성일: {new Date(board.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div style={postFormStyles.buttonBox}>
+                <button
+                  style={{
+                    ...postFormStyles.button,
+                    ...postFormStyles.deleteButton,
+                  }}
+                  onClick={() => {
+                    handleDelete(board.boardId);
+                  }}
+                >
+                  삭제
+                </button>
+                <button
+                  style={{
+                    ...postFormStyles.button,
+                    ...postFormStyles.editButton,
+                  }}
+                  onClick={() => {
+                    router.push(`board/boards/${board.boardId}/edit`);
+                  }}
+                >
+                  수정
+                </button>
+              </div>
             </div>
           ))}
         </div>

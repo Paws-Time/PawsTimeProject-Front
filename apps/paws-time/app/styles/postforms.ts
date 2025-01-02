@@ -71,6 +71,8 @@ export const postFormStyles = {
     backgroundColor: "#f1f1f1",
     borderRadius: "10px",
     padding: "10px",
+    overflowWrap: "break-word" as const,
+    overflowY: "auto" as const,
   },
   footer: {
     display: "flex",

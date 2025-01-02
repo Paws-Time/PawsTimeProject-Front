@@ -5,4 +5,8 @@
  * OpenAPI spec version: v1
  */
 
-export type LogoutUser200 = { [key: string]: unknown };
+export interface GetImageRespDto {
+  imageId?: number;
+  imageUrl?: string;
+  postId?: number;
+}
