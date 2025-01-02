@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { formStyles } from "@/app/styles/forms";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
 import { CustomButton } from "@/components/utils/button";
+import { useUploadImages } from "@/app/lib/codegen/hooks/post/post";
+import { UploadImagesBody } from "@/app/lib/codegen/dtos";
 
 interface PostData {
   postId: number;
@@ -12,7 +14,10 @@ interface PostData {
   content: string;
   postCategory: string; // 수정 시 고정 값 사용하거나 서버에서 받은 값 유지
 }
-
+interface ImagePreview {
+  file: File;
+  url: string;
+}
 export function PostEditBody() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -20,7 +25,7 @@ export function PostEditBody() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const { boardId, postId } = useParams();
-
+  const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
   const { data: boardData } = useGetBoard(Number(boardId));
 
   useEffect(() => {
@@ -89,6 +94,8 @@ export function PostEditBody() {
       content: trimmedContent,
     };
 
+    // images: images.map((image) => image.file as Blob),
+
     try {
       const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
         method: "PUT",
@@ -97,6 +104,13 @@ export function PostEditBody() {
         },
         body: JSON.stringify(updatedData),
       });
+      if (images.length > 0) {
+        const uploadData: UploadImagesBody = {
+          images: images.map((image) => image.file),
+        };
+        const numberPostId = Number(postId);
+        uploadImageMutate({ postId: numberPostId, data: uploadData });
+      }
 
       if (!response.ok) {
         console.error("Failed to update post. Status:", response.status);
@@ -105,16 +119,33 @@ export function PostEditBody() {
       }
 
       alert("게시글이 성공적으로 수정되었습니다.");
-      // 수정 완료 후 상세 보기 페이지 이동
       router.push(`/board/boards/${boardId}/posts/${postId}`);
     } catch (error) {
       console.error("Error updating post:", error);
       alert("게시글 수정 중 오류가 발생했습니다.");
     }
   };
-  console.log(title);
-  console.log(content);
-
+  //이미지 작성
+  const { mutate: uploadImageMutate } = useUploadImages({
+    mutation: {
+      onSuccess: () => {
+        console.log("이미지 업로드 완");
+      },
+    },
+  });
+  // 이미지 파일 변경 핸들러
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환
+    const newImages = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file), //이미지를 url 주소 생성하는 메서드
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]); // 상태에 저장
+  };
+  //이미지 삭제 핸들러
+  const handleRemoveImage = (url: string) => {
+    setImages((prevImages) => prevImages.filter((image) => image.url !== url));
+  };
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -136,15 +167,58 @@ export function PostEditBody() {
             required
           />
         </div>{" "}
-        <div style={formStyles.field}>
-          <label style={formStyles.label}>내용</label>
-          <textarea
-            value={content} // 입력 상태를 newContent로 변경
-            onChange={(e) => setContent(e.target.value)} // newContent 상태 업데이트
-            placeholder={content || "내용을 입력하세요"}
-            style={formStyles.textarea}
-            required
-          />
+        <div style={formStyles.field} className="flex">
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
+            <label htmlFor="image" style={formStyles.label}>
+              이미지
+            </label>
+            <input
+              id="image"
+              type="file"
+              onChange={handleImageChange}
+              multiple
+              style={formStyles.postimagelabel}
+            />
+            <div style={formStyles.postimagefield}>
+              {images.map((image) => (
+                <div key={image.url} style={formStyles.imagePreview}>
+                  <img
+                    src={image.url}
+                    alt="미리보기"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      marginBottom: "10px",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(image.url)}
+                    style={{
+                      backgroundColor: "#ff4d4d",
+                      color: "#fff",
+                      padding: "5px 10px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col w-full" style={formStyles.posttextarea}>
+            <label style={formStyles.label}>내용</label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="내용을 입력하세요"
+              style={formStyles.posttextarea}
+              required
+            />
+          </div>
         </div>
         <CustomButton $label="수정하기" $sizeType="long" type="submit" />
       </form>

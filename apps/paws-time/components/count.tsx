@@ -23,7 +23,6 @@ function Count({ boardId, postId }: CountProps) {
     mutation: {
       onSuccess: () => {
         setIsLiked((prev) => !prev);
-        // queryClient.refetchQueries(); // ! React Tree 내의 모든 쿼리를 재실행
         queryClient.refetchQueries({
           queryKey: [...getGetPostsQueryKey({ boardId })],
         });
