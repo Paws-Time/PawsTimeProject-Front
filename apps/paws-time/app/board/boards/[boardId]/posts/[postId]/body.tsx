@@ -22,7 +22,7 @@ interface PostData {
 const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
-  const [curImageNum, setCurImageNum] = useState<number>(1);
+  const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const {} = useGetDetailPost(Number(postId), {
     query: {
