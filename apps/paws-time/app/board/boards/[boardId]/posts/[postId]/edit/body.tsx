@@ -8,9 +8,9 @@ import {
   useGetDetailPost,
   useGetImages,
   useUpdatePost,
-  useUploadImages,
+  useUpdatePostImages,
 } from "@/app/lib/codegen/hooks/post/post";
-import { UploadImagesBody } from "@/app/lib/codegen/dtos";
+import { UpdatePostImagesBody } from "@/app/lib/codegen/dtos";
 
 export function PostEditBody() {
   const router = useRouter();
@@ -23,13 +23,15 @@ export function PostEditBody() {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
   const [deleteImage, setDeleteImage] = useState<number[]>([]); //삭제할 이미지 id를 저장
-  const [updateImage, setUpdateImage] = useState<UploadImagesBody>(); //새로 추ㅏ할 이미지를 저장.
+  const [updateImage, setUpdateImage] = useState<UpdatePostImagesBody>({
+    newImages: [],
+  }); //새로 추ㅏ할 이미지를 저장.
 
   //게시글 상세조회
   const { data: postData } = useGetDetailPost(Number(postId));
   const { data: imageData } = useGetImages(Number(postId));
   const { mutate: updatePost } = useUpdatePost();
-  const { mutate: updatePostImage } = useUploadImages();
+  const { mutate: updatePostImage } = useUpdatePostImages();
   // 게시글 데이터와 이미지 데이터를 상태로 설정
   useEffect(() => {
     if (postData) {
@@ -45,13 +47,12 @@ export function PostEditBody() {
       setPostImage(images);
     }
   }, [postData, imageData]);
-
   // 이미지 변경 처리
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
       setUpdateImage((prev) => ({
-        images: [...(prev?.images || []), ...files], // 이전 이미지와 새 이미지를 병합
+        newImages: [...(prev?.newImages || []), ...files], // 이전 이미지와 새 이미지를 병합
       }));
       const newImages = files.map((file) => ({
         id: Date.now(),
@@ -96,8 +97,8 @@ export function PostEditBody() {
 
     updatePostImage({
       postId: Number(postId),
-      data: { images: updateImage?.images || [] },
-      // params: { deletedImageIds: deleteImage },
+      data: { newImages: updateImage?.newImages || [] },
+      params: { deletedImageIds: deleteImage },
     });
     //수정 완료
     router.push(`/board/boards/${Number(boardId)}/posts/${Number(postId)}`);

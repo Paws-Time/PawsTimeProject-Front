@@ -56,7 +56,7 @@ const PostDetailBody = () => {
   const imagePrevHandle = () => {
     setCurImageNum((prev) => (prev > 0 ? prev - 1 : imagesUrl.length - 1));
   };
-
+  console.log(imagesUrl);
   const imageNextHandle = () => {
     setCurImageNum((prev) => (prev < imagesUrl.length - 1 ? prev + 1 : 0));
   };
@@ -64,21 +64,26 @@ const PostDetailBody = () => {
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
-          <CustomButton
-            $label="◀"
-            $sizeType="mini"
-            onClick={imagePrevHandle}
-          />
+          {imagesUrl.length === 0 && (
+            <CustomButton
+              $label="◀"
+              $sizeType="mini"
+              onClick={imagePrevHandle}
+            />
+          )}
+
           <img
             src={imagesUrl[curImageNum] || defaultImage}
             alt=""
             className="w-[650px] h-[550px]"
           />
-          <CustomButton
-            $label="▶"
-            $sizeType="mini"
-            onClick={imageNextHandle}
-          />
+          {imagesUrl.length === 0 && (
+            <CustomButton
+              $label="▶"
+              $sizeType="mini"
+              onClick={imageNextHandle}
+            />
+          )}
         </div>
         <div style={postFormStyles.buttonBox}>
           <Count boardId={Number(boardId)} postId={Number(postId)} />
