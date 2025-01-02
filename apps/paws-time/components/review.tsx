@@ -10,7 +10,6 @@ import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewProps {
   postId: number;
