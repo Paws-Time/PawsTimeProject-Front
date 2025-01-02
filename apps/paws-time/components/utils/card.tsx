@@ -14,7 +14,7 @@ type CardProps = {
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
-
+const defaultImage = "/noimage.png";
 export function Card({
   $title,
   postId,
@@ -26,7 +26,7 @@ export function Card({
   const { data } = useGetCommentByPost(postId);
   const commentCount = data?.data?.length ?? 0; // 댓글 수 기본값 0 처리
   const { data: imageData } = useGetThumbnail(postId);
-  const setImageUrl = imageData?.data?.[0].imageUrl;
+  const setImageUrl = imageData?.data?.[0].imageUrl || defaultImage;
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
       <div className="title">{$title}</div>

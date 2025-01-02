@@ -3,70 +3,74 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { formStyles } from "@/app/styles/forms";
-import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
 import { CustomButton } from "@/components/utils/button";
-import { useUploadImages } from "@/app/lib/codegen/hooks/post/post";
+import {
+  useGetDetailPost,
+  useGetImages,
+  useUpdatePost,
+  useUploadImages,
+} from "@/app/lib/codegen/hooks/post/post";
 import { UploadImagesBody } from "@/app/lib/codegen/dtos";
 
-interface PostData {
-  postId: number;
-  title: string;
-  content: string;
-  postCategory: string; // 수정 시 고정 값 사용하거나 서버에서 받은 값 유지
-}
-interface ImagePreview {
-  file: File;
-  url: string;
-}
 export function PostEditBody() {
   const router = useRouter();
+  const { boardId, postId } = useParams(); //위 주소를 통해 boardid와 postid르 받아온다
   const [title, setTitle] = useState("");
-  const [boardTitle, setBoardTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(true);
-  const { boardId, postId } = useParams();
-  const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
-  const { data: boardData } = useGetBoard(Number(boardId));
+  const [postImage, setPostImage] = useState<{ id?: number; url?: string }[]>(
+    []
+  ); //받아온 이미지 전체를 저장
+  const [newTitle, setNewTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
+  const [deleteImage, setDeleteImage] = useState<number[]>([]); //삭제할 이미지 id를 저장
+  const [updateImage, setUpdateImage] = useState<UploadImagesBody>(); //새로 추ㅏ할 이미지를 저장.
 
+  //게시글 상세조회
+  const { data: postData } = useGetDetailPost(Number(postId));
+  const { data: imageData } = useGetImages(Number(postId));
+  const { mutate: updatePost } = useUpdatePost();
+  const { mutate: updatePostImage } = useUploadImages();
+  // 게시글 데이터와 이미지 데이터를 상태로 설정
   useEffect(() => {
-    if (boardData?.data?.title) {
-      setBoardTitle(boardData.data.title);
+    if (postData) {
+      setTitle(postData?.data?.title || "");
+      setContent(postData?.data?.content || "");
     }
-  }, [boardData]);
-  // 기존 게시글 로드
-  useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const response = await fetch(`http://43.200.46.13:8080/post/${postId}`);
-        if (!response.ok) {
-          console.error("Failed to fetch data. Status:", response.status);
-          throw new Error("Failed to fetch post data");
-        }
-
-        const data: PostData = await response.json();
-        setTitle(data.title || ""); // 게시글 제목 설정
-        setContent(data.content || ""); // 게시글 내용 설정
-      } catch (error) {
-        console.error("Error fetching post data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (postId) {
-      fetchPostData();
+    if (imageData) {
+      const images =
+        imageData?.data?.map((img) => ({
+          id: img.imageId ?? 0,
+          url: String(img.imageUrl ?? ""),
+        })) || [];
+      setPostImage(images);
     }
-  }, [postId]);
+  }, [postData, imageData]);
 
-  // 수정 요청
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  // 이미지 변경 처리
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setUpdateImage((prev) => ({
+        images: [...(prev?.images || []), ...files], // 이전 이미지와 새 이미지를 병합
+      }));
+      const newImages = files.map((file) => ({
+        id: Date.now(),
+        url: URL.createObjectURL(file),
+      }));
+      setPostImage((prev) => [...prev, ...newImages]);
+    }
+  };
+  // 이미지 삭제 처리
+  const handleDeleteImage = (id: number) => {
+    setPostImage((prev) => prev.filter((img) => img.id !== id));
+    setDeleteImage((prev) => [...prev, id]);
+  };
+
+  //게시글 및 이미지 업데이트 핸들러
+  const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // 앞뒤 공백 제거
-    const trimmedTitle = title.trim();
-    const trimmedContent = content.trim();
-
-    // 빈 문자열 검사
+    const trimmedTitle = newTitle.trim();
+    const trimmedContent = newContent.trim();
     if (!trimmedTitle) {
       alert("제목을 입력해주세요.");
       return;
@@ -75,7 +79,6 @@ export function PostEditBody() {
       alert("내용을 입력해주세요.");
       return;
     }
-
     // 유효성 검사 (제목 5~20자, 내용 5자 이상)
     if (trimmedTitle.length < 5 || trimmedTitle.length > 20) {
       alert("제목은 5자 이상 20자 이하로 작성해주세요.");
@@ -86,57 +89,19 @@ export function PostEditBody() {
       return;
     }
 
-    // postCategory는 "TECH"로 고정 예시
-    const updatedData = {
-      title: trimmedTitle,
-      content: trimmedContent,
-    };
+    updatePost({
+      postId: Number(postId),
+      data: { title: trimmedTitle, content: trimmedContent },
+    });
 
-    try {
-      const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      });
-      if (images.length > 0) {
-        const uploadData: UploadImagesBody = {
-          images: images.map((image) => image.file),
-        };
-        const numberPostId = Number(postId);
-        uploadImageMutate({ postId: numberPostId, data: uploadData });
-      }
-
-      if (!response.ok) {
-        console.error("Failed to update post. Status:", response.status);
-        alert("게시글 수정 중 오류가 발생했습니다.");
-        return;
-      }
-
-      alert("게시글이 성공적으로 수정되었습니다.");
-      router.push(`/board/boards/${boardId}/posts/${postId}`);
-    } catch (error) {
-      console.error("Error updating post:", error);
-      alert("게시글 수정 중 오류가 발생했습니다.");
-    }
+    updatePostImage({
+      postId: Number(postId),
+      data: { images: updateImage?.images || [] },
+      // params: { deletedImageIds: deleteImage },
+    });
+    //수정 완료
+    router.push(`/board/boards/${Number(boardId)}/posts/${Number(postId)}`);
   };
-  //이미지 작성
-  const { mutate: uploadImageMutate } = useUploadImages();
-  // 이미지 파일 변경 핸들러
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환
-    const newImages = files.map((file) => ({
-      file,
-      url: URL.createObjectURL(file), //이미지를 url 주소 생성하는 메서드
-    }));
-    setImages((prevImages) => [...prevImages, ...newImages]); // 상태에 저장
-  };
-  //이미지 삭제 핸들러
-  const handleRemoveImage = (url: string) => {
-    setImages((prevImages) => prevImages.filter((image) => image.url !== url));
-  };
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div style={formStyles.container}>
@@ -144,14 +109,14 @@ export function PostEditBody() {
       <form onSubmit={handleUpdate} style={formStyles.form}>
         <h2 style={formStyles.heading}>글 수정하기</h2>
         <div style={formStyles.field}>
-          <label style={formStyles.label}>게시판 : {boardTitle}</label>
+          <label style={formStyles.label}>게시판 : {title}</label>
         </div>
         <div style={formStyles.field}>
           <label style={formStyles.label}>제목</label>
           <input
             type="text"
-            value={title} // 입력 상태를 newTitle로 변경
-            onChange={(e) => setTitle(e.target.value)} // newTitle 상태 업데이트
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
             placeholder={title || "제목을 입력하세요"}
             style={formStyles.input}
             required
@@ -170,8 +135,8 @@ export function PostEditBody() {
               style={formStyles.postimagelabel}
             />
             <div style={formStyles.postimagefield}>
-              {images.map((image) => (
-                <div key={image.url} style={formStyles.imagePreview}>
+              {postImage.map((image) => (
+                <div key={image.id} style={formStyles.imagePreview}>
                   <img
                     src={image.url}
                     alt="미리보기"
@@ -184,7 +149,9 @@ export function PostEditBody() {
                   />
                   <button
                     type="button"
-                    onClick={() => handleRemoveImage(image.url)}
+                    onClick={() => {
+                      if (image.id !== undefined) handleDeleteImage(image.id);
+                    }}
                     style={{
                       backgroundColor: "#ff4d4d",
                       color: "#fff",
@@ -202,9 +169,9 @@ export function PostEditBody() {
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="내용을 입력하세요"
+              value={newContent}
+              onChange={(e) => setNewContent(e.target.value)}
+              placeholder={content || "내용을 입력하세요"}
               style={formStyles.posttextarea}
               required
             />

@@ -22,7 +22,7 @@ interface PostData {
 const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
-  const [curImageNum, setCurImageNum] = useState<number>(1);
+  const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const {} = useGetDetailPost(Number(postId), {
     query: {
@@ -50,10 +50,9 @@ const PostDetailBody = () => {
   const handleDeletePost = (postId: number) => {
     deletePost({ postId });
   };
-
+  const defaultImage = "/noimage.png";
   const { data: imageData } = useGetImages(Number(postId));
   const imagesUrl = imageData?.data?.map((image) => image.imageUrl) || [];
-  console.log(curImageNum);
   const imagePrevHandle = () => {
     setCurImageNum((prev) => (prev > 0 ? prev - 1 : imagesUrl.length - 1));
   };
@@ -71,7 +70,7 @@ const PostDetailBody = () => {
             onClick={imagePrevHandle}
           />
           <img
-            src={imagesUrl[curImageNum]}
+            src={imagesUrl[curImageNum] || defaultImage}
             alt=""
             className="w-[650px] h-[550px]"
           />
