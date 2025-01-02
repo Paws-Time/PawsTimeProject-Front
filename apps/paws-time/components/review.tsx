@@ -4,6 +4,7 @@ import {
   useCreateComment,
   useDeleteComment,
   useGetCommentByPost,
+  useUpdateComment, // 수정 API 훅 추가
 } from "@/app/lib/codegen/hooks/comment/comment";
 import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
@@ -25,10 +26,13 @@ interface ReviewResDto {
   content?: string;
   createAt?: string;
 }
+
 function Review({ postId }: ReviewProps) {
   const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState("");
   const [pageNo, setPageNo] = useState(0);
   const [reviews, setReviews] = useState<ReviewResDto[]>([]);
   const [params, setParams] = useState<ReviewReqParams>({
@@ -44,11 +48,31 @@ function Review({ postId }: ReviewProps) {
     mutation: {
       onSuccess: (newComment) => {
         if (newComment.data) {
-          // newComment.data를 ReviewResDto로 타입 변환
           const newReview = newComment.data as ReviewResDto;
-          setReviews((prev) => [newReview, ...prev]); // 새 댓글 추가
+          setReviews((prev) => [newReview, ...prev]);
         }
-        setContent(""); // 입력 필드 초기화
+        setContent("");
+      },
+    },
+  });
+
+  // 댓글 수정
+  const { mutate: updateComment } = useUpdateComment({
+    mutation: {
+      onSuccess: (updatedComment) => {
+        if (updatedComment.data) {
+          const updatedReview = updatedComment.data as ReviewResDto;
+          setReviews((prev) =>
+            prev.map((review) =>
+              review.commentId === updatedReview.commentId
+                ? updatedReview
+                : review
+            )
+          );
+        }
+        setEditingCommentId(null);
+        setEditingContent("");
+        alert("댓글이 수정되었습니다.");
       },
     },
   });
@@ -57,7 +81,6 @@ function Review({ postId }: ReviewProps) {
   const { mutate: deleteComment } = useDeleteComment({
     mutation: {
       onSuccess: (_, { commentId }) => {
-        // 댓글 삭제 성공 시 상태 업데이트
         setReviews((prev) =>
           prev.filter((review) => review.commentId !== commentId)
         );
@@ -71,7 +94,18 @@ function Review({ postId }: ReviewProps) {
     deleteComment({ commentId });
   };
 
-  const handleEditReviews = (commentId: number) => {};
+  const handleEditReviews = (commentId: number, content: string) => {
+    setEditingCommentId(commentId);
+    setEditingContent(content);
+  };
+
+  const handleUpdateSubmit = () => {
+    if (!editingContent.trim() || editingCommentId === null) return;
+    updateComment({
+      commentId: editingCommentId,
+      data: { content: editingContent },
+    });
+  };
 
   // 댓글 조회
   const { data } = useGetCommentByPost(postId, params);
@@ -84,9 +118,9 @@ function Review({ postId }: ReviewProps) {
 
   useEffect(() => {
     setParams((prev) => ({
-      ...prev, // 기존 상태를 복사
+      ...prev,
       pageNo,
-      pageSize, // 업데이트할 값
+      pageSize,
       sortBy: "createdAt",
       direction,
     }));
@@ -109,27 +143,55 @@ function Review({ postId }: ReviewProps) {
           className="w-full flex flex-row items-center justify-between"
           style={postFormStyles.commentBox}
         >
-          <div className="flex-1">{review.content}</div>
-          <div className="flex gap-2">
-            <CustomButton
-              $label="✏️"
-              $sizeType="mini"
-              onClick={() => {
-                if (review.commentId !== undefined) {
-                  handleEditReviews(review.commentId);
-                }
-              }}
-            />
-            <CustomButton
-              $label="x"
-              $sizeType="mini"
-              onClick={() => {
-                if (review.commentId !== undefined) {
-                  handleDeleteReviews(review.commentId);
-                }
-              }}
-            />
-          </div>
+          {editingCommentId === review.commentId ? (
+            <div className="flex flex-1">
+              <InputField
+                $label="수정 내용"
+                type="text"
+                value={editingContent}
+                onChange={(e) => setEditingContent(e.target.value)}
+              />
+              <CustomButton
+                $label="✔️"
+                $sizeType="mini"
+                style={{ marginLeft: "4px" }}
+                onClick={handleUpdateSubmit}
+              />
+              <CustomButton
+                $label="❌"
+                $sizeType="mini"
+                style={{ marginLeft: "4px" }}
+                onClick={() => {
+                  setEditingCommentId(null);
+                  setEditingContent("");
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="flex-1">{review.content}</div>
+              <div className="flex gap-2">
+                <CustomButton
+                  $label="✏️"
+                  $sizeType="mini"
+                  onClick={() => {
+                    if (review.commentId !== undefined) {
+                      handleEditReviews(review.commentId, review.content ?? "");
+                    }
+                  }}
+                />
+                <CustomButton
+                  $label="x"
+                  $sizeType="mini"
+                  onClick={() => {
+                    if (review.commentId !== undefined) {
+                      handleDeleteReviews(review.commentId);
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
       <div>
