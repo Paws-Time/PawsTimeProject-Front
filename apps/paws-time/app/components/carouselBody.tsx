@@ -43,7 +43,6 @@ const CarouselBody = () => {
 
   useEffect(() => {
     if (data?.data) {
-      console.log("Fetched Data:", data.data); // 데이터 출력
       setPosts(data.data as Post[]); // data 배열 처리
     }
   }, [data]);

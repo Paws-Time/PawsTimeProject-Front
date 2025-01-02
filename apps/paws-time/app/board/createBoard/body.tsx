@@ -35,10 +35,8 @@ export default function CreateBoardComponent() {
   const handleCreateBoard = () => {
     const params: CreateBoardReqDto = { title, description, boardType };
     mutate({ data: params });
-    console.log(params);
   };
 
-  
   if (isLoading) {
     return <div>게시판을 생성 중입니다...</div>;
   }

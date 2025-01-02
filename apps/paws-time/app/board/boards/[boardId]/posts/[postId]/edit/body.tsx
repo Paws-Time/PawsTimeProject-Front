@@ -33,7 +33,6 @@ export function PostEditBody() {
       setBoardTitle(boardData.data.title);
     }
   }, [boardData]);
-  console.log(boardData);
   // 기존 게시글 로드
   useEffect(() => {
     const fetchPostData = async () => {
@@ -45,7 +44,6 @@ export function PostEditBody() {
         }
 
         const data: PostData = await response.json();
-        console.log(data);
         setTitle(data.title || ""); // 게시글 제목 설정
         setContent(data.content || ""); // 게시글 내용 설정
       } catch (error) {
@@ -126,13 +124,7 @@ export function PostEditBody() {
     }
   };
   //이미지 작성
-  const { mutate: uploadImageMutate } = useUploadImages({
-    mutation: {
-      onSuccess: () => {
-        console.log("이미지 업로드 완");
-      },
-    },
-  });
+  const { mutate: uploadImageMutate } = useUploadImages();
   // 이미지 파일 변경 핸들러
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []); // 파일 객체 배열로 변환

@@ -4,6 +4,7 @@ import { postFormStyles } from "@/app/styles/postforms";
 import {
   useDeletePost,
   useGetDetailPost,
+  useGetThumbnail,
 } from "@/app/lib/codegen/hooks/post/post";
 import { useParams, useRouter } from "next/navigation";
 import Count from "@/components/count";
@@ -21,7 +22,7 @@ const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
   const [post, setPost] = useState<PostData | null>(null);
-  const { isLoading, isError } = useGetDetailPost(Number(postId), {
+  const {} = useGetDetailPost(Number(postId), {
     query: {
       onSuccess: (data) => {
         if (data) {
@@ -34,13 +35,8 @@ const PostDetailBody = () => {
           });
         }
       },
-      onError: () => {
-        alert("잘못된 경로입니다.");
-        console.log(isError);
-      },
     },
   });
-  if (isLoading) console.log("로딩중입니다.");
   const { mutate: deletePost } = useDeletePost({
     mutation: {
       onSuccess: () => {
@@ -52,12 +48,15 @@ const PostDetailBody = () => {
   const handleDeletePost = (postId: number) => {
     deletePost({ postId });
   };
+
+  const { data: imageData } = useGetThumbnail(Number(postId));
+  const imagesData = imageData?.data?.[0].imageUrl;
   return (
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
           <img
-            src="/aaa.jpg"
+            src={imagesData}
             alt="이미지"
             className="w-full h-full object-cover border-r-10"
           />

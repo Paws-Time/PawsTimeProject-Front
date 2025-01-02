@@ -45,9 +45,6 @@ function Review({ postId }: ReviewProps) {
         setContent("");
         queryClient.refetchQueries(["getCommentByPost", postId]);
       },
-      onError: (error) => {
-        console.error("댓글 작성 실패:", error.response?.data || error.message);
-      },
     },
   });
   // 댓글삭제

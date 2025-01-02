@@ -1,5 +1,6 @@
 "use client";
 import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
+import { useGetThumbnail } from "@/app/lib/codegen/hooks/post/post";
 import { theme } from "design-system/lib/theme";
 import styled from "styled-components";
 
@@ -14,24 +15,23 @@ type CardProps = {
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
 
-const DEFAULT_IMAGE_URL = "/logo.png";
 export function Card({
   $title,
   postId,
   $contentPreview,
-  imageUrl = DEFAULT_IMAGE_URL, // 기본값 설정
   $views,
   $likeCount,
   ...rest
 }: Props) {
   const { data } = useGetCommentByPost(postId);
   const commentCount = data?.data?.length ?? 0; // 댓글 수 기본값 0 처리
-
+  const { data: imageData } = useGetThumbnail(postId);
+  const setImageUrl = imageData?.data?.[0].imageUrl;
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
       <div className="title">{$title}</div>
       <div className="image-field">
-        <img src={imageUrl} alt={$title || "이미지"} loading="lazy" />
+        <img src={setImageUrl} alt={$title || "이미지"} loading="lazy" />
       </div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
@@ -78,7 +78,7 @@ const CardWrapper = styled.div`
     width: 350px;
     height: 200px;
     border-radius: 15px;
-    border: 2px solid ${theme.colors.ref.base.black};
+    border: 1px solid ${theme.colors.ref.base.gray};
     background-color: ${theme.colors.ref.base.white};
     overflow: hidden;
     display: flex;
