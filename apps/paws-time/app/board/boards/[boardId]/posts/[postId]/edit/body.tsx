@@ -92,8 +92,6 @@ export function PostEditBody() {
       content: trimmedContent,
     };
 
-    // images: images.map((image) => image.file as Blob),
-
     try {
       const response = await fetch(`http://43.200.46.13:8080/post/${postId}`, {
         method: "PUT",

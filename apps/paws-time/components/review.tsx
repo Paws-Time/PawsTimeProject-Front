@@ -28,7 +28,6 @@ function Review({ postId }: ReviewProps) {
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
   const [pageNo, setPageNo] = useState(0);
-  // const [totalPage, setTotalPage] = useState(1);
   const [reviews, setReviews] = useState<ReviewResDto[]>([]);
   const [params, setParams] = useState<ReviewReqParams>({
     pageNo,
@@ -36,14 +35,12 @@ function Review({ postId }: ReviewProps) {
     sortBy: "createdAt",
     direction,
   });
-  const queryClient = useQueryClient();
   //댓글작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
       onSuccess: () => {
         alert("댓글이 추가되었습니다.");
         setContent("");
-        queryClient.refetchQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -56,7 +53,6 @@ function Review({ postId }: ReviewProps) {
           prev.filter((review) => review.commentId !== commentId)
         );
         alert("댓글이 삭제되었습니다.");
-        queryClient.refetchQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -64,6 +60,7 @@ function Review({ postId }: ReviewProps) {
   const handleDeleteReviews = (commentId: number) => {
     deleteComment({ commentId });
   };
+
   // 댓글조회
   const { data } = useGetCommentByPost(postId, params);
 
