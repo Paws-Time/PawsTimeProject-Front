@@ -22,7 +22,6 @@ interface ImagePreview {
 
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>();
-  const [postId, setPostId] = useState<number>(0);
   const [title, setTitle] = useState<string>(""); // 게시글 제목
   const [content, setContent] = useState<string>(""); // 게시글 내용
   const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
@@ -60,8 +59,6 @@ const BoardWriteBody = () => {
           console.log("Uploading Images with Data:", uploadData);
 
           try {
-            console.log(postId);
-            console.log(newPostId);
             // 이미지 업로드 Mutation 실행
             await new Promise((resolve, reject) => {
               uploadImageMutate(
