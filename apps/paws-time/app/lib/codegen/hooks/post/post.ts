@@ -278,7 +278,7 @@ export const uploadImages = (
   postId: number,
   uploadImagesBody: BodyType<UploadImagesBody>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   const formData = new FormData();
   uploadImagesBody.images.forEach((value) => formData.append("images", value));
@@ -291,7 +291,7 @@ export const uploadImages = (
       data: formData,
       signal,
     },
-    options
+    options,
   );
 };
 
@@ -670,7 +670,7 @@ export const toggleLike = (
 ) => {
   return customInstance<ApiResponseInteger>(
     { url: `/post/${postId}/likes`, method: "POST", signal },
-    options
+    options,
   );
 };
 
@@ -741,11 +741,11 @@ export const useToggleLike = <
 export const getThumbnail = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
     { url: `/post/${postId}/thumbnail`, method: "GET", signal },
-    options
+    options,
   );
 };
 
@@ -765,7 +765,7 @@ export const getGetThumbnailInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -808,7 +808,7 @@ export function useGetThumbnailInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetThumbnailInfiniteQueryOptions(postId, options);
 
@@ -834,7 +834,7 @@ export const getGetThumbnailQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -877,7 +877,7 @@ export function useGetThumbnail<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetThumbnailQueryOptions(postId, options);
 
