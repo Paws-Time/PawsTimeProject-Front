@@ -25,6 +25,8 @@ import type {
   ApiResponseVoid,
   CreatePostReqDto,
   GetPostsParams,
+  UpdatePostImagesBody,
+  UpdatePostImagesParams,
   UpdatePostReqDto,
   UploadImagesBody,
 } from "../../dtos";
@@ -428,6 +430,269 @@ export const useDeletePost = <
   TContext
 > => {
   const mutationOptions = getDeletePostMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary 게시글별 이미지 전체 조회
+ */
+export const getImages = (
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetImageRespDto>(
+    { url: `/post/${postId}/images`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetImagesQueryKey = (postId: number) => {
+  return [`/post/${postId}/images`] as const;
+};
+
+export const getGetImagesInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getImages>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getImages>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetImagesQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getImages>>> = ({
+    signal,
+  }) => getImages(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getImages>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetImagesInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getImages>>
+>;
+export type GetImagesInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 이미지 전체 조회
+ */
+
+export function useGetImagesInfinite<
+  TData = Awaited<ReturnType<typeof getImages>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getImages>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetImagesInfiniteQueryOptions(postId, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetImagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getImages>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getImages>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetImagesQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getImages>>> = ({
+    signal,
+  }) => getImages(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getImages>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
+
+export type GetImagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getImages>>
+>;
+export type GetImagesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 이미지 전체 조회
+ */
+
+export function useGetImages<
+  TData = Awaited<ReturnType<typeof getImages>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getImages>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetImagesQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 기존 이미지를 삭제하거나 새로운 이미지를 추가합니다.
+ * @summary 게시글 이미지 수정
+ */
+export const updatePostImages = (
+  postId: number,
+  updatePostImagesBody: BodyType<UpdatePostImagesBody>,
+  params?: UpdatePostImagesParams,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  const formData = new FormData();
+  if (updatePostImagesBody.newImages !== undefined) {
+    updatePostImagesBody.newImages.forEach((value) =>
+      formData.append("newImages", value),
+    );
+  }
+
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/post/${postId}/images`,
+      method: "PUT",
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
+      params,
+    },
+    options,
+  );
+};
+
+export const getUpdatePostImagesMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePostImages>>,
+    TError,
+    {
+      postId: number;
+      data: BodyType<UpdatePostImagesBody>;
+      params?: UpdatePostImagesParams;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePostImages>>,
+  TError,
+  {
+    postId: number;
+    data: BodyType<UpdatePostImagesBody>;
+    params?: UpdatePostImagesParams;
+  },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePostImages>>,
+    {
+      postId: number;
+      data: BodyType<UpdatePostImagesBody>;
+      params?: UpdatePostImagesParams;
+    }
+  > = (props) => {
+    const { postId, data, params } = props ?? {};
+
+    return updatePostImages(postId, data, params, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePostImagesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePostImages>>
+>;
+export type UpdatePostImagesMutationBody = BodyType<UpdatePostImagesBody>;
+export type UpdatePostImagesMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글 이미지 수정
+ */
+export const useUpdatePostImages = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePostImages>>,
+    TError,
+    {
+      postId: number;
+      data: BodyType<UpdatePostImagesBody>;
+      params?: UpdatePostImagesParams;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updatePostImages>>,
+  TError,
+  {
+    postId: number;
+    data: BodyType<UpdatePostImagesBody>;
+    params?: UpdatePostImagesParams;
+  },
+  TContext
+> => {
+  const mutationOptions = getUpdatePostImagesMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -891,81 +1156,69 @@ export function useGetThumbnail<
 }
 
 /**
- * @summary 게시글별 이미지 전체 조회
+ * @summary 메인페이지에서 사용할 랜덤 이미지 조회
  */
-export const getImages = (
-  postId: number,
+export const getRandomImages = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
-    { url: `/post/${postId}/images`, method: "GET", signal },
+    { url: `/post/images/random`, method: "GET", signal },
     options,
   );
 };
 
-export const getGetImagesQueryKey = (postId: number) => {
-  return [`/post/${postId}/images`] as const;
+export const getGetRandomImagesQueryKey = () => {
+  return [`/post/images/random`] as const;
 };
 
-export const getGetImagesInfiniteQueryOptions = <
-  TData = Awaited<ReturnType<typeof getImages>>,
+export const getGetRandomImagesInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRandomImages>>,
   TError = ErrorType<unknown>,
->(
-  postId: number,
-  options?: {
-    query?: UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof getImages>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-) => {
+>(options?: {
+  query?: UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetImagesQueryKey(postId);
+  const queryKey = queryOptions?.queryKey ?? getGetRandomImagesQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getImages>>> = ({
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRandomImages>>> = ({
     signal,
-  }) => getImages(postId, requestOptions, signal);
+  }) => getRandomImages(requestOptions, signal);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!postId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof getImages>>,
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetImagesInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getImages>>
+export type GetRandomImagesInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRandomImages>>
 >;
-export type GetImagesInfiniteQueryError = ErrorType<unknown>;
+export type GetRandomImagesInfiniteQueryError = ErrorType<unknown>;
 
 /**
- * @summary 게시글별 이미지 전체 조회
+ * @summary 메인페이지에서 사용할 랜덤 이미지 조회
  */
 
-export function useGetImagesInfinite<
-  TData = Awaited<ReturnType<typeof getImages>>,
+export function useGetRandomImagesInfinite<
+  TData = Awaited<ReturnType<typeof getRandomImages>>,
   TError = ErrorType<unknown>,
->(
-  postId: number,
-  options?: {
-    query?: UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof getImages>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetImagesInfiniteQueryOptions(postId, options);
+>(options?: {
+  query?: UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetRandomImagesInfiniteQueryOptions(options);
 
   const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
     TData,
@@ -977,62 +1230,53 @@ export function useGetImagesInfinite<
   return query;
 }
 
-export const getGetImagesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getImages>>,
+export const getGetRandomImagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRandomImages>>,
   TError = ErrorType<unknown>,
->(
-  postId: number,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getImages>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-) => {
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetImagesQueryKey(postId);
+  const queryKey = queryOptions?.queryKey ?? getGetRandomImagesQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getImages>>> = ({
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRandomImages>>> = ({
     signal,
-  }) => getImages(postId, requestOptions, signal);
+  }) => getRandomImages(requestOptions, signal);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!postId,
-    ...queryOptions,
-  } as UseQueryOptions<Awaited<ReturnType<typeof getImages>>, TError, TData> & {
-    queryKey: QueryKey;
-  };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
 };
 
-export type GetImagesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getImages>>
+export type GetRandomImagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRandomImages>>
 >;
-export type GetImagesQueryError = ErrorType<unknown>;
+export type GetRandomImagesQueryError = ErrorType<unknown>;
 
 /**
- * @summary 게시글별 이미지 전체 조회
+ * @summary 메인페이지에서 사용할 랜덤 이미지 조회
  */
 
-export function useGetImages<
-  TData = Awaited<ReturnType<typeof getImages>>,
+export function useGetRandomImages<
+  TData = Awaited<ReturnType<typeof getRandomImages>>,
   TError = ErrorType<unknown>,
->(
-  postId: number,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getImages>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetImagesQueryOptions(postId, options);
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRandomImages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetRandomImagesQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

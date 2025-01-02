@@ -6,6 +6,7 @@
  */
 
 export interface GetListPostRespDto {
+  boardId?: number;
   contentPreview?: string;
   createdAt?: string;
   id?: number;
