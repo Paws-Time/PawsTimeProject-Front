@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useCreateComment,
   useDeleteComment,
@@ -35,16 +37,23 @@ function Review({ postId }: ReviewProps) {
     sortBy: "createdAt",
     direction,
   });
-  //댓글작성
+  const queryClient = useQueryClient();
+
+  // 댓글 작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
-      onSuccess: () => {
-        alert("댓글이 추가되었습니다.");
-        setContent("");
+      onSuccess: (newComment) => {
+        if (newComment.data) {
+          // newComment.data를 ReviewResDto로 타입 변환
+          const newReview = newComment.data as ReviewResDto;
+          setReviews((prev) => [newReview, ...prev]); // 새 댓글 추가
+        }
+        setContent(""); // 입력 필드 초기화
       },
     },
   });
-  // 댓글삭제
+
+  // 댓글 삭제
   const { mutate: deleteComment } = useDeleteComment({
     mutation: {
       onSuccess: (_, { commentId }) => {
@@ -53,6 +62,7 @@ function Review({ postId }: ReviewProps) {
           prev.filter((review) => review.commentId !== commentId)
         );
         alert("댓글이 삭제되었습니다.");
+        queryClient.refetchQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -61,7 +71,9 @@ function Review({ postId }: ReviewProps) {
     deleteComment({ commentId });
   };
 
-  // 댓글조회
+  const handleEditReviews = (commentId: number) => {};
+
+  // 댓글 조회
   const { data } = useGetCommentByPost(postId, params);
 
   useEffect(() => {
@@ -88,16 +100,26 @@ function Review({ postId }: ReviewProps) {
       data: { content },
     });
   };
+
   return (
     <>
-      {reviews.map((review) => (
+      {reviews.map((review, index) => (
         <div
-          key={review.commentId}
+          key={review.commentId ?? `review-${index}`}
           className="w-full flex flex-row items-center justify-between"
           style={postFormStyles.commentBox}
         >
           <div className="flex-1">{review.content}</div>
           <div className="flex gap-2">
+            <CustomButton
+              $label="✏️"
+              $sizeType="mini"
+              onClick={() => {
+                if (review.commentId !== undefined) {
+                  handleEditReviews(review.commentId);
+                }
+              }}
+            />
             <CustomButton
               $label="x"
               $sizeType="mini"
