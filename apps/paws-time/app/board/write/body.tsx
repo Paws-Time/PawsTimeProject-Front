@@ -56,8 +56,6 @@ const BoardWriteBody = () => {
             images: images.map((image) => image.file), // Blob[] 형태로 변환
           };
 
-          console.log("Uploading Images with Data:", uploadData);
-
           try {
             // 이미지 업로드 Mutation 실행
             await new Promise((resolve, reject) => {
@@ -69,8 +67,6 @@ const BoardWriteBody = () => {
                 }
               );
             });
-
-            console.log("이미지 업로드 성공");
           } catch (error) {
             console.error("이미지 업로드 실패:", error);
             alert("이미지 업로드 중 오류가 발생했습니다.");
@@ -125,13 +121,7 @@ const BoardWriteBody = () => {
     mutate(data);
   };
   //이미지 작성
-  const { mutate: uploadImageMutate } = useUploadImages({
-    mutation: {
-      onSuccess: () => {
-        console.log("이미지 업로드 완");
-      },
-    },
-  });
+  const { mutate: uploadImageMutate } = useUploadImages();
 
   // images: images.map((image) => image.file as Blob),
 

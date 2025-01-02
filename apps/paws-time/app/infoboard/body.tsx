@@ -95,7 +95,6 @@ export default function InfoBoardBody() {
           className="input"
           onSubmit={(e) => {
             e.preventDefault(); // 기본 동작 방지
-            console.log("검색된 이름:", nameFilter);
           }}
         >
           <input

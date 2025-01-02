@@ -15,7 +15,6 @@ export default function EditBoardBody({}) {
   const [description, setDescription] = useState<string>("");
   const router = useRouter();
   const { boardId } = useParams();
-  console.log(boardId);
 
   const { mutate, isLoading, isError } = useUpdateBoard({
     mutation: {
@@ -36,7 +35,6 @@ export default function EditBoardBody({}) {
   const handleEditBoard = () => {
     const params: UpdateBoardReqDto = { title, description };
     mutate({ boardId: numberBoardId, data: params });
-    console.log(params);
   };
 
   if (isLoading) {
