@@ -19,7 +19,9 @@ import type {
 import type {
   ApiResponseGetDetailPostRespDto,
   ApiResponseInteger,
+  ApiResponseListGetImageRespDto,
   ApiResponseListGetListPostRespDto,
+  ApiResponseLong,
   ApiResponseVoid,
   CreatePostReqDto,
   GetPostsParams,
@@ -584,7 +586,7 @@ export const createPost = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ApiResponseVoid>(
+  return customInstance<ApiResponseLong>(
     {
       url: `/post`,
       method: "POST",
@@ -733,3 +735,157 @@ export const useToggleLike = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+export const getThumbnail = (
+  postId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetImageRespDto>(
+    { url: `/post/${postId}/thumbnail`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetThumbnailQueryKey = (postId: number) => {
+  return [`/post/${postId}/thumbnail`] as const;
+};
+
+export const getGetThumbnailInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetThumbnailQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getThumbnail>>> = ({
+    signal,
+  }) => getThumbnail(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getThumbnail>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetThumbnailInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getThumbnail>>
+>;
+export type GetThumbnailInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+
+export function useGetThumbnailInfinite<
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetThumbnailInfiniteQueryOptions(postId, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetThumbnailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetThumbnailQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getThumbnail>>> = ({
+    signal,
+  }) => getThumbnail(postId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!postId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getThumbnail>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetThumbnailQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getThumbnail>>
+>;
+export type GetThumbnailQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 게시글별 대표 이미지 조회
+ */
+
+export function useGetThumbnail<
+  TData = Awaited<ReturnType<typeof getThumbnail>>,
+  TError = ErrorType<unknown>,
+>(
+  postId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getThumbnail>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetThumbnailQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
