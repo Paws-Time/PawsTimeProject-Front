@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { postFormStyles } from "@/app/styles/postforms";
 import {
   useDeletePost,
@@ -10,6 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import Count from "@/components/count";
 import Review from "@/components/review";
 import { CustomButton } from "@/components/utils/button";
+import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
 
 interface PostData {
   post_id?: number;
@@ -24,6 +25,7 @@ const PostDetailBody = () => {
   const { boardId, postId } = useParams();
   const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
+  const [commentsCount, setCommentsCount] = useState<number>(0);
   const {} = useGetDetailPost(Number(postId), {
     query: {
       onSuccess: (data) => {
@@ -56,7 +58,14 @@ const PostDetailBody = () => {
   const imagePrevHandle = () => {
     setCurImageNum((prev) => (prev > 0 ? prev - 1 : imagesUrl.length - 1));
   };
-  console.log(imagesUrl);
+
+  const { data: commentsData } = useGetCommentByPost(Number(postId));
+  useEffect(() => {
+    if (commentsData?.data) {
+      setCommentsCount(commentsData.data.length);
+    }
+  }, [commentsData]);
+
   const imageNextHandle = () => {
     setCurImageNum((prev) => (prev < imagesUrl.length - 1 ? prev + 1 : 0));
   };
@@ -64,29 +73,28 @@ const PostDetailBody = () => {
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
-          {imagesUrl.length === 0 && (
-            <CustomButton
-              $label="◀"
-              $sizeType="mini"
-              onClick={imagePrevHandle}
-            />
-          )}
-
+          <CustomButton
+            $label="◀"
+            $sizeType="mini"
+            onClick={imagePrevHandle}
+          />
           <img
             src={imagesUrl[curImageNum] || defaultImage}
             alt=""
             className="w-[650px] h-[550px]"
           />
-          {imagesUrl.length === 0 && (
-            <CustomButton
-              $label="▶"
-              $sizeType="mini"
-              onClick={imageNextHandle}
-            />
-          )}
+          <CustomButton
+            $label="▶"
+            $sizeType="mini"
+            onClick={imageNextHandle}
+          />
         </div>
         <div style={postFormStyles.buttonBox}>
-          <Count boardId={Number(boardId)} postId={Number(postId)} />
+          <Count
+            boardId={Number(boardId)}
+            postId={Number(postId)}
+            commentsCount={commentsCount}
+          />
         </div>
       </div>
       <div style={postFormStyles.contentSection}>
@@ -125,7 +133,7 @@ const PostDetailBody = () => {
         </div>
 
         <div style={postFormStyles.textBox}>
-          <Review postId={Number(postId)} />
+          <Review postId={Number(postId)} setCommentsCount={setCommentsCount} />
         </div>
       </div>
     </div>
