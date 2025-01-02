@@ -5,6 +5,8 @@
  * OpenAPI spec version: v1
  */
 
+export * from "./apiResponseCreateCommentRespDto";
+export * from "./apiResponseCreateCommentRespDtoStatus";
 export * from "./apiResponseGetBoardRespDto";
 export * from "./apiResponseGetBoardRespDtoStatus";
 export * from "./apiResponseGetDetailPostRespDto";
@@ -20,6 +22,8 @@ export * from "./apiResponseListGetHospitalInfoRespDtoStatus";
 export * from "./apiResponseListGetListPostRespDto";
 export * from "./apiResponseListGetListPostRespDtoStatus";
 export * from "./apiResponseString";
+export * from "./apiResponseString";
+export * from "./apiResponseStringStatus";
 export * from "./apiResponseStringStatus";
 export * from "./apiResponseVoid";
 export * from "./apiResponseVoidData";
@@ -27,6 +31,7 @@ export * from "./apiResponseVoidStatus";
 export * from "./createBoardReqDto";
 export * from "./createBoardReqDtoBoardType";
 export * from "./createCommentReqDto";
+export * from "./createCommentRespDto";
 export * from "./createPost2ReqDto";
 export * from "./createPostBody";
 export * from "./createPostReqDto";
@@ -45,9 +50,10 @@ export * from "./getPostsParams";
 export * from "./loginUser200";
 export * from "./loginUserReqDto";
 export * from "./logoutUser200";
+export * from "./toggleLike1200";
+export * from "./toggleLike1Body";
 export * from "./updateBoardReqDto";
 export * from "./updateCommentReqDto";
 export * from "./updatePostReqDto";
+export * from "./uploadImagesBody";
 export * from "./userCreateReqDto";
-export * from "./apiResponseString";
-export * from "./apiResponseStringStatus";

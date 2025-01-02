@@ -5,12 +5,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface GetDetailPostRespDto {
-  boardId?: number;
-  commentCount?: number;
+export interface CreateCommentRespDto {
   content?: string;
   createdAt?: string;
-  postId?: number;
-  title?: string;
-  updatedAt?: string;
+  id?: number;
 }
