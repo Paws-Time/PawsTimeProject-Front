@@ -7,6 +7,7 @@ import { postFormStyles } from "@/app/styles/postforms";
 import React, { useEffect, useState } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewProps {
   postId: number;
@@ -35,13 +36,17 @@ function Review({ postId }: ReviewProps) {
     sortBy: "createdAt",
     direction,
   });
-
+  const queryClient = useQueryClient();
   //댓글작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
       onSuccess: () => {
         alert("댓글이 추가되었습니다.");
         setContent("");
+        queryClient.refetchQueries(["getCommentByPost", postId]);
+      },
+      onError: (error) => {
+        console.error("댓글 작성 실패:", error.response?.data || error.message);
       },
     },
   });
@@ -54,9 +59,7 @@ function Review({ postId }: ReviewProps) {
           prev.filter((review) => review.commentId !== commentId)
         );
         alert("댓글이 삭제되었습니다.");
-      },
-      onError: (error) => {
-        console.error("댓글 삭제 실패:", error);
+        queryClient.refetchQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -91,14 +94,6 @@ function Review({ postId }: ReviewProps) {
       data: { content },
     });
   };
-  // const totalPageNumber = () => {
-  //   const pageNumbers = [];
-  //   for (let i = 0; i < totalPage; i++) {
-  //     pageNumbers.push(i);
-  //   }
-  //   re;
-  // };
-
   return (
     <>
       {reviews.map((review) => (

@@ -85,7 +85,6 @@ const BoardDetailBody = () => {
   const resetPage = () => {
     setPageNo(0);
   };
-  console.log(boardId);
   return (
     <div className="container">
       <div className="w-custom-sidew" />

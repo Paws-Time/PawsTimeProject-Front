@@ -22,7 +22,6 @@ interface ImagePreview {
 
 const BoardWriteBody = () => {
   const [boardId, setBoardId] = useState<number>();
-  const [postId, setPostId] = useState<number>(8);
   const [title, setTitle] = useState<string>(""); // 게시글 제목
   const [content, setContent] = useState<string>(""); // 게시글 내용
   const [images, setImages] = useState<ImagePreview[]>([]); // 이미지 파일 배열
@@ -48,29 +47,44 @@ const BoardWriteBody = () => {
   }, [data, boardId]);
   const { mutate, isLoading, isError } = useCreatePost({
     mutation: {
-      onSuccess: (response) => {
-        console.log(response);
-        console.log(response.data);
-        const newPostId = response?.data?.postId;
-        console.log(newPostId);
-        setPostId(Number(newPostId));
+      onSuccess: async (response) => {
+        const newPostId = response.data; // 게시글 ID
 
         if (images.length > 0) {
+          // 이미지 업로드 데이터 준비
           const uploadData: UploadImagesBody = {
             images: images.map((image) => image.file), // Blob[] 형태로 변환
           };
 
           console.log("Uploading Images with Data:", uploadData);
 
-          // 이미지 업로드 Mutation 실행
-          uploadImageMutate({ postId, data: uploadData });
+          try {
+            // 이미지 업로드 Mutation 실행
+            await new Promise((resolve, reject) => {
+              uploadImageMutate(
+                { postId: Number(newPostId), data: uploadData },
+                {
+                  onSuccess: resolve,
+                  onError: reject,
+                }
+              );
+            });
+
+            console.log("이미지 업로드 성공");
+          } catch (error) {
+            console.error("이미지 업로드 실패:", error);
+            alert("이미지 업로드 중 오류가 발생했습니다.");
+            return; // 이미지 업로드 실패 시 이동하지 않음
+          }
         }
 
         alert("게시글이 성공적으로 생성되었습니다.");
         setTitle(""); // 제목 초기화
         setContent(""); // 내용 초기화
         setImages([]); // 이미지 초기화
-        router.push(`/board/boards/${boardId}`); // 게시판 상세 페이지로 이동
+
+        // 이미지 업로드 완료 후 페이지 이동
+        router.push(`/board/boards/${boardId}`);
       },
       onError: (error) => {
         console.error("Error response:", error.response?.data || error.message);
@@ -109,7 +123,6 @@ const BoardWriteBody = () => {
       },
     };
     mutate(data);
-    console.log("Request Body:", data);
   };
   //이미지 작성
   const { mutate: uploadImageMutate } = useUploadImages({
