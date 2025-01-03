@@ -30,8 +30,13 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
     script.async = true;
     script.onload = () => {
       // SDK 로드 후 지도 초기화
+      console.log(window.kakao);
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
+      console.log("Kakao API Key:", kakaoApiKey);
       if (window.kakao) {
         window.kakao.maps.load(() => {
+          console.log("Kakao Maps SDK loaded.");
           const container = document.getElementById("map"); // 지도 컨테이너
           const options = {
             center: new window.kakao.maps.LatLng(latitude, longitude), // 중심 좌표
@@ -40,12 +45,16 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
 
           // 지도 생성
           const map = new window.kakao.maps.Map(container, options);
+          map.relayout(); // 지도 레이아웃 갱신
+          map.setCenter(new window.kakao.maps.LatLng(latitude, longitude)); // 중심 좌표 재설정
+          console.log("Map initialized:", map);
           // 마커 생성
           const marker = new window.kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
             position: new window.kakao.maps.LatLng(latitude, longitude), // 마커 위치
             clickable: true,
           });
+          console.log("Marker initialized:", marker);
           const iwContent = '<div style="padding:5px;">세부정보보기</div>';
           // 인포윈도우를 생성합니다
           const infowindow = new window.kakao.maps.InfoWindow({
@@ -74,10 +83,9 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
       }
     };
   }, [latitude, longitude, kakaoApiKey, openModal]);
-
   return (
     <>
-      <div id="map" className="w-[900px] h-[850px] ml-20 mt-10" />;
+      <div id="map" className="w-[850px] h-[800px] ml-20 mt-10" />
       <Modal>
         <Mapdetail name={name} tel={tel} address={address} />
       </Modal>

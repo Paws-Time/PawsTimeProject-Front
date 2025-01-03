@@ -24,7 +24,7 @@ export default function InfoBoardBody() {
     useState<GetHospitalInfoRespDto | null>(null);
   const [regionFilter, setRegionFilter] = useState(6);
   const [nameFilter, setNameFilter] = useState("");
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [sortBy, setSortBy] = useState("");
   const [direction, setDirection] = useState("DESC");
   const [pageNo, setPageNo] = useState(0);

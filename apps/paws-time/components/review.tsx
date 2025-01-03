@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewProps {
   postId: number;
+  setCommentsCount: React.Dispatch<React.SetStateAction<number>>; // 업데이트 함수 타입 정의
 }
 interface ReviewReqParams {
   pageNo?: number;
@@ -27,7 +28,7 @@ interface ReviewResDto {
   createAt?: string;
 }
 
-function Review({ postId }: ReviewProps) {
+function Review({ postId, setCommentsCount }: ReviewProps) {
   const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
@@ -50,8 +51,10 @@ function Review({ postId }: ReviewProps) {
         if (newComment.data) {
           const newReview = newComment.data as ReviewResDto;
           setReviews((prev) => [newReview, ...prev]);
+          setCommentsCount((prev: number) => prev + 1);
         }
         setContent("");
+        queryClient.invalidateQueries(["getCommentByPost", postId]);
       },
     },
   });
@@ -84,6 +87,7 @@ function Review({ postId }: ReviewProps) {
         setReviews((prev) =>
           prev.filter((review) => review.commentId !== commentId)
         );
+        setCommentsCount((prev: number) => Math.max(0, prev - 1));
         alert("댓글이 삭제되었습니다.");
         queryClient.refetchQueries(["getCommentByPost", postId]);
       },
