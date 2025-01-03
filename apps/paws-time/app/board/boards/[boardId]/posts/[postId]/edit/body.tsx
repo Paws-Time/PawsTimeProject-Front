@@ -112,9 +112,6 @@ export function PostEditBody() {
       <form onSubmit={handleUpdate} style={formStyles.form}>
         <h2 style={formStyles.heading}>글 수정하기</h2>
         <div style={formStyles.field}>
-          <label style={formStyles.label}>게시판 : {title}</label>
-        </div>
-        <div style={formStyles.field}>
           <label style={formStyles.label}>제목</label>
           <input
             type="text"

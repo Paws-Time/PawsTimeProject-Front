@@ -73,21 +73,26 @@ const PostDetailBody = () => {
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
-          <CustomButton
-            $label="◀"
-            $sizeType="mini"
-            onClick={imagePrevHandle}
-          />
+          {imagesUrl.length > 2 && (
+            <CustomButton
+              $label="◀"
+              $sizeType="mini"
+              onClick={imagePrevHandle}
+            />
+          )}
+
           <img
             src={imagesUrl[curImageNum] || defaultImage}
             alt=""
             className="w-[650px] h-[550px]"
           />
-          <CustomButton
-            $label="▶"
-            $sizeType="mini"
-            onClick={imageNextHandle}
-          />
+          {imagesUrl.length > 2 && (
+            <CustomButton
+              $label="▶"
+              $sizeType="mini"
+              onClick={imageNextHandle}
+            />
+          )}
         </div>
         <div style={postFormStyles.buttonBox}>
           <Count
