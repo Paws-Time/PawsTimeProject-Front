@@ -85,7 +85,7 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
   }, [latitude, longitude, kakaoApiKey, openModal]);
   return (
     <>
-      <div id="map" className="w-[900px] h-[850px] ml-20 mt-10" />
+      <div id="map" className="w-[850px] h-[800px] ml-20 mt-10" />
       <Modal>
         <Mapdetail name={name} tel={tel} address={address} />
       </Modal>

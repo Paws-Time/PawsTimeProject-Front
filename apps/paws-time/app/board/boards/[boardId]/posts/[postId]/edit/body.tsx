@@ -33,6 +33,7 @@ export function PostEditBody() {
   const { mutate: updatePost } = useUpdatePost();
   const { mutate: updatePostImage } = useUpdatePostImages();
   // 게시글 데이터와 이미지 데이터를 상태로 설정
+
   useEffect(() => {
     if (postData) {
       setTitle(postData?.data?.title || "");
@@ -100,6 +101,7 @@ export function PostEditBody() {
       data: { newImages: updateImage?.newImages || [] },
       params: { deletedImageIds: deleteImage },
     });
+    console.log(deleteImage);
     //수정 완료
     router.push(`/board/boards/${Number(boardId)}/posts/${Number(postId)}`);
   };
