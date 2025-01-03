@@ -1,7 +1,10 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import {
+  getGetPostsQueryKey,
+  useGetPosts,
+} from "@/app/lib/codegen/hooks/post/post";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
@@ -9,23 +12,13 @@ import { useModalStore } from "@/app/hooks/modalStore";
 import SortSetting from "@/components/postsetting";
 import Modal from "@/components/modal";
 import useBoardStore from "@/app/hooks/boardStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formStyles } from "@/app/styles/forms";
 import "@/app/styles/css/board.css";
 
 interface PostData {
   id?: number;
   postId?: number;
-  title?: string;
-  contentPreview?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  views?: number;
-  likesCount?: number;
-}
-
-interface GetListPostRespDto {
-  id?: number;
   title?: string;
   contentPreview?: string;
   createdAt?: string;
@@ -43,6 +36,7 @@ const BoardDetailBody = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
+  const [postDatas, setPostDatas] = useState<PostData[]>([]);
   const params = {
     boardId: Number(boardId),
     keyword: searchKeyword,
@@ -54,29 +48,18 @@ const BoardDetailBody = () => {
   const { data: boardData } = useGetBoard(Number(boardId));
   const boardTitle = boardData?.data?.title;
   // 게시글 목록 가져오기
-  const {
-    data: postData,
-    isLoading,
-    error,
-  } = useGetPosts(params, {
+  const { data: postData } = useGetPosts(params, {
     query: {
+      queryKey: getGetPostsQueryKey({ boardId: Number(boardId) }),
       staleTime: 0,
+      cacheTime: 1000,
     },
   });
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
-
-  const posts: PostData[] = (postData?.data || []).map(
-    (post: GetListPostRespDto) => ({
-      ...post,
-      postId: post.id,
-    })
-  );
-
-  /*const handleSearch = () => {
-    setSearchKeyword(inputKeyword); // 타이핑된 키워드를 실제 검색 키워드로 설정
-    SetPageNo(0); // 검색 시 첫 페이지로 이동
-  }; **/
+  useEffect(() => {
+    if (postData?.data) {
+      setPostDatas([...postData.data]);
+    }
+  }, [postData]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,8 +110,8 @@ const BoardDetailBody = () => {
         </Modal>
       </div>
       <div className="card-container">
-        {posts.length > 0 ? (
-          posts.map((post: PostData) => (
+        {postDatas.length > 0 ? (
+          postDatas.map((post: PostData) => (
             <Card
               key={post.id}
               postId={post.id!}
@@ -154,17 +137,20 @@ const BoardDetailBody = () => {
 
         <span className="mt-5 ml-20"> 현 페이지입니다 : {pageNo + 1}</span>
         <div className="flex gap-3">
-          <CustomButton
-            $label="이전"
-            $sizeType="normal"
-            onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))} // 이전 페이지로 이동
-            disabled={pageNo === 0} // 첫 페이지에서는 비활성화
-          />
+          {pageNo === 0 && (
+            <CustomButton
+              $label="이전"
+              $sizeType="normal"
+              onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))} // 이전 페이지로 이동
+              disabled={pageNo === 0} // 첫 페이지에서는 비활성화
+            />
+          )}
+
           <CustomButton
             $label="다음"
             $sizeType="normal"
             onClick={() => setPageNo((prev) => prev + 1)} // 다음 페이지로 이동
-            disabled={posts.length < pageSize} // 마지막 페이지에서 비활성화
+            disabled={postDatas.length < pageSize} // 마지막 페이지에서 비활성화
           />
         </div>
       </div>

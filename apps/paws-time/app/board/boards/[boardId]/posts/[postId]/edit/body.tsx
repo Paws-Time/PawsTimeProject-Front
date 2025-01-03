@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import {
+  getGetDetailPostQueryKey,
+  getGetImagesQueryKey,
   useGetDetailPost,
   useGetImages,
   useUpdatePost,
@@ -13,7 +15,6 @@ import {
 import { UpdatePostImagesBody } from "@/app/lib/codegen/dtos";
 
 export function PostEditBody() {
-  const router = useRouter();
   const { boardId, postId } = useParams(); //위 주소를 통해 boardid와 postid르 받아온다
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -25,7 +26,7 @@ export function PostEditBody() {
   const [deleteImage, setDeleteImage] = useState<number[]>([]); //삭제할 이미지 id를 저장
   const [updateImage, setUpdateImage] = useState<UpdatePostImagesBody>({
     newImages: [],
-  }); //새로 추ㅏ할 이미지를 저장.
+  }); //새로 추가할 이미지를 저장.
 
   //게시글 상세조회
   const { data: postData } = useGetDetailPost(Number(postId));
@@ -71,8 +72,8 @@ export function PostEditBody() {
   //게시글 및 이미지 업데이트 핸들러
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const trimmedTitle = newTitle.trim();
-    const trimmedContent = newContent.trim();
+    const trimmedTitle = newTitle.trim() || title.trim();
+    const trimmedContent = newContent.trim() || content.trim();
     if (!trimmedTitle) {
       alert("제목을 입력해주세요.");
       return;
@@ -101,11 +102,12 @@ export function PostEditBody() {
       data: { newImages: updateImage?.newImages || [] },
       params: { deletedImageIds: deleteImage },
     });
-    console.log(deleteImage);
     //수정 완료
-    router.push(`/board/boards/${Number(boardId)}/posts/${Number(postId)}`);
+    location.replace(
+      `/board/boards/${Number(boardId)}/posts/${Number(postId)}`
+    );
   };
-
+  console.log(postImage);
   return (
     <div style={formStyles.container}>
       <div style={formStyles.background}></div>
@@ -115,7 +117,7 @@ export function PostEditBody() {
           <label style={formStyles.label}>제목</label>
           <input
             type="text"
-            value={newTitle}
+            value={newTitle || title}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder={title || "제목을 입력하세요"}
             style={formStyles.input}
@@ -137,31 +139,35 @@ export function PostEditBody() {
             <div style={formStyles.postimagefield}>
               {postImage.map((image) => (
                 <div key={image.id} style={formStyles.imagePreview}>
-                  <img
-                    src={image.url}
-                    alt="미리보기"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      marginBottom: "10px",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (image.id !== undefined) handleDeleteImage(image.id);
-                    }}
-                    style={{
-                      backgroundColor: "#ff4d4d",
-                      color: "#fff",
-                      padding: "5px 10px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    삭제
-                  </button>
+                  {image.url && (
+                    <img
+                      src={image.url}
+                      alt="미리보기"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  )}
+                  {image.url && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (image.id !== undefined) handleDeleteImage(image.id);
+                      }}
+                      style={{
+                        backgroundColor: "#ff4d4d",
+                        color: "#fff",
+                        padding: "5px 10px",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      삭제
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -169,7 +175,7 @@ export function PostEditBody() {
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
-              value={newContent}
+              value={newContent || content}
               onChange={(e) => setNewContent(e.target.value)}
               placeholder={content || "내용을 입력하세요"}
               style={formStyles.posttextarea}
