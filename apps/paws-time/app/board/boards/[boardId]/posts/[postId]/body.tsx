@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { postFormStyles } from "@/app/styles/postforms";
 import {
+  getGetPostsQueryKey,
   useDeletePost,
   useGetDetailPost,
   useGetImages,
@@ -11,6 +12,7 @@ import Count from "@/components/count";
 import Review from "@/components/review";
 import { CustomButton } from "@/components/utils/button";
 import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface PostData {
   post_id?: number;
@@ -26,6 +28,7 @@ const PostDetailBody = () => {
   const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const [commentsCount, setCommentsCount] = useState<number>(0);
+
   const {} = useGetDetailPost(Number(postId), {
     query: {
       onSuccess: (data) => {
@@ -41,11 +44,18 @@ const PostDetailBody = () => {
       },
     },
   });
+
+  const queryClient = useQueryClient();
+
   const { mutate: deletePost } = useDeletePost({
     mutation: {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: getGetPostsQueryKey({ boardId: Number(boardId) }),
+        });
+
         alert("게시글이 삭제되었습니다."); // 알림 표시
-        router.push(`/board/boards/${boardId}`);
+        router.replace(`/board/boards/${boardId}`);
       },
     },
   });

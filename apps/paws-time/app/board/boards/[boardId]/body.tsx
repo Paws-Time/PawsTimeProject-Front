@@ -1,7 +1,10 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import {
+  getGetPostsQueryKey,
+  useGetPosts,
+} from "@/app/lib/codegen/hooks/post/post";
 import { CustomButton } from "@/components/utils/button";
 import { Card } from "@/components/utils/card";
 import { useGetBoard } from "@/app/lib/codegen/hooks/board/board";
@@ -60,7 +63,9 @@ const BoardDetailBody = () => {
     error,
   } = useGetPosts(params, {
     query: {
+      queryKey: getGetPostsQueryKey({ boardId: Number(boardId) }),
       staleTime: 0,
+      cacheTime: 3600,
     },
   });
   if (isLoading) return <div>Loading...</div>;
