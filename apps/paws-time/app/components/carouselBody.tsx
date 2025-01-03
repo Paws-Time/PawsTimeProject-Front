@@ -10,6 +10,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../styles/css/carousel.css";
+// * https://swiperjs.com/demos#default 참고
+// * https://codesandbox.io/p/devbox/swiper-react-default-dnfw9v 참고
 
 interface Post {
   id: number;

@@ -50,7 +50,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between w-full h-custom-headerh bg-gray-200 px-6 shadow-md">
+    <header className="sticky top-0 flex items-center justify-between w-full h-custom-headerh bg-gray-200 px-6 shadow-md z-50">
       {/* 빈 div로 왼쪽 정렬 확보 */}
       <div className="flex-1"></div>
 

@@ -28,12 +28,11 @@ export default function Sidebar() {
     { id: 1, path: "/", name: "메인페이지" },
     { id: 2, path: "/board", name: "게시판" },
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
-    { id: 4, path: "/board/write", name: "게시글 작성" },
-    { id: 5, path: "/infoboard", name: "장소 게시판" },
+    { id: 4, path: "/infoboard", name: "장소 게시판" },
     email
-      ? { id: 6, path: "#", name: "로그아웃하기", onClick: handleLogout }
+      ? { id: 5, path: "#", name: "로그아웃하기", onClick: handleLogout }
       : {
-          id: 6,
+          id: 5,
           path: "/auth/login",
           name: "로그인하기",
           onClick: () => router.push("/auth/login"),
