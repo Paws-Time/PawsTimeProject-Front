@@ -617,7 +617,7 @@ export const updatePostImages = (
       paramsSerializer: (params) => {
         const searchParams = new URLSearchParams();
         if (params?.deletedImageIds) {
-          params.deletedImageIds.forEach((id) =>
+          params.deletedImageIds.forEach((id: number) =>
             searchParams.append("deletedImageIds", id.toString())
           );
         }
