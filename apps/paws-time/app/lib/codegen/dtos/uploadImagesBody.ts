@@ -6,5 +6,5 @@
  */
 
 export type UploadImagesBody = {
-  images: Blob[];
+  images?: Blob[];
 };

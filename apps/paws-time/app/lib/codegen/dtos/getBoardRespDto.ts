@@ -4,9 +4,11 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
+import type { GetBoardRespDtoBoardType } from "./getBoardRespDtoBoardType";
 
 export interface GetBoardRespDto {
   boardId?: number;
+  boardType?: GetBoardRespDtoBoardType;
   createdAt?: string;
   description?: string;
   isDelete?: boolean;

@@ -25,3 +25,13 @@ export const sortByDescription: Record<SortBy, string> = {
   [SortBy.VIEWS]: "조회",
   [SortBy.LIKES_COUNT]: "좋아요",
 };
+
+export enum BoardType {
+  GENERAL = 1,
+  INFO = 2,
+}
+
+export const boardTypeDescription: Record<BoardType, string> = {
+  [BoardType.GENERAL]: "일반 게시판",
+  [BoardType.INFO]: "정보 게시판",
+};

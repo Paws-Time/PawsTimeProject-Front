@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { postFormStyles } from "@/app/styles/postforms";
 import {
+  getGetDetailPostQueryKey,
+  getGetImagesQueryKey,
   useDeletePost,
   useGetDetailPost,
   useGetImages,
@@ -11,13 +13,14 @@ import Count from "@/components/count";
 import Review from "@/components/review";
 import { CustomButton } from "@/components/utils/button";
 import { useGetCommentByPost } from "@/app/lib/codegen/hooks/comment/comment";
+import { GetImageRespDto } from "@/app/lib/codegen/dtos";
 
 interface PostData {
   post_id?: number;
   title?: string;
   content?: string;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const PostDetailBody = () => {
@@ -26,21 +29,19 @@ const PostDetailBody = () => {
   const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const [commentsCount, setCommentsCount] = useState<number>(0);
-  const {} = useGetDetailPost(Number(postId), {
+  const [postImages, setPostImages] = useState<GetImageRespDto[]>([]);
+  const { data: postData } = useGetDetailPost(Number(postId), {
     query: {
-      onSuccess: (data) => {
-        if (data) {
-          setPost({
-            post_id: data?.data?.postId,
-            title: data?.data?.title,
-            content: data?.data?.content,
-            created_at: data?.data?.createdAt,
-            updated_at: data?.data?.updatedAt,
-          });
-        }
-      },
+      queryKey: getGetDetailPostQueryKey(Number(postId)),
+      staleTime: 0,
+      cacheTime: 3000,
     },
   });
+  useEffect(() => {
+    if (postData?.data) {
+      setPost(postData.data);
+    }
+  }, [postData]);
   const { mutate: deletePost } = useDeletePost({
     mutation: {
       onSuccess: () => {
@@ -53,8 +54,19 @@ const PostDetailBody = () => {
     deletePost({ postId });
   };
   const defaultImage = "/noimage.png";
-  const { data: imageData } = useGetImages(Number(postId));
-  const imagesUrl = imageData?.data?.map((image) => image.imageUrl) || [];
+  const { data: imageData } = useGetImages(Number(postId), {
+    query: {
+      queryKey: getGetImagesQueryKey(Number(postId)),
+      staleTime: 0,
+      cacheTime: 0,
+    },
+  });
+  useEffect(() => {
+    if (imageData?.data) {
+      setPostImages(imageData.data);
+    }
+  }, [imageData]);
+  const imagesUrl = postImages.map((image) => image.imageUrl) || [];
   const imagePrevHandle = () => {
     setCurImageNum((prev) => (prev > 0 ? prev - 1 : imagesUrl.length - 1));
   };
@@ -73,7 +85,7 @@ const PostDetailBody = () => {
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
-          {imagesUrl.length > 2 && (
+          {imagesUrl.length > 1 && (
             <CustomButton
               $label="◀"
               $sizeType="mini"
@@ -86,7 +98,7 @@ const PostDetailBody = () => {
             alt=""
             className="w-[650px] h-[550px]"
           />
-          {imagesUrl.length > 2 && (
+          {imagesUrl.length > 1 && (
             <CustomButton
               $label="▶"
               $sizeType="mini"
@@ -127,8 +139,8 @@ const PostDetailBody = () => {
             <h2 style={postFormStyles.title}>{post?.title}</h2>
             <span>
               작성일:{" "}
-              {post?.created_at
-                ? new Date(post.created_at).toLocaleDateString()
+              {post?.createdAt
+                ? new Date(post.createdAt).toLocaleDateString()
                 : "로딩 중입니다."}
             </span>
           </div>

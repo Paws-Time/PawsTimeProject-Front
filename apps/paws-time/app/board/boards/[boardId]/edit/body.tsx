@@ -3,25 +3,34 @@
 import { UpdateBoardReqDto } from "@/app/lib/codegen/dtos";
 import {
   deleteBoard,
+  useGetBoard,
   useUpdateBoard,
 } from "@/app/lib/codegen/hooks/board/board";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function EditBoardBody({}) {
   const [title, setTitle] = useState<string>("");
+  const [newTitle, setNewTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [newDescription, setNewDescription] = useState<string>("");
   const router = useRouter();
   const { boardId } = useParams();
-
+  const { data } = useGetBoard(Number(boardId));
+  useEffect(() => {
+    if (data?.data) {
+      setTitle(data?.data?.title || "");
+      setDescription(data?.data?.description || "");
+    }
+  }, [data]);
   const { mutate, isLoading, isError } = useUpdateBoard({
     mutation: {
       onSuccess: () => {
         alert("게시판이 성공적으로 수정되었습니다!");
-        setTitle("");
-        setDescription("");
+        setNewTitle("");
+        setNewDescription("");
         router.push(`/board`);
       },
       onError: (error) => {
@@ -33,7 +42,10 @@ export default function EditBoardBody({}) {
   const numberBoardId = Number(boardId);
 
   const handleEditBoard = () => {
-    const params: UpdateBoardReqDto = { title, description };
+    const params: UpdateBoardReqDto = {
+      title: newTitle,
+      description: newDescription,
+    };
     mutate({ boardId: numberBoardId, data: params });
   };
 
@@ -82,8 +94,8 @@ export default function EditBoardBody({}) {
           <label style={formStyles.label}>게시판 이름</label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={title || newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             style={formStyles.input}
             required
@@ -92,8 +104,8 @@ export default function EditBoardBody({}) {
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판 간략소개</label>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={description || newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
             placeholder="내용을 입력하세요"
             style={formStyles.textarea}
             required

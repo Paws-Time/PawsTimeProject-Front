@@ -24,7 +24,7 @@ interface Board {
 export default function BoardList() {
   const router = useRouter();
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(4);
   const [boardList, setBoardList] = useState<Board[]>([]);
   const params = {
     pageNo: 0,
