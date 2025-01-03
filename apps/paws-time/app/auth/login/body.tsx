@@ -67,7 +67,7 @@ const LoginBody = () => {
         width: "1200px",
         height: "800px",
         margin: "0 auto",
-        marginLeft: "450px",
+        marginLeft: "500px",
         overflow: "hidden",
       }}
     >
@@ -80,7 +80,12 @@ const LoginBody = () => {
 
       <form
         onSubmit={handleLogin}
-        style={{ ...formStyles.form, width: "70%", border: "1px solid black" }}
+        style={{
+          ...formStyles.form,
+          width: "70%",
+          height: "800px",
+          border: "1px solid black",
+        }}
         className="flex flex-col bg-white shadow-lg"
       >
         <h2 style={formStyles.heading}>로그인</h2>
