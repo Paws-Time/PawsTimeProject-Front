@@ -52,3 +52,5 @@ export * from "./updateCommentReqDto";
 export * from "./updatePostReqDto";
 export * from "./uploadImagesBody";
 export * from "./userCreateReqDto";
+export * from "./updatePostImagesBody";
+export * from "./updatePostImagesParams";

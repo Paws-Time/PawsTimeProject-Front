@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetPosts, getDetailPost } from "@/app/lib/codegen/hooks/post/post";
-import { GetDetailPostRespDto } from "../lib/codegen/dtos";
+import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { Card } from "@/components/utils/card";
 import "@/app/components/css/styles.css";
 
