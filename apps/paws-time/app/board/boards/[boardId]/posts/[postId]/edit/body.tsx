@@ -103,7 +103,9 @@ export function PostEditBody() {
     });
     console.log(deleteImage);
     //수정 완료
-    router.push(`/board/boards/${Number(boardId)}/posts/${Number(postId)}`);
+    location.replace(
+      `/board/boards/${Number(boardId)}/posts/${Number(postId)}`
+    );
   };
 
   return (

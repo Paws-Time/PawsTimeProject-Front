@@ -65,7 +65,7 @@ const PostDetailBody = () => {
       setCommentsCount(commentsData.data.length);
     }
   }, [commentsData]);
-
+  
   const imageNextHandle = () => {
     setCurImageNum((prev) => (prev < imagesUrl.length - 1 ? prev + 1 : 0));
   };
@@ -73,7 +73,7 @@ const PostDetailBody = () => {
     <div style={postFormStyles.container}>
       <div style={postFormStyles.imageButtonSection}>
         <div style={postFormStyles.imageSection}>
-          {imagesUrl.length > 2 && (
+          {imagesUrl.length > 1 && (
             <CustomButton
               $label="◀"
               $sizeType="mini"
@@ -86,7 +86,7 @@ const PostDetailBody = () => {
             alt=""
             className="w-[650px] h-[550px]"
           />
-          {imagesUrl.length > 2 && (
+          {imagesUrl.length > 1 && (
             <CustomButton
               $label="▶"
               $sizeType="mini"

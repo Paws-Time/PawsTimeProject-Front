@@ -8,7 +8,7 @@ import type { GetImageRespDto } from "./getImageRespDto";
 import type { ApiResponseListGetImageRespDtoStatus } from "./apiResponseListGetImageRespDtoStatus";
 
 export interface ApiResponseListGetImageRespDto {
-  data?: GetImageRespDto[];
+  data: GetImageRespDto[];
   message?: string;
   status?: ApiResponseListGetImageRespDtoStatus;
 }
