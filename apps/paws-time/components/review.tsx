@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 interface ReviewProps {
   postId: number;
   setCommentsCount: React.Dispatch<React.SetStateAction<number>>; // 업데이트 함수 타입 정의
+  setNewComments: React.Dispatch<React.SetStateAction<string>>;
 }
 interface ReviewReqParams {
   pageNo?: number;
@@ -28,7 +29,7 @@ interface ReviewResDto {
   createAt?: string;
 }
 
-function Review({ postId, setCommentsCount }: ReviewProps) {
+function Review({ postId, setCommentsCount, setNewComments }: ReviewProps) {
   const [pageSize, setPageSize] = useState(5);
   const [direction, setDirection] = useState("DESC");
   const [content, setContent] = useState("");
@@ -54,6 +55,7 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
           setCommentsCount((prev: number) => prev + 1);
         }
         setContent("");
+        setNewComments("");
         queryClient.invalidateQueries(["getCommentByPost", postId]);
       },
     },
@@ -101,6 +103,7 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
   const handleEditReviews = (commentId: number, content: string) => {
     setEditingCommentId(commentId);
     setEditingContent(content);
+    setNewComments(content);
   };
 
   const handleUpdateSubmit = () => {
@@ -130,6 +133,8 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
     }));
   }, [pageNo, pageSize, direction]);
 
+  useEffect(() => {});
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -138,7 +143,7 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
       data: { content },
     });
   };
-
+  console.log(pageNo);
   return (
     <>
       {reviews.map((review, index) => (
@@ -224,14 +229,16 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
           <option value="desc">최신순</option>
           <option value="asc">오래된순</option>
         </select>
+        {pageNo > 0 && (
+          <CustomButton
+            $label="이전"
+            $sizeType="short"
+            className="ml-3"
+            onClick={() => setPageNo((prev) => Math.max(0, prev - 1))}
+          />
+        )}
 
-        <CustomButton
-          $label="이전"
-          $sizeType="short"
-          className="ml-3"
-          onClick={() => setPageNo((prev) => Math.max(0, prev - 1))}
-        />
-
+        <span className="mt-5 ml-5"> {pageNo + 1} 페이지 </span>
         <CustomButton
           $label="다음"
           $sizeType="short"
