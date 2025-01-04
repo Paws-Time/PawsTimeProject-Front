@@ -29,6 +29,7 @@ const PostDetailBody = () => {
   const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const [commentsCount, setCommentsCount] = useState<number>(0);
+  const [newComments, setNewComments] = useState<string>("");
   const [postImages, setPostImages] = useState<GetImageRespDto[]>([]);
   const { data: postData } = useGetDetailPost(Number(postId), {
     query: {
@@ -76,7 +77,7 @@ const PostDetailBody = () => {
     if (commentsData?.data) {
       setCommentsCount(commentsData.data.length);
     }
-  }, [commentsData]);
+  }, [commentsData, setNewComments]);
 
   const imageNextHandle = () => {
     setCurImageNum((prev) => (prev < imagesUrl.length - 1 ? prev + 1 : 0));
@@ -150,7 +151,11 @@ const PostDetailBody = () => {
         </div>
 
         <div style={postFormStyles.textBox}>
-          <Review postId={Number(postId)} setCommentsCount={setCommentsCount} />
+          <Review
+            postId={Number(postId)}
+            setCommentsCount={setCommentsCount}
+            setNewComments={setNewComments}
+          />
         </div>
       </div>
     </div>
