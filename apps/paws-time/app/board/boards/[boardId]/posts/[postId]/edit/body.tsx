@@ -107,7 +107,6 @@ export function PostEditBody() {
       `/board/boards/${Number(boardId)}/posts/${Number(postId)}`
     );
   };
-  console.log(postImage);
   return (
     <div style={formStyles.container}>
       <div style={formStyles.background}></div>
@@ -117,9 +116,9 @@ export function PostEditBody() {
           <label style={formStyles.label}>제목</label>
           <input
             type="text"
-            value={newTitle || title}
+            value={newTitle !== " " ? newTitle : title}
             onChange={(e) => setNewTitle(e.target.value)}
-            placeholder={title || "제목을 입력하세요"}
+            placeholder={"제목을 입력하세요"}
             style={formStyles.input}
             required
           />
@@ -175,9 +174,9 @@ export function PostEditBody() {
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
-              value={newContent || content}
+              value={newContent !== " " ? newContent : content}
               onChange={(e) => setNewContent(e.target.value)}
-              placeholder={content || "내용을 입력하세요"}
+              placeholder={"내용을 입력하세요"}
               style={formStyles.posttextarea}
               required
             />
