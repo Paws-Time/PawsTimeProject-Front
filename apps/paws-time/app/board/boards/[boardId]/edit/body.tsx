@@ -94,7 +94,7 @@ export default function EditBoardBody({}) {
           <label style={formStyles.label}>게시판 이름</label>
           <input
             type="text"
-            value={newTitle !== " " ? newTitle : title}
+            value={newTitle !== "" ? newTitle : title}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             style={formStyles.input}
@@ -104,7 +104,7 @@ export default function EditBoardBody({}) {
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판 간략소개</label>
           <textarea
-            value={newDescription !== " " ? newDescription : description}
+            value={newDescription !== "" ? newDescription : description}
             onChange={(e) => setNewDescription(e.target.value)}
             placeholder="내용을 입력하세요"
             style={formStyles.textarea}

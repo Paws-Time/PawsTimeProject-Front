@@ -116,7 +116,7 @@ export function PostEditBody() {
           <label style={formStyles.label}>제목</label>
           <input
             type="text"
-            value={newTitle !== " " ? newTitle : title}
+            value={newTitle !== "" ? newTitle : title}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder={"제목을 입력하세요"}
             style={formStyles.input}
@@ -174,7 +174,7 @@ export function PostEditBody() {
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
-              value={newContent !== " " ? newContent : content}
+              value={newContent !== "" ? newContent : content}
               onChange={(e) => setNewContent(e.target.value)}
               placeholder={"내용을 입력하세요"}
               style={formStyles.posttextarea}
