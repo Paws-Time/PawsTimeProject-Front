@@ -42,7 +42,7 @@ export default function GoogleMapApiData({
           map: map,
           title: name || "Location", // 병원 이름
         });
-
+        
         // 정보창 생성
         const infoWindow = new google.maps.InfoWindow({
           content: `
