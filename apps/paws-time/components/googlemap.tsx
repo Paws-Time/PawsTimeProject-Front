@@ -21,6 +21,7 @@ export default function GoogleMapApiData({
 }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInitialized = useRef(false); // 지도 초기화 여부 추적
+  //랜더링이 2번이 되는 문제?
 
   useEffect(() => {
     const loader = new Loader({
