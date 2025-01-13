@@ -1,9 +1,9 @@
 "use client";
-import MapApiData from "@/components/map";
 import { useEffect, useState } from "react";
 import { formStyles } from "../styles/forms";
 import { getHospitalInfo } from "../lib/codegen/hooks/info/info";
 import { CustomButton } from "@/components/utils/button";
+import GoogleMapApiData from "@/components/googlemap";
 
 interface GetHospitalInfoRespDto {
   add1?: string;
@@ -29,6 +29,7 @@ export default function InfoBoardBody() {
   const [direction, setDirection] = useState("DESC");
   const [pageNo, setPageNo] = useState(0);
 
+  
   useEffect(() => {
     const fetchHospitalInfo = async () => {
       try {
@@ -134,7 +135,7 @@ export default function InfoBoardBody() {
       {/* 지도 컴포넌트 */}
       <aside className="w-[800px] border-l h-full border-gray-300 ml-10">
         {selectedLocation && (
-          <MapApiData
+          <GoogleMapApiData
             latitude={selectedLocation?.y}
             longitude={selectedLocation?.x}
             name={selectedLocation?.name}

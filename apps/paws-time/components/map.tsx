@@ -36,7 +36,7 @@ function MapApiData({ latitude, longitude, name, tel, address }: MapProps) {
       console.log("Kakao API Key:", kakaoApiKey);
       if (window.kakao) {
         window.kakao.maps.load(() => {
-          console.log("Kakao Maps SDK loaded.");
+          // console.log("Kakao Maps SDK loaded.");
           const container = document.getElementById("map"); // 지도 컨테이너
           const options = {
             center: new window.kakao.maps.LatLng(latitude, longitude), // 중심 좌표
