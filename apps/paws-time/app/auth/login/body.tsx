@@ -20,7 +20,6 @@ const LoginBody = () => {
     mutation: {
       onSuccess: (data) => {
         alert("로그인에 성공했습니다!");
-        console.log("로그인 성공 데이터:", data); // 디버깅용
 
         const token = data.data;
         setToken(token as string);

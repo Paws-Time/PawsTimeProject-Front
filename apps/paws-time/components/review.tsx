@@ -143,7 +143,6 @@ function Review({ postId, setCommentsCount, setNewComments }: ReviewProps) {
       data: { content },
     });
   };
-  console.log(pageNo);
   return (
     <>
       {reviews.map((review, index) => (
