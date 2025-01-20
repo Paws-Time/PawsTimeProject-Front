@@ -42,37 +42,17 @@ export default function Sidebar() {
     <aside
       style={{
         position: "fixed",
-        top: "80px", // 헤더 아래로 80px 만큼 내려갑니다.
+        top: "60px", // 헤더 아래로 80px 만큼 내려갑니다.
         left: isShow ? 0 : "-300px",
-        height: "calc(100% - 80px)", // 전체 화면 높이에서 헤더 높이를 뺍니다.
+        height: "calc(100% - 60px)", // 전체 화면 높이에서 헤더 높이를 뺍니다.
         width: "300px",
         backgroundColor: "#f8f9fa",
         transition: "left 0.5s ease-in-out",
-        boxShadow: "1px 0px 2px rgba(0, 0, 0, 0.2)",
+        boxShadow:
+          "1px -1px 5px rgba(0, 0, 0, 0.2), 1px 0px 2px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
       }}
     >
-      <button
-        style={{
-          position: "absolute",
-          marginTop: "400px",
-          top: "10px",
-          right: "-15px",
-          width: "15px",
-          height: "50px",
-          backgroundColor: "#fff",
-          border: "1px solid #ddd",
-          borderRadius: "5px",
-          padding: "0",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onClick={toggleIsShow}
-      >
-        {isShow ? "◀" : "▶"}
-      </button>
       <nav>
         <ul style={{ padding: "20px 0", listStyleType: "none" }}>
           {menus.map((menu) => (
