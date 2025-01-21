@@ -3,6 +3,18 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { useAuthStore } from "@/app/hooks/authStore";
+import useSideBarStore from "@/app/hooks/sidebarStore";
+
+const HeaderContainer = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 로고를 중앙에 배치 */
+  height: 60px;
+  background-color: #f8f9fa;
+  padding: 0 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+`;
 
 const BrandLogo = styled.div`
   text-decoration: none;
@@ -19,14 +31,41 @@ const BrandLogo = styled.div`
   }
 
   p {
-    margin-top: 10px;
+    margin: 0;
     font-size: 50px;
     font-family: "TTHakgyoansimMabeopsaR";
   }
 `;
 
+const ToggleButton = styled.button`
+  position: absolute;
+  left: 10px; /* 헤더의 왼쪽 상단에 고정 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const UserInfo = styled.div`
+  position: absolute;
+  right: 20px; /* 헤더의 오른쪽 상단에 고정 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
 export default function Header() {
   const router = useRouter();
+  const { sideBarState, sideBarActions } = useSideBarStore();
+  const { isShow } = sideBarState;
+  const { toggleIsShow } = sideBarActions;
+
   const email = useAuthStore((state) => state.email);
   const restoreState = useAuthStore((state) => state.restoreState);
   const clearToken = useAuthStore((state) => state.clearToken);
@@ -39,33 +78,34 @@ export default function Header() {
   };
 
   useEffect(() => {
-    restoreState(); // 새로고침 시 상태 복원
+    restoreState();
   }, []);
 
   const handleLoginNavigation = () => {
     router.push("/auth/login");
   };
+
   const handleMypageNavigation = () => {
     router.push("/mypage");
   };
 
   return (
-    <header className="sticky top-0 flex items-center justify-between w-full h-custom-headerh bg-gray-200 px-6 shadow-md z-50">
-      {/* 빈 div로 왼쪽 정렬 확보 */}
-      <div className="flex-1"></div>
+    <HeaderContainer>
+      {/* 사이드바 토글 버튼 */}
+      <ToggleButton onClick={toggleIsShow}>☰</ToggleButton>
 
-      {/* 브랜드 로고 - 중앙 정렬 */}
+      {/* 브랜드 로고 */}
       <BrandLogo
         onClick={() => {
           router.push("/");
-          router.refresh(); // 페이지 강제 새로고침
+          router.refresh();
         }}
       >
-        <p className="text-center">PAWS TIME</p>
+        <p>PAWS TIME</p>
       </BrandLogo>
 
-      {/* 사용자 정보 - 오른쪽 정렬 */}
-      <div className="flex items-center justify-end flex-1 space-x-4">
+      {/* 사용자 정보 */}
+      <UserInfo>
         {email ? (
           <>
             <p
@@ -89,7 +129,7 @@ export default function Header() {
             로그인
           </p>
         )}
-      </div>
-    </header>
+      </UserInfo>
+    </HeaderContainer>
   );
 }
