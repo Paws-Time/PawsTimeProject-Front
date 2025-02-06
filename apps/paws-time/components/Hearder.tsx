@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { useAuthStore } from "@/app/hooks/authStore";
 import useSideBarStore from "@/app/hooks/sidebarStore";
+import { useHandleLogout } from "@/app/hooks/logout";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -62,20 +63,20 @@ const UserInfo = styled.div`
 
 export default function Header() {
   const router = useRouter();
-  const { sideBarState, sideBarActions } = useSideBarStore();
-  const { isShow } = sideBarState;
+  const { sideBarActions } = useSideBarStore();
   const { toggleIsShow } = sideBarActions;
 
   const email = useAuthStore((state) => state.email);
   const restoreState = useAuthStore((state) => state.restoreState);
-  const clearToken = useAuthStore((state) => state.clearToken);
-  const clearEmail = useAuthStore((state) => state.clearEmail);
+  // const clearToken = useAuthStore((state) => state.clearToken);
+  // const clearEmail = useAuthStore((state) => state.clearEmail);
+  const handleLogout = useHandleLogout();
 
-  const handleLogout = () => {
-    clearToken();
-    clearEmail();
-    router.push("/auth/login");
-  };
+  // const handleLogout = () => {
+  //   clearToken();
+  //   clearEmail();
+  //   router.push("/auth/login");
+  // };
 
   useEffect(() => {
     restoreState();

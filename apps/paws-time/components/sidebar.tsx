@@ -4,25 +4,30 @@ import { useRouter } from "next/navigation";
 import { CustomButton } from "./utils/button";
 import useSideBarStore from "@/app/hooks/sidebarStore";
 import { useAuthStore } from "@/app/hooks/authStore";
+// import { useLogoutUser } from "@/app/lib/codegen/hooks/user-api/user-api";
+import { useHandleLogout } from "@/app/hooks/logout"; // 새로운 훅 가져오기
 
 export default function Sidebar() {
-  const { sideBarState, sideBarActions } = useSideBarStore();
+  const { sideBarState } = useSideBarStore();
   const { isShow } = sideBarState;
-  const { toggleIsShow } = sideBarActions;
 
-  // const [isShow, setShow] = useState(true);
   const router = useRouter();
   const email = useAuthStore((state) => state.email); // Zustand에서 이메일 상태 가져오기
-  const clearToken = useAuthStore((state) => state.clearToken);
-  const clearEmail = useAuthStore((state) => state.clearEmail);
 
-  const handleLogout = () => {
-    if (confirm("정말 로그아웃하시겠습니까?")) {
-      clearToken();
-      clearEmail();
-      router.push("/");
-    }
-  };
+  // const logoutState = useAuthStore((state) => state.logoutState);
+  // const logoutMutation = useLogoutUser();
+
+  const handleLogout = useHandleLogout(); // 훅 사용
+
+  // const handleLogout = async () => {
+  //   try {
+  //     await logoutMutation.mutateAsync(); // API 호출
+  //     logoutState(); // 상태 초기화
+  //     router.push("/"); // 리다이렉트
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //   }
+  // };
 
   const menus = [
     { id: 1, path: "/", name: "메인페이지" },
