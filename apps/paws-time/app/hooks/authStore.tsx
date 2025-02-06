@@ -11,6 +11,7 @@ interface AuthState {
   restoreState: () => void;
   clearToken: () => void;
   clearEmail: () => void;
+  logoutState: () => void; // 상태 초기화만 수행
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -43,5 +44,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   clearEmail: () => {
     set({ email: null });
+  },
+  logoutState: () => {
+    set({ token: null, email: null });
+    localStorage.removeItem("jwtToken");
   },
 }));
