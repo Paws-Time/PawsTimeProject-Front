@@ -33,6 +33,7 @@ export function Card({
       <div className="image-field">
         <img src={setImageUrl} alt={$title || "이미지"} loading="lazy" />
       </div>
+      <div className="nick">작성자</div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
         <span className="views">💬 {$views ?? 0} 조회수</span>
@@ -102,6 +103,17 @@ const CardWrapper = styled.div`
     margin-left: 10px;
     text-align: center;
     font-size: ${theme.fontSize.text.xs};
+  }
+
+  .nick {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${theme.colors.ref.base.black};
+    font-size: ${theme.fontSize.text.m};
+    margin-top: 5px;
   }
 
   .foot {

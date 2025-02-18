@@ -139,7 +139,7 @@ const PostDetailBody = () => {
           <div style={postFormStyles.titleBox}>
             <h2 style={postFormStyles.title}>{post?.title}</h2>
             <span>
-              작성일:{" "}
+              작성자 | 작성일:{" "}
               {post?.createdAt
                 ? new Date(post.createdAt).toLocaleDateString()
                 : "로딩 중입니다."}

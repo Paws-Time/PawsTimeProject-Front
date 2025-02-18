@@ -25,6 +25,10 @@
             "description": "유저 API"
         },
         {
+            "name": "Board",
+            "description": "게시판 API"
+        },
+        {
             "name": "Post",
             "description": "게시글 API"
         },
@@ -33,16 +37,12 @@
             "description": "댓글 API"
         },
         {
-            "name": "Board",
-            "description": "게사판 API"
-        },
-        {
             "name": "info",
             "description": "정보게시판 API"
         }
     ],
     "paths": {
-        "/post/{postId}": {
+        "/posts/{postId}": {
             "get": {
                 "tags": [
                     "Post"
@@ -196,7 +196,7 @@
                 }
             }
         },
-        "/post/{postId}/images": {
+        "/posts/{postId}/images": {
             "get": {
                 "tags": [
                     "Post"
@@ -289,7 +289,7 @@
                 }
             }
         },
-        "/comments/{commentId}": {
+        "/posts/{postId}/comments/{commentId}": {
             "put": {
                 "tags": [
                     "Comment"
@@ -298,6 +298,15 @@
                 "description": "선택한 댓글을 수정합니다.",
                 "operationId": "updateComment",
                 "parameters": [
+                    {
+                        "name": "postId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
                     {
                         "name": "commentId",
                         "in": "path",
@@ -340,6 +349,15 @@
                 "operationId": "deleteComment",
                 "parameters": [
                     {
+                        "name": "postId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
                         "name": "commentId",
                         "in": "path",
                         "required": true,
@@ -363,7 +381,7 @@
                 }
             }
         },
-        "/board/{boardId}": {
+        "/boards/{boardId}": {
             "get": {
                 "tags": [
                     "Board"
@@ -435,10 +453,8 @@
                         }
                     }
                 }
-            }
-        },
-        "/board/delete/{boardId}": {
-            "put": {
+            },
+            "delete": {
                 "tags": [
                     "Board"
                 ],
@@ -470,7 +486,95 @@
                 }
             }
         },
-        "/post": {
+        "/users": {
+            "post": {
+                "tags": [
+                    "USER API"
+                ],
+                "summary": "회원 가입",
+                "operationId": "createUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateReqDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "tags": [
+                    "USER API"
+                ],
+                "summary": "로그아웃",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "USER API"
+                ],
+                "summary": "로그인",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginUserReqDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseString"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
             "get": {
                 "tags": [
                     "Post"
@@ -570,7 +674,7 @@
                 }
             }
         },
-        "/post/{postId}/likes": {
+        "/posts/{postId}/likes": {
             "post": {
                 "tags": [
                     "Post"
@@ -603,355 +707,7 @@
                 }
             }
         },
-        "/comments/{postId}": {
-            "post": {
-                "tags": [
-                    "Comment"
-                ],
-                "summary": "댓글 생성",
-                "description": "특정 게시글에 댓글을 생성하는 기능입니다.",
-                "operationId": "createComment",
-                "parameters": [
-                    {
-                        "name": "postId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateCommentReqDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseCreateCommentRespDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/board/boards": {
-            "post": {
-                "tags": [
-                    "Board"
-                ],
-                "summary": "게시판 생성",
-                "description": "새로운 게시판을 생성할 수 있습니다.",
-                "operationId": "createBoard",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateBoardReqDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseVoid"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/member": {
-            "post": {
-                "tags": [
-                    "USER API"
-                ],
-                "summary": "회원 가입",
-                "operationId": "createUser",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserCreateReqDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseVoid"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/logout": {
-            "post": {
-                "tags": [
-                    "USER API"
-                ],
-                "summary": "로그아웃",
-                "operationId": "logoutUser",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseVoid"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/login": {
-            "post": {
-                "tags": [
-                    "USER API"
-                ],
-                "summary": "로그인",
-                "operationId": "loginUser",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginUserReqDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseString"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/post/{postId}/thumbnail": {
-            "get": {
-                "tags": [
-                    "Post"
-                ],
-                "summary": "게시글별 대표 이미지 조회",
-                "operationId": "getThumbnail",
-                "parameters": [
-                    {
-                        "name": "postId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseListGetImageRespDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/post/images/random": {
-            "get": {
-                "tags": [
-                    "Post"
-                ],
-                "summary": "메인페이지에서 사용할 랜덤 이미지 조회",
-                "operationId": "getRandomImages",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseListGetImageRespDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/info/{addNum}": {
-            "get": {
-                "tags": [
-                    "info"
-                ],
-                "summary": "동물병원 정보 목록 조회",
-                "operationId": "getHospitalInfo",
-                "parameters": [
-                    {
-                        "name": "pageNo",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 0
-                        }
-                    },
-                    {
-                        "name": "pageSize",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "sortBy",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "name"
-                        }
-                    },
-                    {
-                        "name": "direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "DESC"
-                        }
-                    },
-                    {
-                        "name": "addNum",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseListGetHospitalInfoRespDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/comments/listAll": {
-            "get": {
-                "tags": [
-                    "Comment"
-                ],
-                "summary": "댓글 전체 목록 조회",
-                "description": "모든 게시글에 달린 댓글을 조회합니다.",
-                "operationId": "getCommentAll",
-                "parameters": [
-                    {
-                        "name": "pageNo",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 0
-                        }
-                    },
-                    {
-                        "name": "pageSize",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "sortBy",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "createdAt"
-                        }
-                    },
-                    {
-                        "name": "direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "DESC"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseListGetCommentRespDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/comments/list/{postId}": {
+        "/posts/{postId}/comments": {
             "get": {
                 "tags": [
                     "Comment"
@@ -1020,9 +776,50 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "댓글 생성",
+                "description": "특정 게시글에 댓글을 생성하는 기능입니다.",
+                "operationId": "createComment",
+                "parameters": [
+                    {
+                        "name": "postId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCommentReqDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseCreateCommentRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
-        "/board/list": {
+        "/boards": {
             "get": {
                 "tags": [
                     "Board"
@@ -1077,6 +874,253 @@
                             "*/*": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiResponseListGetBoardRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Board"
+                ],
+                "summary": "게시판 생성",
+                "description": "새로운 게시판을 생성할 수 있습니다.",
+                "operationId": "createBoard",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBoardReqDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}": {
+            "get": {
+                "tags": [
+                    "USER API"
+                ],
+                "summary": "userId를 통해 유저 정보 조회",
+                "operationId": "getUserFromUserId",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseGetUserRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{postId}/thumbnail": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "게시글별 대표 이미지 조회",
+                "operationId": "getThumbnail",
+                "parameters": [
+                    {
+                        "name": "postId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListGetImageRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/images/random": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "메인페이지에서 사용할 랜덤 이미지 조회",
+                "operationId": "getRandomImages",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListGetImageRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/info/hospitals/{addNum}": {
+            "get": {
+                "tags": [
+                    "info"
+                ],
+                "summary": "지역별 동물병원 정보 목록 조회",
+                "operationId": "getHospitalInfo",
+                "parameters": [
+                    {
+                        "name": "pageNo",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "name"
+                        }
+                    },
+                    {
+                        "name": "direction",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "DESC"
+                        }
+                    },
+                    {
+                        "name": "addNum",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListGetHospitalInfoRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "댓글 전체 목록 조회",
+                "description": "모든 게시글에 달린 댓글을 조회합니다.",
+                "operationId": "getCommentAll",
+                "parameters": [
+                    {
+                        "name": "pageNo",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "createdAt"
+                        }
+                    },
+                    {
+                        "name": "direction",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "DESC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListGetCommentRespDto"
                                 }
                             }
                         }
@@ -1154,6 +1198,84 @@
                         "type": "string",
                         "description": "변경하고자 하는 게시판 설명",
                         "example": "변경하고자하는 게시판 설명(입력하지 않을 경우 기존값 그대로 유지)"
+                    }
+                }
+            },
+            "UserCreateReqDto": {
+                "required": [
+                    "email",
+                    "nick",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "user1@naver.com"
+                    },
+                    "password": {
+                        "maxLength": 20,
+                        "minLength": 8,
+                        "pattern": "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()-+=]).*$",
+                        "type": "string",
+                        "example": "Qwer1234^^"
+                    },
+                    "nick": {
+                        "maxLength": 12,
+                        "minLength": 2,
+                        "type": "string",
+                        "example": "user1"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "USER",
+                        "enum": [
+                            "USER",
+                            "ADMIN"
+                        ]
+                    }
+                }
+            },
+            "LoginUserReqDto": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "user1@naver.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Qwer1234^^"
+                    }
+                }
+            },
+            "ApiResponseString": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "SUCCESS",
+                            "CREATE",
+                            "UPDATE",
+                            "DELETE",
+                            "INVALID",
+                            "DUPLICATE",
+                            "NOTFOUND",
+                            "UNAUTHORIZED",
+                            "FORBIDDEN",
+                            "ERROR"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "string"
                     }
                 }
             },
@@ -1291,6 +1413,10 @@
                 }
             },
             "CreateBoardReqDto": {
+                "required": [
+                    "boardType",
+                    "title"
+                ],
                 "type": "object",
                 "properties": {
                     "title": {
@@ -1314,47 +1440,7 @@
                     }
                 }
             },
-            "UserCreateReqDto": {
-                "required": [
-                    "email",
-                    "nick",
-                    "password"
-                ],
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "example": "user1@naver.com"
-                    },
-                    "password": {
-                        "pattern": "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()-+=]).{8,}$",
-                        "type": "string",
-                        "example": "Qwer1234^^"
-                    },
-                    "nick": {
-                        "type": "string",
-                        "example": "user1"
-                    }
-                }
-            },
-            "LoginUserReqDto": {
-                "required": [
-                    "email",
-                    "password"
-                ],
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "example": "user1@naver.com"
-                    },
-                    "password": {
-                        "type": "string",
-                        "example": "Qwer1234^^"
-                    }
-                }
-            },
-            "ApiResponseString": {
+            "ApiResponseGetUserRespDto": {
                 "type": "object",
                 "properties": {
                     "status": {
@@ -1376,7 +1462,26 @@
                         "type": "string"
                     },
                     "data": {
+                        "$ref": "#/components/schemas/GetUserRespDto"
+                    }
+                }
+            },
+            "GetUserRespDto": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nick": {
                         "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "USER",
+                            "ADMIN"
+                        ]
                     }
                 }
             },
@@ -1546,6 +1651,59 @@
                     }
                 }
             },
+            "ApiResponseListGetCommentRespDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "SUCCESS",
+                            "CREATE",
+                            "UPDATE",
+                            "DELETE",
+                            "INVALID",
+                            "DUPLICATE",
+                            "NOTFOUND",
+                            "UNAUTHORIZED",
+                            "FORBIDDEN",
+                            "ERROR"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetCommentRespDto"
+                        }
+                    }
+                }
+            },
+            "GetCommentRespDto": {
+                "type": "object",
+                "properties": {
+                    "commentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "postId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updateAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
             "ApiResponseListGetHospitalInfoRespDto": {
                 "type": "object",
                 "properties": {
@@ -1611,118 +1769,6 @@
                     }
                 }
             },
-            "ApiResponseListGetCommentRespDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "SUCCESS",
-                            "CREATE",
-                            "UPDATE",
-                            "DELETE",
-                            "INVALID",
-                            "DUPLICATE",
-                            "NOTFOUND",
-                            "UNAUTHORIZED",
-                            "FORBIDDEN",
-                            "ERROR"
-                        ]
-                    },
-                    "message": {
-                        "type": "string"
-                    },
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/GetCommentRespDto"
-                        }
-                    }
-                }
-            },
-            "GetCommentRespDto": {
-                "type": "object",
-                "properties": {
-                    "commentId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "postId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "createAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updateAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "ApiResponseGetBoardRespDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "SUCCESS",
-                            "CREATE",
-                            "UPDATE",
-                            "DELETE",
-                            "INVALID",
-                            "DUPLICATE",
-                            "NOTFOUND",
-                            "UNAUTHORIZED",
-                            "FORBIDDEN",
-                            "ERROR"
-                        ]
-                    },
-                    "message": {
-                        "type": "string"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/GetBoardRespDto"
-                    }
-                }
-            },
-            "GetBoardRespDto": {
-                "type": "object",
-                "properties": {
-                    "boardId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "isDelete": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "boardType": {
-                        "type": "string",
-                        "enum": [
-                            "GENERAL",
-                            "INFO"
-                        ]
-                    }
-                }
-            },
             "ApiResponseListGetBoardRespDto": {
                 "type": "object",
                 "properties": {
@@ -1749,6 +1795,62 @@
                         "items": {
                             "$ref": "#/components/schemas/GetBoardRespDto"
                         }
+                    }
+                }
+            },
+            "GetBoardRespDto": {
+                "type": "object",
+                "properties": {
+                    "boardId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "boardType": {
+                        "type": "string",
+                        "enum": [
+                            "GENERAL",
+                            "INFO"
+                        ]
+                    }
+                }
+            },
+            "ApiResponseGetBoardRespDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "SUCCESS",
+                            "CREATE",
+                            "UPDATE",
+                            "DELETE",
+                            "INVALID",
+                            "DUPLICATE",
+                            "NOTFOUND",
+                            "UNAUTHORIZED",
+                            "FORBIDDEN",
+                            "ERROR"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/GetBoardRespDto"
                     }
                 }
             }

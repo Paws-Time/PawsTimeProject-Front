@@ -2,22 +2,29 @@
 
 import { decodeJWT } from "@/components/utils/jwt";
 import { create } from "zustand";
+import { getUserFromUserId } from "../lib/codegen/hooks/user-api/user-api";
 
 interface AuthState {
   token: string | null;
-  email: string | null;
+  userId: string | null;
+  nick: string | null;
+  role: string | null;
   setToken: (token: string | null) => void;
-  setEmail: (email: string | null) => void;
+  setUserId: (userId: string | null) => void;
+  setNick: (nick: string | null) => void;
+  setRole: (role: string | null) => void;
   restoreState: () => void;
   clearToken: () => void;
-  clearEmail: () => void;
-  logoutState: () => void; // 상태 초기화만 수행
+  logoutState: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   token:
     typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null,
-  email: null,
+  userId: null,
+  nick: null,
+  role: null,
+
   setToken: (token: string | null) => {
     set({ token });
     if (token) {
@@ -26,27 +33,43 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem("jwtToken");
     }
   },
-  setEmail: (email: string | null) => {
-    set({ email });
-  },
-  restoreState: () => {
+
+  setUserId: (userId: string | null) => set({ userId }),
+
+  setNick: (nick: string | null) => set({ nick }),
+
+  setRole: (role: string | null) => set({ role }),
+
+  restoreState: async () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      const decoded = decodeJWT(token) as { email: string };
-      if (decoded.email) {
-        set({ token, email: decoded.email });
+      const decoded = decodeJWT(token) as { userId: string };
+      if (decoded.userId) {
+        set({ token, userId: decoded.userId });
+
+        // userId를 이용해서 nick, email, role 가져오기
+        try {
+          const response = await getUserFromUserId(Number(decoded.userId));
+          if (response.data) {
+            set({
+              nick: response.data.nick ?? null,
+              role: response.data.role ?? null,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch user info:", error);
+        }
       }
     }
   },
+
   clearToken: () => {
-    set({ token: null });
+    set({ token: null, userId: null, role: null });
     localStorage.removeItem("jwtToken");
   },
-  clearEmail: () => {
-    set({ email: null });
-  },
+
   logoutState: () => {
-    set({ token: null, email: null });
+    set({ token: null, userId: null, role: null });
     localStorage.removeItem("jwtToken");
   },
 }));

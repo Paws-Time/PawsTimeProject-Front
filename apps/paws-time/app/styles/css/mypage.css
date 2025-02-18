@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
+
 .mypage-container {
   display: flex;
   flex-direction: column;
@@ -49,4 +51,48 @@
   color: #333;
   border-top: 1px solid #ddd;
   padding-top: 20px;
+}
+
+.material-symbols-outlined {
+  font-size: 24px; /* 아이콘 크기 */
+  cursor: pointer; /* 클릭 가능하게 설정 */
+  color: #666; /* 기본 색상 */
+  transition: color 0.2s ease-in-out;
+}
+
+.material-symbols-outlined:hover {
+  color: #333; /* 호버 시 색상 변경 */
+}
+
+.profile-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-settings-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 24px;
+  cursor: pointer;
+  background: white;
+  border-radius: 50%;
+  padding: 5px;
 }

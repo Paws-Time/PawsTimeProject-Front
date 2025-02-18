@@ -4,13 +4,20 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import { useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
+  QueryFunction,
+  QueryKey,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  ApiResponseGetUserRespDto,
   ApiResponseString,
   ApiResponseVoid,
   LoginUserReqDto,
@@ -31,7 +38,7 @@ export const createUser = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/api/v1/member`,
+      url: `/users`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: userCreateReqDto,
@@ -110,7 +117,7 @@ export const logoutUser = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/api/v1/logout`, method: "POST", signal },
+    { url: `/users/logout`, method: "POST", signal },
     options,
   );
 };
@@ -184,7 +191,7 @@ export const loginUser = (
 ) => {
   return customInstance<ApiResponseString>(
     {
-      url: `/api/v1/login`,
+      url: `/users/login`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: loginUserReqDto,
@@ -255,3 +262,162 @@ export const useLoginUser = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+export const getUserFromUserId = (
+  userId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseGetUserRespDto>(
+    { url: `/users/${userId}`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetUserFromUserIdQueryKey = (userId: number) => {
+  return [`/users/${userId}`] as const;
+};
+
+export const getGetUserFromUserIdInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFromUserIdQueryKey(userId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFromUserId>>
+  > = ({ signal }) => getUserFromUserId(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserFromUserId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFromUserIdInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFromUserId>>
+>;
+export type GetUserFromUserIdInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+
+export function useGetUserFromUserIdInfinite<
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetUserFromUserIdInfiniteQueryOptions(
+    userId,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetUserFromUserIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFromUserIdQueryKey(userId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFromUserId>>
+  > = ({ signal }) => getUserFromUserId(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserFromUserId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFromUserIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFromUserId>>
+>;
+export type GetUserFromUserIdQueryError = ErrorType<unknown>;
+
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+
+export function useGetUserFromUserId<
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetUserFromUserIdQueryOptions(userId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
