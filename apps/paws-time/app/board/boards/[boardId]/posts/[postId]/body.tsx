@@ -21,6 +21,7 @@ interface PostData {
   content?: string;
   createdAt?: string;
   updatedAt?: string;
+  user_id?: number;
 }
 
 const PostDetailBody = () => {

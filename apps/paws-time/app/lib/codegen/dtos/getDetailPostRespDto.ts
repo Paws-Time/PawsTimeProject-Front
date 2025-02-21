@@ -13,4 +13,5 @@ export interface GetDetailPostRespDto {
   postId?: number;
   title?: string;
   updatedAt?: string;
+  userId?: number;
 }

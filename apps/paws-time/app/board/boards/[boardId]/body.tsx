@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueries } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import {
   getGetPostsQueryKey,
@@ -15,6 +16,7 @@ import useBoardStore from "@/app/hooks/boardStore";
 import { useEffect, useState } from "react";
 import { formStyles } from "@/app/styles/forms";
 import "@/app/styles/css/board.css";
+import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api";
 
 interface PostData {
   id?: number;
@@ -25,6 +27,7 @@ interface PostData {
   updatedAt?: string;
   views?: number;
   likesCount?: number;
+  userId?: number;
 }
 
 const BoardDetailBody = () => {
@@ -37,6 +40,7 @@ const BoardDetailBody = () => {
   const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const [postDatas, setPostDatas] = useState<PostData[]>([]);
+
   const params = {
     boardId: Number(boardId),
     keyword: searchKeyword,
@@ -47,6 +51,7 @@ const BoardDetailBody = () => {
 
   const { data: boardData } = useGetBoard(Number(boardId));
   const boardTitle = boardData?.data?.title;
+
   // 게시글 목록 가져오기
   const { data: postData } = useGetPosts(params, {
     query: {
@@ -55,32 +60,50 @@ const BoardDetailBody = () => {
       cacheTime: 1000,
     },
   });
+
   useEffect(() => {
     if (postData?.data) {
       setPostDatas([...postData.data]);
     }
   }, [postData]);
 
+  const userIds = postDatas
+    .map((post) => post.userId)
+    .filter((id) => id !== null && id !== undefined);
+
+  const userQueries = useQueries({
+    queries: userIds.map((userId) => ({
+      queryKey: ["user", userId],
+      queryFn: () => {
+        console.log("Fetching user for userId:", userId); // ✅ userId 확인
+        return getUserFromUserId(userId);
+      },
+      enabled: !!userId, // userId가 있을 때만 실행
+    })),
+  });
+
+  const userNicks = userQueries.reduce(
+    (acc, query, index) => {
+      const userId = userIds[index];
+      acc[userId] = query.data?.data?.nick ?? "알 수 없음"; // 경로 주의: data?.data?.nick
+      return acc;
+    },
+    {} as Record<number, string>
+  );
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchKeyword(keyword);
   };
+
   const resetPage = () => {
     setPageNo(0);
   };
+
   return (
     <div className="container">
-      <div className="w-custom-sidew" />
-      <div className="flex">
-        <h1 className="heading">{boardTitle} 게시글</h1>
-        <div className="ml-5">
-          <CustomButton
-            $label="수정"
-            $sizeType="normal"
-            onClick={() => router.push(`${boardId}/edit`)}
-          />
-        </div>
-      </div>
+      <h1>{boardTitle} 게시글</h1>
+
       <div className="filter-container">
         <form className="input" onSubmit={handleSearch}>
           <input
@@ -95,23 +118,21 @@ const BoardDetailBody = () => {
         <CustomButton
           $label="새글 쓰기"
           $sizeType="normal"
-          value={boardTitle}
           onClick={() => router.push(`/board/write/`)}
-          className="mt-2"
         />
         <CustomButton
           $label="검색설정"
           $sizeType="normal"
           onClick={openModal}
-          className="mt-2"
         />
         <Modal>
           <SortSetting />
         </Modal>
       </div>
+
       <div className="card-container">
         {postDatas.length > 0 ? (
-          postDatas.map((post: PostData) => (
+          postDatas.map((post) => (
             <Card
               key={post.id}
               postId={post.id!}
@@ -119,6 +140,7 @@ const BoardDetailBody = () => {
               $contentPreview={post.contentPreview}
               $views={post.views}
               $likeCount={post.likesCount}
+              $nick={userNicks[post.userId!] ?? "알 수 없음"} // ✅ 닉네임 전달
               onClick={() =>
                 router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }
@@ -128,31 +150,26 @@ const BoardDetailBody = () => {
           <div>게시글이 없습니다.</div>
         )}
       </div>
+
       <div className="pagination">
         <CustomButton
           $label="처음으로"
           $sizeType="normal"
           onClick={resetPage}
         />
-
-        <span className="mt-5 ml-20"> 현 페이지입니다 : {pageNo + 1}</span>
-        <div className="flex gap-3">
-          {pageNo === 0 && (
-            <CustomButton
-              $label="이전"
-              $sizeType="normal"
-              onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))} // 이전 페이지로 이동
-              disabled={pageNo === 0} // 첫 페이지에서는 비활성화
-            />
-          )}
-
-          <CustomButton
-            $label="다음"
-            $sizeType="normal"
-            onClick={() => setPageNo((prev) => prev + 1)} // 다음 페이지로 이동
-            disabled={postDatas.length < pageSize} // 마지막 페이지에서 비활성화
-          />
-        </div>
+        <span className="mt-5 ml-20">현 페이지: {pageNo + 1}</span>
+        <CustomButton
+          $label="이전"
+          $sizeType="normal"
+          onClick={() => setPageNo((prev) => Math.max(prev - 1, 0))}
+          disabled={pageNo === 0}
+        />
+        <CustomButton
+          $label="다음"
+          $sizeType="normal"
+          onClick={() => setPageNo((prev) => prev + 1)}
+          disabled={postDatas.length < pageSize}
+        />
       </div>
     </div>
   );

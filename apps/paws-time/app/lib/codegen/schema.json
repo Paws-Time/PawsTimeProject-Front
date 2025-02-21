@@ -1521,6 +1521,10 @@
                         "type": "integer",
                         "format": "int64"
                     },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
                     "title": {
                         "type": "string"
                     },
@@ -1583,6 +1587,10 @@
                         "format": "int64"
                     },
                     "postId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
                         "type": "integer",
                         "format": "int64"
                     },
