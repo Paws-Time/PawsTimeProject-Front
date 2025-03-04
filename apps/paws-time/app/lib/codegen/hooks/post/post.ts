@@ -18,7 +18,6 @@ import type {
 } from "@tanstack/react-query";
 import type {
   ApiResponseGetDetailPostRespDto,
-  ApiResponseInteger,
   ApiResponseListGetImageRespDto,
   ApiResponseListGetListPostRespDto,
   ApiResponseLong,
@@ -925,82 +924,6 @@ export const useCreatePost = <
   TContext
 > => {
   const mutationOptions = getCreatePostMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * 게시글에 좋아요를 누를 수 있습니다.
- * @summary 좋아요
- */
-export const toggleLike = (
-  postId: number,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<ApiResponseInteger>(
-    { url: `/posts/${postId}/likes`, method: "POST", signal },
-    options,
-  );
-};
-
-export const getToggleLikeMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof toggleLike>>,
-    TError,
-    { postId: number },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof toggleLike>>,
-  TError,
-  { postId: number },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof toggleLike>>,
-    { postId: number }
-  > = (props) => {
-    const { postId } = props ?? {};
-
-    return toggleLike(postId, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ToggleLikeMutationResult = NonNullable<
-  Awaited<ReturnType<typeof toggleLike>>
->;
-
-export type ToggleLikeMutationError = ErrorType<unknown>;
-
-/**
- * @summary 좋아요
- */
-export const useToggleLike = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof toggleLike>>,
-    TError,
-    { postId: number },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof toggleLike>>,
-  TError,
-  { postId: number },
-  TContext
-> => {
-  const mutationOptions = getToggleLikeMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

@@ -2,8 +2,10 @@
 
 import React, { useState, useRef } from "react";
 import "../styles/css/mypage.css";
+import { useAuth } from "@/app/hooks/authStore"; // ✅ 로그인 정보 가져오기
 
 const MyPage = () => {
+  const { nick } = useAuth(); // ✅ 현재 로그인한 사용자의 닉네임 가져오기
   const [selectedOption, setSelectedOption] = useState("recentPosts");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,11 +62,11 @@ const MyPage = () => {
           onChange={handleImageUpload}
           style={{ display: "none" }}
         />
-        <h2 className="profile-name">Chris James</h2>
-        <p className="profile-bio">
-          Hey, I'm Chris and a hobby photographer from Canada.
-        </p>
+
+        {/* ✅ 로그인한 사용자의 닉네임 표시 */}
+        <h2 className="nick">{nick ?? "알 수 없음"}</h2>
       </div>
+
       {/* 게시글 섹션 */}
       <div className="content-section">
         <select
