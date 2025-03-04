@@ -11,4 +11,5 @@ export interface GetCommentRespDto {
   createAt?: string;
   postId?: number;
   updateAt?: string;
+  userId?: number;
 }

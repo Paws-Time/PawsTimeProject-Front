@@ -66,17 +66,9 @@ export default function Header() {
   const { sideBarActions } = useSideBarStore();
   const { toggleIsShow } = sideBarActions;
 
-  const email = useAuthStore((state) => state.email);
+  const nick = useAuthStore((state) => state.nick); // email 대신 nick 사용
   const restoreState = useAuthStore((state) => state.restoreState);
-  // const clearToken = useAuthStore((state) => state.clearToken);
-  // const clearEmail = useAuthStore((state) => state.clearEmail);
   const handleLogout = useHandleLogout();
-
-  // const handleLogout = () => {
-  //   clearToken();
-  //   clearEmail();
-  //   router.push("/auth/login");
-  // };
 
   useEffect(() => {
     restoreState();
@@ -107,17 +99,19 @@ export default function Header() {
 
       {/* 사용자 정보 */}
       <UserInfo>
-        {email ? (
+        {" "}
+        {/* 🔹 강제 리렌더링을 위한 key 설정 */}
+        {nick ? ( // email 대신 nick을 확인
           <>
             <p
               className="text-sm text-neutral-950 cursor-pointer"
               onClick={handleMypageNavigation}
             >
-              {email}
+              {nick} {/* email 대신 nick 표시 */}
             </p>
             <button
               className="text-xs text-red-500 underline"
-              onClick={handleLogout}
+              onClick={handleLogout} // 🔹 변경된 handleLogout 사용
             >
               로그아웃
             </button>

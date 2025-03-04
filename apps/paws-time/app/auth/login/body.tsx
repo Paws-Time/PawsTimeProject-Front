@@ -7,27 +7,44 @@ import { CustomButton } from "@/components/utils/button";
 import { useLoginUser } from "../../lib/codegen/hooks/user-api/user-api";
 import { useAuthStore } from "@/app/hooks/authStore";
 import { decodeJWT } from "@/components/utils/jwt";
+import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api"; // 추가
 
 const LoginBody = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
+
   const setToken = useAuthStore((state) => state.setToken);
-  const setEmailInStore = useAuthStore((state) => state.setEmail);
+  const setUserId = useAuthStore((state) => state.setUserId);
+  const setNick = useAuthStore((state) => state.setNick);
+  const setRole = useAuthStore((state) => state.setRole);
 
   const mutation = useLoginUser({
     mutation: {
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         alert("로그인에 성공했습니다!");
 
         const token = data.data;
         setToken(token as string);
 
-        // 토큰 디코딩하여 이메일 추출
+        // JWT 토큰 디코딩하여 userId 가져오기
         const decodedToken = decodeJWT(token as string);
-        if (decodedToken?.email) {
-          setEmailInStore(decodedToken.email); // Zustand에 이메일 저장
+        if (decodedToken?.userId) {
+          setUserId(decodedToken.userId); // userId 상태 업데이트
+
+          // 🔹 로그인 후 userId를 이용해 닉네임을 가져와 상태 업데이트
+          try {
+            const response = await getUserFromUserId(
+              Number(decodedToken.userId)
+            );
+            if (response.data) {
+              setNick(response.data.nick ?? null);
+              setRole(response.data.role ?? null);
+            }
+          } catch (error) {
+            console.error("유저 정보를 불러오는데 실패했습니다:", error);
+          }
         }
 
         router.push("/");

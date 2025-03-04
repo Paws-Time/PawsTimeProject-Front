@@ -23,7 +23,7 @@ import type { ErrorType } from "../../../axios-client/customClient";
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
- * @summary 동물병원 정보 목록 조회
+ * @summary 지역별 동물병원 정보 목록 조회
  */
 export const getHospitalInfo = (
   addNum: number,
@@ -32,7 +32,7 @@ export const getHospitalInfo = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetHospitalInfoRespDto>(
-    { url: `/info/${addNum}`, method: "GET", params, signal },
+    { url: `/info/hospitals/${addNum}`, method: "GET", params, signal },
     options,
   );
 };
@@ -41,7 +41,7 @@ export const getGetHospitalInfoQueryKey = (
   addNum: number,
   params?: GetHospitalInfoParams,
 ) => {
-  return [`/info/${addNum}`, ...(params ? [params] : [])] as const;
+  return [`/info/hospitals/${addNum}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetHospitalInfoInfiniteQueryOptions = <
@@ -86,7 +86,7 @@ export type GetHospitalInfoInfiniteQueryResult = NonNullable<
 export type GetHospitalInfoInfiniteQueryError = ErrorType<unknown>;
 
 /**
- * @summary 동물병원 정보 목록 조회
+ * @summary 지역별 동물병원 정보 목록 조회
  */
 
 export function useGetHospitalInfoInfinite<
@@ -162,7 +162,7 @@ export type GetHospitalInfoQueryResult = NonNullable<
 export type GetHospitalInfoQueryError = ErrorType<unknown>;
 
 /**
- * @summary 동물병원 정보 목록 조회
+ * @summary 지역별 동물병원 정보 목록 조회
  */
 
 export function useGetHospitalInfo<

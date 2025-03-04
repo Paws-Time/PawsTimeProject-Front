@@ -8,9 +8,9 @@ import type { CreateBoardReqDtoBoardType } from "./createBoardReqDtoBoardType";
 
 export interface CreateBoardReqDto {
   /** 게시판 유형 */
-  boardType?: CreateBoardReqDtoBoardType;
+  boardType: CreateBoardReqDtoBoardType;
   /** 게시판 설명 */
   description?: string;
   /** 게시판 제목 */
-  title?: string;
+  title: string;
 }

@@ -20,11 +20,6 @@ export default defineConfig({
           path: "app/lib/axios-client/customClient.ts",
           name: "customInstance",
         },
-        operations: {
-          updatePostImages: {
-            transformer: "./app/lib/codegen/transformers/updatePostImages.ts", // 추가한 transformer 경로
-          },
-        },
       },
     },
   },

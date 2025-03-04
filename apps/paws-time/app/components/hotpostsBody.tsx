@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { Card } from "@/components/utils/card";
+import { useQueries } from "@tanstack/react-query";
 import "@/app/components/css/styles.css";
 
 interface Post {
@@ -15,6 +17,7 @@ interface Post {
   updatedAt: string;
   views: number;
   likesCount: number;
+  userId?: number;
 }
 
 const HotPostsBody = () => {
@@ -39,6 +42,30 @@ const HotPostsBody = () => {
       setPosts(data.data as Post[]);
     }
   }, [data]);
+
+  // userId 추출
+  const userIds = posts
+    .map((post) => post.userId)
+    .filter((id) => id !== null && id !== undefined);
+
+  // 작성자 정보 가져오기
+  const userQueries = useQueries({
+    queries: userIds.map((userId) => ({
+      queryKey: ["user", userId],
+      queryFn: () => getUserFromUserId(userId),
+      enabled: !!userId,
+    })),
+  });
+
+  // userId와 닉네임 매칭
+  const userNicks = userQueries.reduce(
+    (acc, query, index) => {
+      const userId = userIds[index];
+      acc[userId] = query.data?.data?.nick ?? "알 수 없음"; // 닉네임이 없으면 기본값
+      return acc;
+    },
+    {} as Record<number, string>
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: 게시글을 가져오는 중 문제가 발생했습니다.</div>;
@@ -66,11 +93,12 @@ const HotPostsBody = () => {
           {posts.map((post) => (
             <Card
               key={post.id}
-              postId={post.id!}
+              postId={post.id}
               $title={post.title}
               $contentPreview={post.contentPreview}
               $views={post.views}
               $likeCount={post.likesCount}
+              $nick={userNicks[post.userId!] ?? "알 수 없음"} // ✅ 작성자 표시
               onClick={() => handlePostClick(post.id, post.boardId)}
             />
           ))}

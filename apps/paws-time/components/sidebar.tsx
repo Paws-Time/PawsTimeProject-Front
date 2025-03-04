@@ -12,29 +12,16 @@ export default function Sidebar() {
   const { isShow } = sideBarState;
 
   const router = useRouter();
-  const email = useAuthStore((state) => state.email); // Zustand에서 이메일 상태 가져오기
+  const nick = useAuthStore((state) => state.nick); // email 대신 nick 사용
 
-  // const logoutState = useAuthStore((state) => state.logoutState);
-  // const logoutMutation = useLogoutUser();
-
-  const handleLogout = useHandleLogout(); // 훅 사용
-
-  // const handleLogout = async () => {
-  //   try {
-  //     await logoutMutation.mutateAsync(); // API 호출
-  //     logoutState(); // 상태 초기화
-  //     router.push("/"); // 리다이렉트
-  //   } catch (error) {
-  //     console.error("Logout failed:", error);
-  //   }
-  // };
+  const handleLogout = useHandleLogout(); // 변경된 훅 사용
 
   const menus = [
     { id: 1, path: "/", name: "메인페이지" },
     { id: 2, path: "/board", name: "게시판" },
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
     { id: 4, path: "/infoboard", name: "장소 게시판" },
-    email
+    nick
       ? { id: 5, path: "#", name: "로그아웃하기", onClick: handleLogout }
       : {
           id: 5,
@@ -47,9 +34,9 @@ export default function Sidebar() {
     <aside
       style={{
         position: "fixed",
-        top: "60px", // 헤더 아래로 80px 만큼 내려갑니다.
+        top: "60px",
         left: isShow ? 0 : "-300px",
-        height: "calc(100% - 60px)", // 전체 화면 높이에서 헤더 높이를 뺍니다.
+        height: "calc(100% - 60px)",
         width: "300px",
         backgroundColor: "#f8f9fa",
         transition: "left 0.5s ease-in-out",
@@ -70,7 +57,7 @@ export default function Sidebar() {
                 $sizeType="menu"
                 onClick={
                   menu.onClick
-                    ? menu.onClick // 로그아웃의 경우 handleLogout 사용
+                    ? menu.onClick // 🔹 로그아웃 시 handleLogout 사용
                     : () => router.push(menu.path) // 나머지 메뉴는 path로 이동
                 }
               />
