@@ -96,3 +96,29 @@
   border-radius: 50%;
   padding: 5px;
 }
+
+/* 마이페이지 게시글 목록 스타일 */
+.post-list {
+  list-style-type: none; /* 기본 목록 스타일 제거 */
+  padding: 0;
+  margin: 0;
+}
+
+.post-list li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd; /* 구분선 추가 */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  white-space: nowrap; /* 한 줄로 유지 */
+  overflow: hidden; /* 넘칠 경우 숨김 */
+  text-overflow: ellipsis; /* 너무 길면 ... 표시 */
+}
+
+.post-list li:hover {
+  background-color: #f5f5f5; /* 호버 시 배경 강조 */
+}
+
+.post-list li:last-child {
+  border-bottom: none; /* 마지막 항목은 구분선 제거 */
+}

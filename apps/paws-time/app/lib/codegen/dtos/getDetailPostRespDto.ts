@@ -10,6 +10,7 @@ export interface GetDetailPostRespDto {
   commentCount?: number;
   content?: string;
   createdAt?: string;
+  likeCounts?: number;
   postId?: number;
   title?: string;
   updatedAt?: string;

@@ -63,3 +63,8 @@ export * from "./updatePostReqDto";
 export * from "./uploadImagesBody";
 export * from "./userCreateReqDto";
 export * from "./userCreateReqDtoRole";
+export * from "./apiResponseListGetShelterInfoRespDto";
+export * from "./apiResponseListGetShelterInfoRespDtoStatus";
+export * from "./getShelterInfoParams";
+export * from "./getShelterInfoRespDto";
+export * from "./updateProfileImgBody";
