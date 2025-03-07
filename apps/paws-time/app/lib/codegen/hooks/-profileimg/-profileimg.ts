@@ -4,17 +4,183 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import { useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
+  QueryFunction,
+  QueryKey,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from "@tanstack/react-query";
-import type { ApiResponseVoid, UpdateProfileImgBody } from "../../dtos";
+import type {
+  ApiResponseGetProfileImgRespDto,
+  ApiResponseVoid,
+  UpdateProfileImgBody,
+} from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
 import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
+/**
+ * 프로필 이미지를 조회합니다.
+ * @summary 프로필 이미지 조회
+ */
+export const getProfileImg = (
+  userId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseGetProfileImgRespDto>(
+    { url: `/profileImg/${userId}`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetProfileImgQueryKey = (userId: number) => {
+  return [`/profileImg/${userId}`] as const;
+};
+
+export const getGetProfileImgInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProfileImg>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getProfileImg>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetProfileImgQueryKey(userId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfileImg>>> = ({
+    signal,
+  }) => getProfileImg(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getProfileImg>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetProfileImgInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getProfileImg>>
+>;
+export type GetProfileImgInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 프로필 이미지 조회
+ */
+
+export function useGetProfileImgInfinite<
+  TData = Awaited<ReturnType<typeof getProfileImg>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getProfileImg>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetProfileImgInfiniteQueryOptions(userId, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetProfileImgQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProfileImg>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getProfileImg>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetProfileImgQueryKey(userId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfileImg>>> = ({
+    signal,
+  }) => getProfileImg(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getProfileImg>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetProfileImgQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getProfileImg>>
+>;
+export type GetProfileImgQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 프로필 이미지 조회
+ */
+
+export function useGetProfileImg<
+  TData = Awaited<ReturnType<typeof getProfileImg>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getProfileImg>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetProfileImgQueryOptions(userId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * 프로필 이미지를 변경할 수 있습니다.

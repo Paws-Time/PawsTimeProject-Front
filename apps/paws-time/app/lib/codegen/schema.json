@@ -51,6 +51,37 @@
     ],
     "paths": {
         "/profileImg/{userId}": {
+            "get": {
+                "tags": [
+                    " ProfileImg"
+                ],
+                "summary": "프로필 이미지 조회",
+                "description": "프로필 이미지를 조회합니다.",
+                "operationId": "getProfileImg",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseGetProfileImgRespDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "put": {
                 "tags": [
                     " ProfileImg"
@@ -1031,6 +1062,36 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "USER API"
+                ],
+                "summary": "회원 탈퇴",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/posts/{postId}/thumbnail": {
@@ -1642,6 +1703,40 @@
                             "USER",
                             "ADMIN"
                         ]
+                    }
+                }
+            },
+            "ApiResponseGetProfileImgRespDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "SUCCESS",
+                            "CREATE",
+                            "UPDATE",
+                            "DELETE",
+                            "INVALID",
+                            "DUPLICATE",
+                            "NOTFOUND",
+                            "UNAUTHORIZED",
+                            "FORBIDDEN",
+                            "ERROR"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/GetProfileImgRespDto"
+                    }
+                }
+            },
+            "GetProfileImgRespDto": {
+                "type": "object",
+                "properties": {
+                    "profileImgUrl": {
+                        "type": "string"
                     }
                 }
             },
