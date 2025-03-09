@@ -15,7 +15,7 @@ export const useHandleLogout = () => {
     onSuccess: () => {
       logoutState(); // Zustand 상태 초기화
       alert("로그아웃 되었습니다."); // 사용자 알림
-      router.push("/"); // 메인 페이지로 이동
+      router.push("/home"); // 메인 페이지로 이동
       router.refresh(); // 🔹 상태 즉시 반영
     },
     onError: (error) => {
