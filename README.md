@@ -88,6 +88,9 @@
 
 ![Image](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
 
+메인 페이지
+![Image](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
+
 ## 🖥 화면 구현
 (화면 UI/UX 관련 설명 및 스크린샷을 첨부하세요.)
 
