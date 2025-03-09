@@ -50,68 +50,9 @@
 
 | **카테고리**        | **기술 스택**        | **설명**                                           |
 |---------------------|----------------------|---------------------------------------------------|
-| **프로그래밍 언어** | Java 17              | 안정성 및 최신 기능을 제공하는 Java 버전 17 사용. |
-| **프레임워크**      | Spring Boot          | 빠르고 효율적인 Spring 기반 애플리케이션 개발을 위한 프레임워크. |
-| **데이터베이스**    | MySQL                | 관계형 데이터베이스 관리 시스템 (RDBMS).          |
-| **서버**            | AWS                  | 클라우드 환경에서 애플리케이션을 배포하고 관리하기 위한 플랫폼. |
-| **컨테이너화**      | Docker               | 애플리케이션을 컨테이너화하여 이식성과 확장성을 제공하는 도구. |
-| **버전 관리**       | GitHub               | 소스 코드 버전 관리 및 협업을 위한 GitHub 사용. |
-| **파일 업로드**     | Spring Multipart     | 파일 업로드 기능 활성화를 위한 Spring의 `multipart` 설정 사용. |
-| **API 문서화**      | Springdoc & Swagger  | OpenAPI를 기반으로 Swagger UI를 통한 API 문서화. |
-| **JSON Web Token**  | JWT                  | 사용자 인증 및 권한 관리를 위한 JSON Web Token 기반 인증 처리. |
-| **AWS S3**          | AWS SDK              | AWS S3와 연동하여 이미지 및 파일 관리.           |
-| **보안**            | Spring Security      | Spring 기반 보안 처리 (JWT 인증 및 권한 관리).    |
-| **ORM**             | Hibernate, JPA       | 데이터베이스와 객체를 매핑하기 위한 Hibernate 및 JPA 사용. |
-
-### 주요 설정 내용
-
-- **파일 업로드**  
-  - 최대 파일 크기 및 요청 크기: 10MB  
-  - 멀티파트 처리 활성화 (`spring.servlet.multipart.enabled: true`)
-
-- **AWS S3**  
-  - 이미지 저장소를 위한 S3 연동  
-  - AWS 액세스 키 및 비밀 키, 리전, 버킷 이름 설정
-
-- **JPA 및 데이터베이스 설정**  
-  - `hibernate.ddl-auto: update` - 자동 데이터베이스 스키마 업데이트  
-  - `hibernate.dialect: org.hibernate.dialect.MySQL8Dialect` - MySQL 8 버전 사용  
-  - `show-sql: true` - SQL 쿼리 로그 출력
-
-- **JWT 설정**  
-  - `expiration_time: 86400000` - JWT 만료 시간 설정 (24시간)  
-  - `secret.key` - JWT 암호화 키 설정
-
-- **서버 설정**  
-  - 서버 포트: 8080
-
-- **Swagger 설정**  
-  - Swagger UI 및 OpenAPI 문서화 관련 설정 (`springdoc.override-with-generic-response: false`)
-
-
-
-### 📦 build.gradle (Back-end)
-
-| **라이브러리**                                               | **용도**                                      |
-|------------------------------------------------------------|---------------------------------------------|
-| `org.springframework.boot:spring-boot-starter-web`           | Spring Boot 웹 애플리케이션 시작을 위한 기본 라이브러리 |
-| `org.springframework.boot:spring-boot-starter-data-jpa`      | Spring Data JPA를 위한 스타터 라이브러리      |
-| `org.springframework.boot:spring-boot-starter-test`         | Spring Boot 테스트를 위한 스타터 라이브러리  |
-| `org.springframework.boot:spring-boot-starter-validation`   | Spring Validation을 위한 스타터 라이브러리   |
-| `org.springframework.boot:spring-boot-starter-security`     | Spring Security 관련 기능을 위한 스타터 라이브러리 |
-| `org.springframework.boot:spring-boot-starter-json`         | JSON 처리 기능을 위한 Spring Boot 스타터 라이브러리 |
-| `org.springframework.security:spring-security-core`         | Spring Security 핵심 기능을 위한 라이브러리 |
-| `org.springframework.boot:spring-boot-starter-webmvc-ui`    | OpenAPI 문서화 지원을 위한 라이브러리 |
-| `org.mybatis.spring.boot:mybatis-spring-boot-starter`      | MyBatis와 Spring Boot 통합을 위한 스타터 라이브러리 |
-| `org.mybatis.spring.boot:mybatis-spring-boot-starter-test` | MyBatis 테스트를 위한 스타터 라이브러리 |
-| `com.mysql:mysql-connector-j`                               | MySQL 데이터베이스와의 연결을 위한 JDBC 드라이버 |
-| `com.amazonaws:aws-java-sdk-s3`                             | AWS S3 서비스와의 연동을 위한 SDK 라이브러리 |
-| `io.jsonwebtoken:jjwt-api`                                   | JWT 생성 및 파싱을 위한 API 라이브러리       |
-| `io.jsonwebtoken:jjwt-impl`                                  | JWT 구현을 위한 라이브러리                  |
-| `io.jsonwebtoken:jjwt-jackson`                               | JWT와 Jackson 통합을 위한 라이브러리        |
-| `org.projectlombok:lombok`                                  | 코드 간소화를 위한 Lombok 라이브러리 (Getter, Setter 등) |
-| `org.junit.platform:junit-platform-launcher`                | JUnit 테스트 실행을 위한 런처 라이브러리     |
-| `com.fasterxml.jackson.core:jackson-databind`               | JSON 직렬화 및 역직렬화를 위한 라이브러리   |
+| **프로그래밍 언어** | JavaScript, TypeScript  | Props, 타입의 안정성 위해 타입 스크립트 사용 |
+| **프레임워크** | Next.js | 빠르고 강력한 기능을 제공하는 React 기반 프레임워크. |
+| **스타일링** | styled-components | 컴포넌트 기반의 스타일링을 위한 CSS-in-JS 라이대|
 
 
 
