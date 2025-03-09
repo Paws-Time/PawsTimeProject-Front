@@ -18,41 +18,8 @@
 
 ## 프로젝트 구조
 
-PAWS-TIME/
+![Image](https://github.com/user-attachments/assets/a78d3d7b-6190-4a57-971d-d2db5f43b2c7)
 
-├── .github/
-
-│   └── workflows/
-
-│       └── docker-image.yml
-
-├── .vscode/
-
-│   └── settings.json
-
-├── apps/
-
-│   ├── paws-time/
-
-│   └── node_modules/
-
-├── packages/
-
-│   ├── design-system/
-
-│   └── util/
-
-├── .gitignore
-
-├── Dockerfile.paws-time
-
-├── package.json
-
-├── pnpm-lock.yaml
-
-├── pnpm-workspace.yaml
-
-└── README.md
 
 ### 주요 구조설명.
 - **apps 폴더**
