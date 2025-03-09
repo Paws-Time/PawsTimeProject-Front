@@ -135,34 +135,37 @@ const MyPage = () => {
               priority
             />
           </div>
-
-          {/* ✅ 닉네임 표시 */}
-          <div>
-            <span className="nick">닉네임: {nick ?? "알 수 없음"}</span>
-          </div>
-
-          <div>
-            <button
-              className="delete-profile-img-btn"
-              onClick={handleDeleteProfileImage}
-            >
-              프로필 이미지 삭제
-            </button>
-          </div>
-          <div>
-            <button className="delete-account-btn" onClick={handleDeleteUser}>
-              회원 탈퇴
-            </button>
-          </div>
+          {/* ✅ 프로필 이미지 변경 (톱니바퀴 아이콘 클릭) */}
+          <span
+            className="material-symbols-outlined profile-settings-icon"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            settings
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+          />
         </div>
-
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={handleImageChange}
-          style={{ display: "none" }}
-        />
+        <div>
+          <span className="nick">닉네임: {nick ?? "알 수 없음"}</span>
+        </div>
+        <div>
+          <button
+            className="delete-profile-img-btn"
+            onClick={handleDeleteProfileImage}
+          >
+            프로필 이미지 삭제
+          </button>
+        </div>
+        <div>
+          <button className="delete-account-btn" onClick={handleDeleteUser}>
+            회원 탈퇴
+          </button>
+        </div>
       </div>
 
       {/* ✅ 게시글 섹션 */}
