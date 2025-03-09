@@ -16,13 +16,47 @@
 
 --
 
+## 프로젝트 구조
+PAWS-TIME/
+├── .github/
+│   └── workflows/
+│       └── docker-image.yml
+├── .vscode/
+│   └── settings.json
+├── apps/
+│   ├── paws-time/
+│   └── node_modules/
+├── packages/
+│   ├── design-system/
+│   └── util/
+├── .gitignore
+├── Dockerfile.paws-time
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── README.md
+
+### 주요 구조설명.
+- **apps 폴더**
+  - 프로젝트 생성.
+- **로컬 package.json**
+  - 실행명령어 script 작성
+- **package 폴더**
+  - 회사, 또는 부서 공용 디자인시스템, 컴포넌트, 버튼 등 기능 생성 공유
+ 
+### 실행 명령어.
+    "paws-time:dev": "pnpm --filter paws-time dev",
+    "paws-time:build": "pnpm --filter paws-time build",
+    "paws-time:start": "pnpm --filter paws-time start",
+    "paws-time:lint": "pnpm --filter paws-time lint",
+    "paws-time:codegen": "pnpm --filter paws-time codegen",
 
 ## ⚡프로젝트 아키텍처 및 기술적 특징
+
 
 ### 📁 모노레포(협업)시스템 적용
 
 이 프로젝트는 레포지토리 관리, 버전 관리 최적화 회사내 프로젝트 관리를 가정하여 package 폴더관리, apps를 통한 프로젝트 관리를 시행하였습니다.
-![Image](https://github.com/user-attachments/assets/7e55dfee-92d7-4d74-9c68-882053edcb3f)
 
 ### 📁 모노레포(협업)시스템 사용 이유와 장점
 - **일관된 코드베이스 관리**
