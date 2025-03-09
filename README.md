@@ -17,23 +17,41 @@
 --
 
 ## 프로젝트 구조
+
 PAWS-TIME/
+
 ├── .github/
+
 │   └── workflows/
+
 │       └── docker-image.yml
+
 ├── .vscode/
+
 │   └── settings.json
+
 ├── apps/
+
 │   ├── paws-time/
+
 │   └── node_modules/
+
 ├── packages/
+
 │   ├── design-system/
+
 │   └── util/
+
 ├── .gitignore
+
 ├── Dockerfile.paws-time
+
 ├── package.json
+
 ├── pnpm-lock.yaml
+
 ├── pnpm-workspace.yaml
+
 └── README.md
 
 ### 주요 구조설명.
