@@ -49,7 +49,7 @@ PAWS-TIME/
     "paws-time:build": "pnpm --filter paws-time build",
     "paws-time:start": "pnpm --filter paws-time start",
     "paws-time:lint": "pnpm --filter paws-time lint",
-    "paws-time:codegen": "pnpm --filter paws-time codegen",
+    "paws-time:codegen": "pnpm --filter paws-time codegen",  :백엔드 api 업데이트시 명령어 실행
 
 ## ⚡프로젝트 아키텍처 및 기술적 특징
 
