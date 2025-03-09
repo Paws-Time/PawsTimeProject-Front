@@ -52,11 +52,36 @@
 |---------------------|----------------------|---------------------------------------------------|
 | **프로그래밍 언어** | JavaScript, TypeScript  | Props, 타입의 안정성 위해 타입 스크립트 사용 |
 | **프레임워크** | Next.js | 빠르고 강력한 기능을 제공하는 React 기반 프레임워크. |
-| **스타일링** | styled-components | 컴포넌트 기반의 스타일링을 위한 CSS-in-JS 라이대|
+| **스타일링** | styled-components | 컴포넌트 기반의 스타일링을 위한 CSS-in-JS 라이브러리. |
+| **상태관리** | zustand  | 전역 상태 관리를 위한 간단하고 가벼운 라이브러리. |
+| **데이터패칭** | @tanstack/react-query  | 데이터 패칭 및 캐싱을 위한 강력한 라이브러리. |
+| **API** | Axios | RESTful API와의 통신을 위한 HTTP 클라이언트 라이브러리. |
+| **API 문서화** | Orval | OpenAPI 기반으로 타입 및 API 자동 생성 도구. |
+| **지도 API** | @googlemaps/js-api-loader | Google Maps API를 로드하는 라이브러리. |
+| **지도 연동** | @react-google-maps/api | React에서 Google Maps 사용을 위한 라이브러리. |
+| **슬라이드기능** | Swiper  | 직관적인 UI를 위한 슬라이드 기능 제공.. |
 
+### 주요 설정 내용
 
+- **Next.js 설정**  
+  - next.config.js 설정을 통해 환경 변수 및 커스텀 빌드 설정 적용
+  - pages/ 디렉토리 구조 기반 라우팅 시스템 적용
+  - SSR 위주의 클라이언트.
 
+- **ESLINT & Prettier**  
+  - 코드 품질 유지 및 일관성 있는 포맷을 위한 설정 적용
+  - .eslintrc.json 및 .prettierrc 설정 포함
 
+- **Tailwind CSS**  
+  - 스타일링을 위한 유틸리티 퍼스트 CSS 프레임워크 적용
+  - 자주사용될 크기 tailwind.config.ts spacing 설정하여 명령어 설정.
+
+- **Orval 설정**  
+  - pnpm paws-time:codegen 명령어 실행을 통해 업데이트.
+  - .env에 schema Url 주소 변경을 통해 해당 swagger 기준 api 명세 자동 api 생성.
+
+- **package.json script 설정**
+  - 로컬주소에서 pnpm 명령어 이용을 통해 실행가능.
 ## 📋 메뉴 구조도
 피그마로 구성한 초기 페이지
 ![Image](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
