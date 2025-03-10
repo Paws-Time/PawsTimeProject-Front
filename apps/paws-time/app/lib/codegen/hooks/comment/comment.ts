@@ -23,6 +23,7 @@ import type {
   CreateCommentReqDto,
   GetCommentAllParams,
   GetCommentByPostParams,
+  GetCommentListByUserParams,
   UpdateCommentReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
@@ -441,6 +442,158 @@ export const useCreateComment = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+export const getCommentListByUser = (
+  params?: GetCommentListByUserParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetCommentRespDto>(
+    { url: `/me`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetCommentListByUserQueryKey = (
+  params?: GetCommentListByUserParams,
+) => {
+  return [`/me`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetCommentListByUserInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetCommentListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCommentListByUser>>
+  > = ({ signal }) => getCommentListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getCommentListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentListByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentListByUser>>
+>;
+export type GetCommentListByUserInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+
+export function useGetCommentListByUserInfinite<
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentListByUserInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetCommentListByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetCommentListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCommentListByUser>>
+  > = ({ signal }) => getCommentListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCommentListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentListByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentListByUser>>
+>;
+export type GetCommentListByUserQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+
+export function useGetCommentListByUser<
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentListByUserQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 모든 게시글에 달린 댓글을 조회합니다.
  * @summary 댓글 전체 목록 조회

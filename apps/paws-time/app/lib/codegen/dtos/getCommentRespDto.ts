@@ -6,6 +6,7 @@
  */
 
 export interface GetCommentRespDto {
+  boardId?: number;
   commentId?: number;
   content?: string;
   createAt?: string;

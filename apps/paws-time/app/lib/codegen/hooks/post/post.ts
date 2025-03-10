@@ -23,6 +23,7 @@ import type {
   ApiResponseLong,
   ApiResponseVoid,
   CreatePostReqDto,
+  GetPostListByUserParams,
   GetPostsParams,
   UpdatePostImagesBody,
   UpdatePostImagesParams,
@@ -1072,6 +1073,158 @@ export function useGetThumbnail<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetThumbnailQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+export const getPostListByUser = (
+  params?: GetPostListByUserParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetListPostRespDto>(
+    { url: `/posts/me`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetPostListByUserQueryKey = (
+  params?: GetPostListByUserParams,
+) => {
+  return [`/posts/me`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetPostListByUserInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPostListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPostListByUser>>
+  > = ({ signal }) => getPostListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getPostListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostListByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPostListByUser>>
+>;
+export type GetPostListByUserInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+
+export function useGetPostListByUserInfinite<
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostListByUserInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetPostListByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPostListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPostListByUser>>
+  > = ({ signal }) => getPostListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPostListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostListByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPostListByUser>>
+>;
+export type GetPostListByUserQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+
+export function useGetPostListByUser<
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostListByUserQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

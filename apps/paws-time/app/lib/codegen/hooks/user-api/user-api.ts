@@ -21,6 +21,8 @@ import type {
   ApiResponseString,
   ApiResponseVoid,
   LoginUserReqDto,
+  UpdateNickReqDto,
+  UpdatePasswordReqDto,
   UserCreateReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
@@ -28,6 +30,164 @@ import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
+/**
+ * @summary 현재 로그인한 사용자의 비밀번호 변경
+ */
+export const updatePassword = (
+  updatePasswordReqDto: BodyType<UpdatePasswordReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/users/me/password`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updatePasswordReqDto,
+    },
+    options,
+  );
+};
+
+export const getUpdatePasswordMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePassword>>,
+    TError,
+    { data: BodyType<UpdatePasswordReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePassword>>,
+  TError,
+  { data: BodyType<UpdatePasswordReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePassword>>,
+    { data: BodyType<UpdatePasswordReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updatePassword(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePassword>>
+>;
+export type UpdatePasswordMutationBody = BodyType<UpdatePasswordReqDto>;
+export type UpdatePasswordMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자의 비밀번호 변경
+ */
+export const useUpdatePassword = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePassword>>,
+    TError,
+    { data: BodyType<UpdatePasswordReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updatePassword>>,
+  TError,
+  { data: BodyType<UpdatePasswordReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdatePasswordMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary 현재 로그인한 사용자의 닉네임 변경
+ */
+export const updateNick = (
+  updateNickReqDto: BodyType<UpdateNickReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/users/me/nick`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updateNickReqDto,
+    },
+    options,
+  );
+};
+
+export const getUpdateNickMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNick>>,
+    TError,
+    { data: BodyType<UpdateNickReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNick>>,
+  TError,
+  { data: BodyType<UpdateNickReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNick>>,
+    { data: BodyType<UpdateNickReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateNick(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNickMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateNick>>
+>;
+export type UpdateNickMutationBody = BodyType<UpdateNickReqDto>;
+export type UpdateNickMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자의 닉네임 변경
+ */
+export const useUpdateNick = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNick>>,
+    TError,
+    { data: BodyType<UpdateNickReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateNick>>,
+  TError,
+  { data: BodyType<UpdateNickReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdateNickMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary 회원 가입
  */
