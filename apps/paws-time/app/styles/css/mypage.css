@@ -206,3 +206,26 @@
   font-size: 14px;
   margin-top: 5px;
 }
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.comment-content {
+  font-weight: bold;
+}
+
+.comment-date {
+  font-size: 0.9rem;
+  color: gray;
+}
