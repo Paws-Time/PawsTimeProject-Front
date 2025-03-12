@@ -5,22 +5,24 @@ import "../styles/css/mypage.css";
 import Image from "next/image";
 import { useAuth } from "@/app/hooks/authStore";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
+import { useGetCommentListByUser } from "@/app/lib/codegen/hooks/comment/comment";
 import {
   useUpdateProfileImg,
   useDeleteProfileImg,
 } from "@/app/lib/codegen/hooks/-profileimg/-profileimg";
 import { useGetProfileImg } from "@/app/lib/codegen/hooks/-profileimg/-profileimg";
-import { useDeleteUser } from "@/app/lib/codegen/hooks/user-api/user-api"; // ✅ 로그인 & 회원 탈퇴 API 추가
+import { useDeleteUser } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
-import { GetListPostRespDto } from "../lib/codegen/dtos";
+import { GetListPostRespDto, GetCommentRespDto } from "../lib/codegen/dtos";
 
 const MyPage = () => {
-  const { userId, nick } = useAuth(); // ✅ 로그인한 사용자 정보 가져오기
+  const { userId, nick } = useAuth();
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("recentPosts");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [myPosts, setMyPosts] = useState<GetListPostRespDto[]>([]);
-  const deleteUserMutation = useDeleteUser(); // ✅ 회원 탈퇴 API 호출 훅
+  const [myComments, setMyComments] = useState<GetCommentRespDto[]>([]);
+  const deleteUserMutation = useDeleteUser();
 
   const params = {
     page: 0,
@@ -28,6 +30,7 @@ const MyPage = () => {
     sort: "createdAt,desc",
   };
 
+  // ✅ 내 게시글 가져오기
   const { data: postsData } = useGetPosts(params, {
     query: {
       staleTime: 5 * 60 * 1000,
@@ -42,12 +45,28 @@ const MyPage = () => {
     }
   }, [postsData, userId]);
 
-  // ✅ 프로필 이미지 조회
-  const { data: profileImgData, refetch: refetchProfileImg } = useGetProfileImg(
-    userId ?? 0, // 🔹 userId가 null이면 0을 넘기지만, 실제 호출을 막으려면 enabled 사용
+  // ✅ 내 댓글 가져오기
+  const { data: commentsData } = useGetCommentListByUser(
+    { pageNo: 0, pageSize: 10, sortBy: "createdAt", direction: "desc" },
     {
       query: {
-        enabled: !!userId, // 🔹 userId가 존재할 때만 요청 실행
+        enabled: !!userId,
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (commentsData?.data) {
+      setMyComments(commentsData.data);
+    }
+  }, [commentsData]);
+
+  // ✅ 프로필 이미지 조회
+  const { data: profileImgData, refetch: refetchProfileImg } = useGetProfileImg(
+    userId ?? 0,
+    {
+      query: {
+        enabled: !!userId,
       },
     }
   );
@@ -55,11 +74,10 @@ const MyPage = () => {
   const imagePreview =
     profileImgData?.data?.profileImgUrl || "/default-profile.png";
 
-  // ✅ API 훅
+  // ✅ 프로필 이미지 변경
   const updateProfileImgMutation = useUpdateProfileImg();
   const deleteProfileImgMutation = useDeleteProfileImg();
 
-  // ✅ 프로필 이미지 변경
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !userId) return;
@@ -72,7 +90,7 @@ const MyPage = () => {
       {
         onSuccess: () => {
           alert("프로필 이미지가 변경되었습니다!");
-          refetchProfileImg(); // ✅ 최신 프로필 이미지 다시 가져오기
+          refetchProfileImg();
         },
         onError: () => {
           alert("이미지 변경에 실패했습니다.");
@@ -90,7 +108,7 @@ const MyPage = () => {
       {
         onSuccess: () => {
           alert("프로필 이미지가 삭제되었습니다!");
-          refetchProfileImg(); // ✅ 최신 상태 반영
+          refetchProfileImg();
         },
         onError: () => {
           alert("프로필 이미지 삭제에 실패했습니다.");
@@ -99,7 +117,7 @@ const MyPage = () => {
     );
   };
 
-  // ✅ 회원 탈퇴 처리 (비밀번호 확인 없이 alert 만 표시)
+  // ✅ 회원 탈퇴 처리
   const handleDeleteUser = () => {
     if (!userId) return;
 
@@ -110,7 +128,7 @@ const MyPage = () => {
         {
           onSuccess: () => {
             alert("회원 탈퇴가 완료되었습니다.");
-            router.push("/home"); // ✅ 탈퇴 후 홈으로 이동
+            router.push("/home");
           },
           onError: () => {
             alert("회원 탈퇴에 실패했습니다.");
@@ -135,7 +153,6 @@ const MyPage = () => {
               priority
             />
           </div>
-          {/* ✅ 프로필 이미지 변경 (톱니바퀴 아이콘 클릭) */}
           <span
             className="material-symbols-outlined profile-settings-icon"
             onClick={() => fileInputRef.current?.click()}
@@ -152,6 +169,9 @@ const MyPage = () => {
         </div>
         <div>
           <span className="nick">닉네임: {nick ?? "알 수 없음"}</span>
+          <span>
+            <button>|수정</button>
+          </span>
         </div>
         <div>
           <button
@@ -161,6 +181,9 @@ const MyPage = () => {
             프로필 이미지 삭제
           </button>
         </div>
+        <button onClick={() => router.push("/mypage/editPassword")}>
+          비밀번호 변경
+        </button>
         <div>
           <button className="delete-account-btn" onClick={handleDeleteUser}>
             회원 탈퇴
@@ -168,7 +191,7 @@ const MyPage = () => {
         </div>
       </div>
 
-      {/* ✅ 게시글 섹션 */}
+      {/* 게시글 & 댓글 섹션 */}
       <div className="content-section">
         <select
           className="content-filter"
@@ -199,8 +222,29 @@ const MyPage = () => {
                 </li>
               ))}
             </ul>
+          ) : selectedOption === "recentComments" && myComments.length > 0 ? (
+            <ul className="comment-list">
+              {myComments.map((comment) => (
+                <li
+                  key={comment.commentId}
+                  onClick={() =>
+                    router.push(
+                      `/board/boards/${comment.boardId}/posts/${comment.postId}`
+                    )
+                  }
+                  className="comment-item"
+                >
+                  <span className="comment-content">{comment.content}</span>
+                  <span className="comment-date">
+                    {new Date(comment.createAt ?? "").toLocaleDateString(
+                      "ko-KR"
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
           ) : (
-            <p>작성한 게시글이 없습니다.</p>
+            <p>내용이 없습니다.</p>
           )}
         </div>
       </div>
