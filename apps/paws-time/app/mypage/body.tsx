@@ -8,10 +8,12 @@ import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { useGetCommentListByUser } from "@/app/lib/codegen/hooks/comment/comment";
 import {
   useUpdateProfileImg,
-  useDeleteProfileImg,
+  useGetProfileImg,
 } from "@/app/lib/codegen/hooks/-profileimg/-profileimg";
-import { useGetProfileImg } from "@/app/lib/codegen/hooks/-profileimg/-profileimg";
-import { useDeleteUser } from "@/app/lib/codegen/hooks/user-api/user-api";
+import {
+  useDeleteUser,
+  useUpdateNick,
+} from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
 import { GetListPostRespDto, GetCommentRespDto } from "../lib/codegen/dtos";
 
@@ -22,7 +24,8 @@ const MyPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [myPosts, setMyPosts] = useState<GetListPostRespDto[]>([]);
   const [myComments, setMyComments] = useState<GetCommentRespDto[]>([]);
-  const deleteUserMutation = useDeleteUser();
+  const [isEditingNick, setIsEditingNick] = useState(false);
+  const [newNick, setNewNick] = useState(nick ?? "");
 
   const params = {
     page: 0,
@@ -76,7 +79,7 @@ const MyPage = () => {
 
   // ✅ 프로필 이미지 변경
   const updateProfileImgMutation = useUpdateProfileImg();
-  const deleteProfileImgMutation = useDeleteProfileImg();
+  // const deleteProfileImgMutation = useDeleteProfileImg();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -99,25 +102,48 @@ const MyPage = () => {
     );
   };
 
-  // ✅ 프로필 이미지 삭제
-  const handleDeleteProfileImage = () => {
+  // // ✅ 프로필 이미지 삭제
+  // const handleDeleteProfileImage = () => {
+  //   if (!userId) return;
+
+  //   deleteProfileImgMutation.mutate(
+  //     { userId },
+  //     {
+  //       onSuccess: () => {
+  //         alert("프로필 이미지가 삭제되었습니다!");
+  //         refetchProfileImg();
+  //       },
+  //       onError: () => {
+  //         alert("프로필 이미지 삭제에 실패했습니다.");
+  //       },
+  //     }
+  //   );
+  // };
+
+  useEffect(() => {
+    setNewNick(nick ?? "");
+  }, [nick]);
+
+  const updateNickMutation = useUpdateNick();
+
+  const handleNickEdit = () => {
     if (!userId) return;
 
-    deleteProfileImgMutation.mutate(
-      { userId },
+    updateNickMutation.mutate(
+      { data: { nick: newNick } },
       {
         onSuccess: () => {
-          alert("프로필 이미지가 삭제되었습니다!");
-          refetchProfileImg();
+          alert("닉네임이 변경되었습니다!");
+          setIsEditingNick(false);
         },
-        onError: () => {
-          alert("프로필 이미지 삭제에 실패했습니다.");
-        },
+        onError: () => alert("닉네임 변경에 실패했습니다."),
       }
     );
   };
 
   // ✅ 회원 탈퇴 처리
+  const deleteUserMutation = useDeleteUser();
+
   const handleDeleteUser = () => {
     if (!userId) return;
 
@@ -153,12 +179,21 @@ const MyPage = () => {
               priority
             />
           </div>
+
           <span
             className="material-symbols-outlined profile-settings-icon"
             onClick={() => fileInputRef.current?.click()}
           >
             settings
           </span>
+
+          {/* <span
+            className="material-symbols-outlined profile-delete-icon"
+            onClick={handleDeleteProfileImage}
+          >
+            close
+          </span> */}
+
           <input
             type="file"
             accept="image/*"
@@ -168,19 +203,25 @@ const MyPage = () => {
           />
         </div>
         <div>
-          <span className="nick">닉네임: {nick ?? "알 수 없음"}</span>
-          <span>
-            <button>|수정</button>
-          </span>
+          {isEditingNick ? (
+            <>
+              <input
+                type="text"
+                value={newNick}
+                onChange={(e) => setNewNick(e.target.value)}
+                className="nickname-input"
+              />
+              <button onClick={handleNickEdit}>저장</button>
+              <button onClick={() => setIsEditingNick(false)}>취소</button>
+            </>
+          ) : (
+            <>
+              <span className="nick">닉네임: {nick ?? "알 수 없음"}</span>
+              <button onClick={() => setIsEditingNick(true)}>수정</button>
+            </>
+          )}
         </div>
-        <div>
-          <button
-            className="delete-profile-img-btn"
-            onClick={handleDeleteProfileImage}
-          >
-            프로필 이미지 삭제
-          </button>
-        </div>
+
         <button onClick={() => router.push("/mypage/editPassword")}>
           비밀번호 변경
         </button>
