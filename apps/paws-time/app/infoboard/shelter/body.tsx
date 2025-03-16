@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { formStyles } from "../../styles/forms";
-import { getHospitalInfo } from "../../lib/codegen/hooks/info/info";
+import { getHospitalInfo, getShelterInfo } from "../../lib/codegen/hooks/info/info";
 import { CustomButton } from "@/components/utils/button";
 import Modal from "@/components/modal";
 import Mapdetail from "@/components/mapdetail";
@@ -22,9 +22,9 @@ interface GetShelterInfoRespDto {
   y?: number; // 위도
 }
 
-export default function InfoBoardWithMap() {
+export default function InfoShelterBoardWithMap() {
   // 상태 관리
-  const [locations, setLocations] = useState<GetShelterInfoRespDto[]>([]); // 보호소소 목록 상태
+  const [locations, setLocations] = useState<GetShelterInfoRespDto[]>([]); // 보호소 목록 상태
   const [selectedLocation, setSelectedLocation] =
     useState<GetShelterInfoRespDto>({
       id: 0, // 임의 ID
@@ -34,7 +34,7 @@ export default function InfoBoardWithMap() {
       x: 37.5561, // 서울역 경도
       y: 126.9723, // 서울역 위도
     }); // 초기값을 서울역으로 설정
-  const [regionFilter, setRegionFilter] = useState(6); // 필터: 지역
+  const [regionFilter, setRegionFilter] = useState(1); // 필터: 지역
   const [nameFilter, setNameFilter] = useState(""); // 필터: 병원 이름
   const [pageSize, setPageSize] = useState(10); // 페이지 사이즈
   const mapRef = useRef<HTMLDivElement>(null); // 지도 DOM 참조
@@ -46,9 +46,9 @@ export default function InfoBoardWithMap() {
 
   // 병원 정보를 가져오는 useEffect
   useEffect(() => {
-    const fetchHospitalInfo = async () => {
+    const fetchShelterInfo = async () => {
       try {
-        const response = await getHospitalInfo(regionFilter, {
+        const response = await getShelterInfo(regionFilter, {
           pageNo: 0,
           pageSize,
           sortBy: "",
@@ -59,7 +59,7 @@ export default function InfoBoardWithMap() {
         console.error("Error fetching hospital info:", error); // 에러 로그 출력
       }
     };
-    fetchHospitalInfo();
+    fetchShelterInfo();
   }, [regionFilter, pageSize]); // 의존성 배열: 필터와 페이지 정보
 
   // 지도 초기화 및 마커 설정
@@ -111,7 +111,7 @@ export default function InfoBoardWithMap() {
 
   // 병원 클릭 이벤트 핸들러
   const handleLocationClick = (location: GetShelterInfoRespDto) => {
-    setSelectedLocation(location); // 선택된 병원 정보 설정
+    setSelectedLocation(location); // 선택된 보호소소 정보 설정
     mapInitialized.current = false; // 지도 초기화를 다시 트리거
   };
 
@@ -168,8 +168,7 @@ export default function InfoBoardWithMap() {
         </form>
 
         <section className="h-[500px] p-4">
-          <h2 className="text-lg font-bold mb-4">보호소소 목록</h2>
-          {/* 병원 목록 */}
+          <h2 className="text-lg font-bold mb-4">보호소 목록</h2>
           <ul className="space-y-2">
             {filteredLocations.map((location) => (
               <li

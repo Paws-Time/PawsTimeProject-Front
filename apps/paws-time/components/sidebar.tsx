@@ -14,27 +14,14 @@ export default function Sidebar() {
   const router = useRouter();
   const email = useAuthStore((state) => state.email); // Zustand에서 이메일 상태 가져오기
 
-  // const logoutState = useAuthStore((state) => state.logoutState);
-  // const logoutMutation = useLogoutUser();
-
-  const handleLogout = useHandleLogout(); // 훅 사용
-
-  // const handleLogout = async () => {
-  //   try {
-  //     await logoutMutation.mutateAsync(); // API 호출
-  //     logoutState(); // 상태 초기화
-  //     router.push("/"); // 리다이렉트
-  //   } catch (error) {
-  //     console.error("Logout failed:", error);
-  //   }
-  // };
+  const handleLogout = useHandleLogout();
 
   const menus = [
     { id: 1, path: "/", name: "메인페이지" },
     { id: 2, path: "/board", name: "게시판" },
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
-    { id: 4, path: "/infoboard/Hospital", name: "병원 게시판" },
-    { id: 5, path: "/infoboard/Shelter", name: "보호소소 게시판" },
+    { id: 4, path: "/infoboard/hospital", name: "병원 게시판" },
+    { id: 6, path: "/infoboard/shelter", name: "보호소 게시판" },
     email
       ? { id: 5, path: "#", name: "로그아웃하기", onClick: handleLogout }
       : {

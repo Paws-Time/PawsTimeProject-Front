@@ -4,16 +4,25 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
-import { useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
+  QueryFunction,
+  QueryKey,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  ApiResponseGetUserRespDto,
   ApiResponseString,
   ApiResponseVoid,
   LoginUserReqDto,
+  UpdateNickReqDto,
+  UpdatePasswordReqDto,
   UserCreateReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
@@ -21,6 +30,164 @@ import type { ErrorType, BodyType } from "../../../axios-client/customClient";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
+/**
+ * @summary 현재 로그인한 사용자의 비밀번호 변경
+ */
+export const updatePassword = (
+  updatePasswordReqDto: BodyType<UpdatePasswordReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/users/me/password`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updatePasswordReqDto,
+    },
+    options,
+  );
+};
+
+export const getUpdatePasswordMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePassword>>,
+    TError,
+    { data: BodyType<UpdatePasswordReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePassword>>,
+  TError,
+  { data: BodyType<UpdatePasswordReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePassword>>,
+    { data: BodyType<UpdatePasswordReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updatePassword(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePassword>>
+>;
+export type UpdatePasswordMutationBody = BodyType<UpdatePasswordReqDto>;
+export type UpdatePasswordMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자의 비밀번호 변경
+ */
+export const useUpdatePassword = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePassword>>,
+    TError,
+    { data: BodyType<UpdatePasswordReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updatePassword>>,
+  TError,
+  { data: BodyType<UpdatePasswordReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdatePasswordMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary 현재 로그인한 사용자의 닉네임 변경
+ */
+export const updateNick = (
+  updateNickReqDto: BodyType<UpdateNickReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/users/me/nick`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updateNickReqDto,
+    },
+    options,
+  );
+};
+
+export const getUpdateNickMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNick>>,
+    TError,
+    { data: BodyType<UpdateNickReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNick>>,
+  TError,
+  { data: BodyType<UpdateNickReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNick>>,
+    { data: BodyType<UpdateNickReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateNick(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNickMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateNick>>
+>;
+export type UpdateNickMutationBody = BodyType<UpdateNickReqDto>;
+export type UpdateNickMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자의 닉네임 변경
+ */
+export const useUpdateNick = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNick>>,
+    TError,
+    { data: BodyType<UpdateNickReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateNick>>,
+  TError,
+  { data: BodyType<UpdateNickReqDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdateNickMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary 회원 가입
  */
@@ -252,6 +419,240 @@ export const useLoginUser = <
   TContext
 > => {
   const mutationOptions = getLoginUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+export const getUserFromUserId = (
+  userId: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseGetUserRespDto>(
+    { url: `/users/${userId}`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetUserFromUserIdQueryKey = (userId: number) => {
+  return [`/users/${userId}`] as const;
+};
+
+export const getGetUserFromUserIdInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFromUserIdQueryKey(userId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFromUserId>>
+  > = ({ signal }) => getUserFromUserId(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserFromUserId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFromUserIdInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFromUserId>>
+>;
+export type GetUserFromUserIdInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+
+export function useGetUserFromUserIdInfinite<
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetUserFromUserIdInfiniteQueryOptions(
+    userId,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetUserFromUserIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFromUserIdQueryKey(userId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFromUserId>>
+  > = ({ signal }) => getUserFromUserId(userId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserFromUserId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFromUserIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFromUserId>>
+>;
+export type GetUserFromUserIdQueryError = ErrorType<unknown>;
+
+/**
+ * @summary userId를 통해 유저 정보 조회
+ */
+
+export function useGetUserFromUserId<
+  TData = Awaited<ReturnType<typeof getUserFromUserId>>,
+  TError = ErrorType<unknown>,
+>(
+  userId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getUserFromUserId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetUserFromUserIdQueryOptions(userId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary 회원 탈퇴
+ */
+export const deleteUser = (
+  userId: number,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ApiResponseVoid>(
+    { url: `/users/${userId}`, method: "DELETE" },
+    options,
+  );
+};
+
+export const getDeleteUserMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUser>>,
+    TError,
+    { userId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUser>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteUser>>,
+    { userId: number }
+  > = (props) => {
+    const { userId } = props ?? {};
+
+    return deleteUser(userId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteUser>>
+>;
+
+export type DeleteUserMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 회원 탈퇴
+ */
+export const useDeleteUser = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUser>>,
+    TError,
+    { userId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUser>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const mutationOptions = getDeleteUserMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

@@ -13,5 +13,6 @@ export interface GetListPostRespDto {
   likesCount?: number;
   title?: string;
   updatedAt?: string;
+  userId?: number;
   views?: number;
 }

@@ -18,12 +18,12 @@ import type {
 } from "@tanstack/react-query";
 import type {
   ApiResponseGetDetailPostRespDto,
-  ApiResponseInteger,
   ApiResponseListGetImageRespDto,
   ApiResponseListGetListPostRespDto,
   ApiResponseLong,
   ApiResponseVoid,
   CreatePostReqDto,
+  GetPostListByUserParams,
   GetPostsParams,
   UpdatePostImagesBody,
   UpdatePostImagesParams,
@@ -45,13 +45,13 @@ export const getDetailPost = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseGetDetailPostRespDto>(
-    { url: `/post/${postId}`, method: "GET", signal },
+    { url: `/posts/${postId}`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetDetailPostQueryKey = (postId: number) => {
-  return [`/post/${postId}`] as const;
+  return [`/posts/${postId}`] as const;
 };
 
 export const getGetDetailPostInfiniteQueryOptions = <
@@ -202,7 +202,7 @@ export const updatePost = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/post/${postId}`,
+      url: `/posts/${postId}`,
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       data: updatePostReqDto,
@@ -291,7 +291,7 @@ export const uploadImages = (
 
   return customInstance<ApiResponseVoid>(
     {
-      url: `/post/${postId}`,
+      url: `/posts/${postId}`,
       method: "POST",
       headers: { "Content-Type": "multipart/form-data" },
       data: formData,
@@ -371,7 +371,7 @@ export const deletePost = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/post/${postId}`, method: "DELETE" },
+    { url: `/posts/${postId}`, method: "DELETE" },
     options,
   );
 };
@@ -446,13 +446,13 @@ export const getImages = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
-    { url: `/post/${postId}/images`, method: "GET", signal },
+    { url: `/posts/${postId}/images`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetImagesQueryKey = (postId: number) => {
-  return [`/post/${postId}/images`] as const;
+  return [`/posts/${postId}/images`] as const;
 };
 
 export const getGetImagesInfiniteQueryOptions = <
@@ -609,7 +609,7 @@ export const updatePostImages = (
 
   return customInstance<ApiResponseVoid>(
     {
-      url: `/post/${postId}/images`,
+      url: `/posts/${postId}/images`,
       method: "PUT",
       headers: { "Content-Type": "multipart/form-data" },
       data: formData,
@@ -710,13 +710,13 @@ export const getPosts = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetListPostRespDto>(
-    { url: `/post`, method: "GET", params, signal },
+    { url: `/posts`, method: "GET", params, signal },
     options,
   );
 };
 
 export const getGetPostsQueryKey = (params?: GetPostsParams) => {
-  return [`/post`, ...(params ? [params] : [])] as const;
+  return [`/posts`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetPostsInfiniteQueryOptions = <
@@ -857,7 +857,7 @@ export const createPost = (
 ) => {
   return customInstance<ApiResponseLong>(
     {
-      url: `/post`,
+      url: `/posts`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: createPostReqDto,
@@ -929,82 +929,6 @@ export const useCreatePost = <
   return useMutation(mutationOptions);
 };
 /**
- * 게시글에 좋아요를 누를 수 있습니다.
- * @summary 좋아요
- */
-export const toggleLike = (
-  postId: number,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<ApiResponseInteger>(
-    { url: `/post/${postId}/likes`, method: "POST", signal },
-    options,
-  );
-};
-
-export const getToggleLikeMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof toggleLike>>,
-    TError,
-    { postId: number },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof toggleLike>>,
-  TError,
-  { postId: number },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof toggleLike>>,
-    { postId: number }
-  > = (props) => {
-    const { postId } = props ?? {};
-
-    return toggleLike(postId, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ToggleLikeMutationResult = NonNullable<
-  Awaited<ReturnType<typeof toggleLike>>
->;
-
-export type ToggleLikeMutationError = ErrorType<unknown>;
-
-/**
- * @summary 좋아요
- */
-export const useToggleLike = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof toggleLike>>,
-    TError,
-    { postId: number },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof toggleLike>>,
-  TError,
-  { postId: number },
-  TContext
-> => {
-  const mutationOptions = getToggleLikeMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
  * @summary 게시글별 대표 이미지 조회
  */
 export const getThumbnail = (
@@ -1013,13 +937,13 @@ export const getThumbnail = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
-    { url: `/post/${postId}/thumbnail`, method: "GET", signal },
+    { url: `/posts/${postId}/thumbnail`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetThumbnailQueryKey = (postId: number) => {
-  return [`/post/${postId}/thumbnail`] as const;
+  return [`/posts/${postId}/thumbnail`] as const;
 };
 
 export const getGetThumbnailInfiniteQueryOptions = <
@@ -1160,6 +1084,158 @@ export function useGetThumbnail<
 }
 
 /**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+export const getPostListByUser = (
+  params?: GetPostListByUserParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetListPostRespDto>(
+    { url: `/posts/me`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetPostListByUserQueryKey = (
+  params?: GetPostListByUserParams,
+) => {
+  return [`/posts/me`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetPostListByUserInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPostListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPostListByUser>>
+  > = ({ signal }) => getPostListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getPostListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostListByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPostListByUser>>
+>;
+export type GetPostListByUserInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+
+export function useGetPostListByUserInfinite<
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostListByUserInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetPostListByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPostListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPostListByUser>>
+  > = ({ signal }) => getPostListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPostListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostListByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPostListByUser>>
+>;
+export type GetPostListByUserQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 게시글 목록 조회
+ */
+
+export function useGetPostListByUser<
+  TData = Awaited<ReturnType<typeof getPostListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetPostListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostListByUserQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * @summary 메인페이지에서 사용할 랜덤 이미지 조회
  */
 export const getRandomImages = (
@@ -1167,13 +1243,13 @@ export const getRandomImages = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
-    { url: `/post/images/random`, method: "GET", signal },
+    { url: `/posts/images/random`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetRandomImagesQueryKey = () => {
-  return [`/post/images/random`] as const;
+  return [`/posts/images/random`] as const;
 };
 
 export const getGetRandomImagesInfiniteQueryOptions = <

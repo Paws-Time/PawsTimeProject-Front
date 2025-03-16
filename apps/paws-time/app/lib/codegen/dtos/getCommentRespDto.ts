@@ -6,9 +6,11 @@
  */
 
 export interface GetCommentRespDto {
+  boardId?: number;
   commentId?: number;
   content?: string;
   createAt?: string;
   postId?: number;
   updateAt?: string;
+  userId?: number;
 }

@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-import { formStyles } from "../../styles/forms";
-import { getHospitalInfo } from "../../lib/codegen/hooks/info/info";
 import { CustomButton } from "@/components/utils/button";
 import Modal from "@/components/modal";
 import Mapdetail from "@/components/mapdetail";
-import { useModalStore } from "../../hooks/modalStore";
+import { useModalStore } from "@/app/hooks/modalStore";
+import { getHospitalInfo } from "@/app/lib/codegen/hooks/info/info";
+import { formStyles } from "@/app/styles/forms";
 
 // 병원 정보 인터페이스 정의
 interface GetHospitalInfoRespDto {
@@ -22,7 +22,7 @@ interface GetHospitalInfoRespDto {
   y?: number; // 위도
 }
 
-export default function InfoBoardWithMap() {
+export default function InfoHospitalBoardWithMap() {
   // 상태 관리
   const [locations, setLocations] = useState<GetHospitalInfoRespDto[]>([]); // 병원 목록 상태
   const [selectedLocation, setSelectedLocation] =
@@ -34,7 +34,7 @@ export default function InfoBoardWithMap() {
       x: 37.5561, // 서울역 경도
       y: 126.9723, // 서울역 위도
     }); // 초기값을 서울역으로 설정
-  const [regionFilter, setRegionFilter] = useState(6); // 필터: 지역
+  const [regionFilter, setRegionFilter] = useState(1); // 필터: 지역
   const [nameFilter, setNameFilter] = useState(""); // 필터: 병원 이름
   const [pageSize, setPageSize] = useState(10); // 페이지 사이즈
   const mapRef = useRef<HTMLDivElement>(null); // 지도 DOM 참조
@@ -49,7 +49,7 @@ export default function InfoBoardWithMap() {
     const fetchHospitalInfo = async () => {
       try {
         const response = await getHospitalInfo(regionFilter, {
-          pageNo: 0,
+          pageNo: 1,
           pageSize,
           sortBy: "",
           direction: "DESC",

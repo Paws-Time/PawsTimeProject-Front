@@ -23,6 +23,7 @@ import type {
   CreateCommentReqDto,
   GetCommentAllParams,
   GetCommentByPostParams,
+  GetCommentListByUserParams,
   UpdateCommentReqDto,
 } from "../../dtos";
 import { customInstance } from "../../../axios-client/customClient";
@@ -35,13 +36,14 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
  * @summary 댓글 수정
  */
 export const updateComment = (
+  postId: number,
   commentId: number,
   updateCommentReqDto: BodyType<UpdateCommentReqDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/comments/${commentId}`,
+      url: `/posts/${postId}/comments/${commentId}`,
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       data: updateCommentReqDto,
@@ -57,25 +59,25 @@ export const getUpdateCommentMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateComment>>,
     TError,
-    { commentId: number; data: BodyType<UpdateCommentReqDto> },
+    { postId: number; commentId: number; data: BodyType<UpdateCommentReqDto> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateComment>>,
   TError,
-  { commentId: number; data: BodyType<UpdateCommentReqDto> },
+  { postId: number; commentId: number; data: BodyType<UpdateCommentReqDto> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateComment>>,
-    { commentId: number; data: BodyType<UpdateCommentReqDto> }
+    { postId: number; commentId: number; data: BodyType<UpdateCommentReqDto> }
   > = (props) => {
-    const { commentId, data } = props ?? {};
+    const { postId, commentId, data } = props ?? {};
 
-    return updateComment(commentId, data, requestOptions);
+    return updateComment(postId, commentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -97,14 +99,14 @@ export const useUpdateComment = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateComment>>,
     TError,
-    { commentId: number; data: BodyType<UpdateCommentReqDto> },
+    { postId: number; commentId: number; data: BodyType<UpdateCommentReqDto> },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof updateComment>>,
   TError,
-  { commentId: number; data: BodyType<UpdateCommentReqDto> },
+  { postId: number; commentId: number; data: BodyType<UpdateCommentReqDto> },
   TContext
 > => {
   const mutationOptions = getUpdateCommentMutationOptions(options);
@@ -116,11 +118,12 @@ export const useUpdateComment = <
  * @summary 댓글 삭제
  */
 export const deleteComment = (
+  postId: number,
   commentId: number,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/comments/${commentId}`, method: "DELETE" },
+    { url: `/posts/${postId}/comments/${commentId}`, method: "DELETE" },
     options,
   );
 };
@@ -132,25 +135,25 @@ export const getDeleteCommentMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteComment>>,
     TError,
-    { commentId: number },
+    { postId: number; commentId: number },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteComment>>,
   TError,
-  { commentId: number },
+  { postId: number; commentId: number },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteComment>>,
-    { commentId: number }
+    { postId: number; commentId: number }
   > = (props) => {
-    const { commentId } = props ?? {};
+    const { postId, commentId } = props ?? {};
 
-    return deleteComment(commentId, requestOptions);
+    return deleteComment(postId, commentId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -172,249 +175,20 @@ export const useDeleteComment = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteComment>>,
     TError,
-    { commentId: number },
+    { postId: number; commentId: number },
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof deleteComment>>,
   TError,
-  { commentId: number },
+  { postId: number; commentId: number },
   TContext
 > => {
   const mutationOptions = getDeleteCommentMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
-/**
- * 특정 게시글에 댓글을 생성하는 기능입니다.
- * @summary 댓글 생성
- */
-export const createComment = (
-  postId: number,
-  createCommentReqDto: BodyType<CreateCommentReqDto>,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<ApiResponseCreateCommentRespDto>(
-    {
-      url: `/comments/${postId}`,
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: createCommentReqDto,
-      signal,
-    },
-    options,
-  );
-};
-
-export const getCreateCommentMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createComment>>,
-    TError,
-    { postId: number; data: BodyType<CreateCommentReqDto> },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createComment>>,
-  TError,
-  { postId: number; data: BodyType<CreateCommentReqDto> },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createComment>>,
-    { postId: number; data: BodyType<CreateCommentReqDto> }
-  > = (props) => {
-    const { postId, data } = props ?? {};
-
-    return createComment(postId, data, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type CreateCommentMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createComment>>
->;
-export type CreateCommentMutationBody = BodyType<CreateCommentReqDto>;
-export type CreateCommentMutationError = ErrorType<unknown>;
-
-/**
- * @summary 댓글 생성
- */
-export const useCreateComment = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createComment>>,
-    TError,
-    { postId: number; data: BodyType<CreateCommentReqDto> },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof createComment>>,
-  TError,
-  { postId: number; data: BodyType<CreateCommentReqDto> },
-  TContext
-> => {
-  const mutationOptions = getCreateCommentMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * 모든 게시글에 달린 댓글을 조회합니다.
- * @summary 댓글 전체 목록 조회
- */
-export const getCommentAll = (
-  params?: GetCommentAllParams,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<ApiResponseListGetCommentRespDto>(
-    { url: `/comments/listAll`, method: "GET", params, signal },
-    options,
-  );
-};
-
-export const getGetCommentAllQueryKey = (params?: GetCommentAllParams) => {
-  return [`/comments/listAll`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetCommentAllInfiniteQueryOptions = <
-  TData = Awaited<ReturnType<typeof getCommentAll>>,
-  TError = ErrorType<unknown>,
->(
-  params?: GetCommentAllParams,
-  options?: {
-    query?: UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof getCommentAll>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetCommentAllQueryKey(params);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommentAll>>> = ({
-    signal,
-  }) => getCommentAll(params, requestOptions, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof getCommentAll>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetCommentAllInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getCommentAll>>
->;
-export type GetCommentAllInfiniteQueryError = ErrorType<unknown>;
-
-/**
- * @summary 댓글 전체 목록 조회
- */
-
-export function useGetCommentAllInfinite<
-  TData = Awaited<ReturnType<typeof getCommentAll>>,
-  TError = ErrorType<unknown>,
->(
-  params?: GetCommentAllParams,
-  options?: {
-    query?: UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof getCommentAll>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetCommentAllInfiniteQueryOptions(params, options);
-
-  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-export const getGetCommentAllQueryOptions = <
-  TData = Awaited<ReturnType<typeof getCommentAll>>,
-  TError = ErrorType<unknown>,
->(
-  params?: GetCommentAllParams,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getCommentAll>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetCommentAllQueryKey(params);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommentAll>>> = ({
-    signal,
-  }) => getCommentAll(params, requestOptions, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getCommentAll>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetCommentAllQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getCommentAll>>
->;
-export type GetCommentAllQueryError = ErrorType<unknown>;
-
-/**
- * @summary 댓글 전체 목록 조회
- */
-
-export function useGetCommentAll<
-  TData = Awaited<ReturnType<typeof getCommentAll>>,
-  TError = ErrorType<unknown>,
->(
-  params?: GetCommentAllParams,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getCommentAll>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetCommentAllQueryOptions(params, options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
 /**
  * 선택한 게시글에 달린 댓글 목록을 조회합니다.
  * @summary 특정 게시글 댓글 조회
@@ -426,7 +200,7 @@ export const getCommentByPost = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetCommentRespDto>(
-    { url: `/comments/list/${postId}`, method: "GET", params, signal },
+    { url: `/posts/${postId}/comments`, method: "GET", params, signal },
     options,
   );
 };
@@ -435,7 +209,7 @@ export const getGetCommentByPostQueryKey = (
   postId: number,
   params?: GetCommentByPostParams,
 ) => {
-  return [`/comments/list/${postId}`, ...(params ? [params] : [])] as const;
+  return [`/posts/${postId}/comments`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetCommentByPostInfiniteQueryOptions = <
@@ -575,6 +349,387 @@ export function useGetCommentByPost<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetCommentByPostQueryOptions(postId, params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 특정 게시글에 댓글을 생성하는 기능입니다.
+ * @summary 댓글 생성
+ */
+export const createComment = (
+  postId: number,
+  createCommentReqDto: BodyType<CreateCommentReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseCreateCommentRespDto>(
+    {
+      url: `/posts/${postId}/comments`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createCommentReqDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateCommentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createComment>>,
+    TError,
+    { postId: number; data: BodyType<CreateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createComment>>,
+  TError,
+  { postId: number; data: BodyType<CreateCommentReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createComment>>,
+    { postId: number; data: BodyType<CreateCommentReqDto> }
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return createComment(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateCommentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createComment>>
+>;
+export type CreateCommentMutationBody = BodyType<CreateCommentReqDto>;
+export type CreateCommentMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 댓글 생성
+ */
+export const useCreateComment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createComment>>,
+    TError,
+    { postId: number; data: BodyType<CreateCommentReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createComment>>,
+  TError,
+  { postId: number; data: BodyType<CreateCommentReqDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateCommentMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+export const getCommentListByUser = (
+  params?: GetCommentListByUserParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetCommentRespDto>(
+    { url: `/me`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetCommentListByUserQueryKey = (
+  params?: GetCommentListByUserParams,
+) => {
+  return [`/me`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetCommentListByUserInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetCommentListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCommentListByUser>>
+  > = ({ signal }) => getCommentListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getCommentListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentListByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentListByUser>>
+>;
+export type GetCommentListByUserInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+
+export function useGetCommentListByUserInfinite<
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentListByUserInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetCommentListByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetCommentListByUserQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCommentListByUser>>
+  > = ({ signal }) => getCommentListByUser(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCommentListByUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentListByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentListByUser>>
+>;
+export type GetCommentListByUserQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 현재 로그인한 사용자가 작성한 댓글 목록 조회
+ */
+
+export function useGetCommentListByUser<
+  TData = Awaited<ReturnType<typeof getCommentListByUser>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentListByUserParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentListByUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentListByUserQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 모든 게시글에 달린 댓글을 조회합니다.
+ * @summary 댓글 전체 목록 조회
+ */
+export const getCommentAll = (
+  params?: GetCommentAllParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListGetCommentRespDto>(
+    { url: `/comments`, method: "GET", params, signal },
+    options,
+  );
+};
+
+export const getGetCommentAllQueryKey = (params?: GetCommentAllParams) => {
+  return [`/comments`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetCommentAllInfiniteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentAll>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentAllParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentAll>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCommentAllQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommentAll>>> = ({
+    signal,
+  }) => getCommentAll(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getCommentAll>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentAllInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentAll>>
+>;
+export type GetCommentAllInfiniteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 댓글 전체 목록 조회
+ */
+
+export function useGetCommentAllInfinite<
+  TData = Awaited<ReturnType<typeof getCommentAll>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentAllParams,
+  options?: {
+    query?: UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof getCommentAll>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentAllInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetCommentAllQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCommentAll>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentAllParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentAll>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCommentAllQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommentAll>>> = ({
+    signal,
+  }) => getCommentAll(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCommentAll>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentAllQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCommentAll>>
+>;
+export type GetCommentAllQueryError = ErrorType<unknown>;
+
+/**
+ * @summary 댓글 전체 목록 조회
+ */
+
+export function useGetCommentAll<
+  TData = Awaited<ReturnType<typeof getCommentAll>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetCommentAllParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCommentAll>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentAllQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

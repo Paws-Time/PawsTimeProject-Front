@@ -1,8 +1,8 @@
-import InfoBoardBody from "./body";
+import InfoHospitalBoardWithMap from "./body";
 export default function InfoBoardPage() {
   return (
     <div>
-      <InfoBoardBody />
+      <InfoHospitalBoardWithMap />
     </div>
   );
 }
