@@ -2,81 +2,67 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-import { formStyles } from "../styles/forms";
-import {
-  getHospitalInfo,
-  getShelterInfo,
-} from "../lib/codegen/hooks/info/info"; // ✅ 보호소 API 추가
+import { formStyles } from "../../styles/forms";
+import { getHospitalInfo, getShelterInfo } from "../../lib/codegen/hooks/info/info";
 import { CustomButton } from "@/components/utils/button";
 import Modal from "@/components/modal";
 import Mapdetail from "@/components/mapdetail";
-import { useModalStore } from "../hooks/modalStore";
+import { useModalStore } from "../../hooks/modalStore";
 
-// 병원 및 보호소 정보 인터페이스
-interface GetLocationInfoRespDto {
-  add1?: string;
-  add2?: string;
-  addNum?: number;
-  id?: number;
-  name?: string;
-  tel?: string;
-  type?: string;
-  x?: number;
-  y?: number;
+// 병원 정보 인터페이스 정의
+interface GetShelterInfoRespDto {
+  add1?: string; // 주소1
+  add2?: string; // 주소2
+  addNum?: number; // 지역 번호
+  id?: number; // 보호소 ID
+  name?: string; // 병원 이름
+  tel?: string; // 전화번호
+  type?: string; // 병원 타입
+  x?: number; // 경도
+  y?: number; // 위도
 }
 
-export default function InfoBoardWithMap() {
-  const [locations, setLocations] = useState<GetLocationInfoRespDto[]>([]);
+export default function InfoShelterBoardWithMap() {
+  // 상태 관리
+  const [locations, setLocations] = useState<GetShelterInfoRespDto[]>([]); // 보호소 목록 상태
   const [selectedLocation, setSelectedLocation] =
-    useState<GetLocationInfoRespDto>({
-      id: 0,
+    useState<GetShelterInfoRespDto>({
+      id: 0, // 임의 ID
       name: "서울역",
       add1: "서울특별시 중구 봉래동2가",
       tel: "02-123-4567",
-      x: 37.5561,
-      y: 126.9723,
-    });
-
-  const [regionFilter, setRegionFilter] = useState(6);
-  const [nameFilter, setNameFilter] = useState("");
-  const [pageSize, setPageSize] = useState(10);
-  const [infoType, setInfoType] = useState("hospital"); // ✅ 병원/보호소 선택 추가
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInitialized = useRef(false);
+      x: 37.5561, // 서울역 경도
+      y: 126.9723, // 서울역 위도
+    }); // 초기값을 서울역으로 설정
+  const [regionFilter, setRegionFilter] = useState(1); // 필터: 지역
+  const [nameFilter, setNameFilter] = useState(""); // 필터: 병원 이름
+  const [pageSize, setPageSize] = useState(10); // 페이지 사이즈
+  const mapRef = useRef<HTMLDivElement>(null); // 지도 DOM 참조
+  const mapInitialized = useRef(false); // 지도 초기화 여부 추적
   const [initializedLocationId, setInitializedLocationId] = useState<
     number | null | undefined
-  >(null);
+  >(null); // 초기화된 병원 ID 추적
   const { openModal } = useModalStore();
 
-  // 병원 및 보호소 정보 가져오기
+  // 병원 정보를 가져오는 useEffect
   useEffect(() => {
-    const fetchInfo = async () => {
+    const fetchShelterInfo = async () => {
       try {
-        let response;
-        if (infoType === "hospital") {
-          response = await getHospitalInfo(regionFilter, {
-            pageNo: 0,
-            pageSize,
-            sortBy: "",
-            direction: "DESC",
-          });
-        } else {
-          response = await getShelterInfo(regionFilter, {
-            pageNo: 0,
-            pageSize,
-            sortBy: "",
-            direction: "DESC",
-          });
-        }
-        setLocations(response?.data || []);
+        const response = await getShelterInfo(regionFilter, {
+          pageNo: 0,
+          pageSize,
+          sortBy: "",
+          direction: "DESC",
+        });
+        setLocations(response?.data || []); // 병원 정보 설정
       } catch (error) {
-        console.error("Error fetching info:", error);
+        console.error("Error fetching hospital info:", error); // 에러 로그 출력
       }
     };
-    fetchInfo();
-  }, [regionFilter, pageSize, infoType]); // ✅ infoType 추가
+    fetchShelterInfo();
+  }, [regionFilter, pageSize]); // 의존성 배열: 필터와 페이지 정보
 
-  // 지도 초기화
+  // 지도 초기화 및 마커 설정
   useEffect(() => {
     if (
       selectedLocation &&
@@ -92,16 +78,15 @@ export default function InfoBoardWithMap() {
         if (mapRef.current) {
           const map = new google.maps.Map(mapRef.current, {
             center: {
-              lat: Number(selectedLocation.y) || 126.9723,
-              lng: Number(selectedLocation.x) || 37.5561,
+              lat: Number(selectedLocation.x) || 126.9723,
+              lng: Number(selectedLocation.y) || 37.5561,
             },
             zoom: 14,
           });
-
           const marker = new google.maps.Marker({
             position: {
-              lat: Number(selectedLocation.y) || 126.9723,
-              lng: Number(selectedLocation.x) || 37.5561,
+              lat: Number(selectedLocation.x) || 126.9723,
+              lng: Number(selectedLocation.y) || 37.5561,
             },
             map: map,
             title: selectedLocation.name || "Location",
@@ -115,25 +100,31 @@ export default function InfoBoardWithMap() {
         }
       });
     }
-  }, [selectedLocation, initializedLocationId]);
+  }, [selectedLocation, initializedLocationId]); // 의존성 배열에 추가
 
-  // 필터링된 병원/보호소 목록
+  // 필터를 적용한 병원 목록
   const filteredLocations = locations
-    .filter((location) => location.addNum === regionFilter)
-    .filter((location) =>
-      nameFilter ? location?.name?.includes(nameFilter) : true
+    .filter((location) => location.addNum === regionFilter) // 지역 필터
+    .filter(
+      (location) => (nameFilter ? location?.name?.includes(nameFilter) : true) // 이름 필터
     );
 
-  const handleLocationClick = (location: GetLocationInfoRespDto) => {
-    setSelectedLocation(location);
-    mapInitialized.current = false;
+  // 병원 클릭 이벤트 핸들러
+  const handleLocationClick = (location: GetShelterInfoRespDto) => {
+    setSelectedLocation(location); // 선택된 보호소소 정보 설정
+    mapInitialized.current = false; // 지도 초기화를 다시 트리거
   };
 
+  // "더보기" 버튼 클릭 시 페이지 크기 증가
+  const handleSearchPageSize = () => {
+    setPageSize((prev) => prev + 5);
+  };
+  // UI 렌더링
   return (
     <div className="flex w-custom-width">
       <div className="w-custom-sidew"></div>
       <article className="flex flex-col w-[350px] h-full">
-        <nav className="h-[50px] border-b border-gray-300 flex justify-between items-center px-4">
+        <nav className="h-[50px] border-b border-gray-300">
           {/* 지역 선택 필터 */}
           <select
             value={regionFilter}
@@ -157,34 +148,27 @@ export default function InfoBoardWithMap() {
             <option value={16}>전라남도</option>
             <option value={17}>제주도</option>
           </select>
-
-          {/* ✅ 병원/보호소 전환 필터 */}
-          <select
-            value={infoType}
-            onChange={(e) => setInfoType(e.target.value)}
-          >
-            <option value="hospital">병원</option>
-            <option value="shelter">보호소</option>
-          </select>
         </nav>
 
         {/* 이름 검색 필터 */}
-        <form className="input" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="input"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <input
             type="text"
             value={nameFilter}
             onChange={(e) => setNameFilter(e.target.value)}
-            placeholder="이름을 입력하세요"
+            placeholder="제목을 입력하세요"
             style={formStyles.input}
             required
           />
         </form>
 
         <section className="h-[500px] p-4">
-          <h2 className="text-lg font-bold mb-4">
-            {infoType === "hospital" ? "병원 목록" : "보호소 목록"}
-          </h2>
-          {/* 병원/보호소 목록 */}
+          <h2 className="text-lg font-bold mb-4">보호소 목록</h2>
           <ul className="space-y-2">
             {filteredLocations.map((location) => (
               <li
@@ -197,6 +181,13 @@ export default function InfoBoardWithMap() {
               </li>
             ))}
           </ul>
+          {/* 더보기 버튼 */}
+          <CustomButton
+            $label="더보기"
+            $sizeType="long"
+            onClick={handleSearchPageSize}
+            className="mt-10"
+          />
         </section>
       </article>
 

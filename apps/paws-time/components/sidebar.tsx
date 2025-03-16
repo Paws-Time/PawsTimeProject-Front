@@ -20,7 +20,8 @@ export default function Sidebar() {
     { id: 1, path: "/", name: "메인페이지" },
     { id: 2, path: "/board", name: "게시판" },
     { id: 3, path: "/board/createBoard", name: "게시판 작성" },
-    { id: 4, path: "/infoboard", name: "장소 게시판" },
+    { id: 4, path: "/infoboard/hospital", name: "병원 게시판" },
+    { id: 6, path: "/infoboard/shelter", name: "보호소 게시판" },
     nick
       ? { id: 5, path: "#", name: "로그아웃하기", onClick: handleLogout }
       : {

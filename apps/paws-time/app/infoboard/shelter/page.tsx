@@ -1,8 +1,8 @@
-import InfoBoardBody from "./body";
+import InfoShelterBoardWithMap from "./body";
 export default function InfoBoardPage() {
   return (
     <div>
-      <InfoBoardBody />
+      <InfoShelterBoardWithMap />
     </div>
   );
 }
