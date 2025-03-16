@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-import { formStyles } from "../styles/forms";
-import { getHospitalInfo } from "../lib/codegen/hooks/info/info";
+import { formStyles } from "../../styles/forms";
+import { getHospitalInfo } from "../../lib/codegen/hooks/info/info";
 import { CustomButton } from "@/components/utils/button";
 import Modal from "@/components/modal";
 import Mapdetail from "@/components/mapdetail";
-import { useModalStore } from "../hooks/modalStore";
+import { useModalStore } from "../../hooks/modalStore";
 
 // 병원 정보 인터페이스 정의
 interface GetHospitalInfoRespDto {
