@@ -8,26 +8,27 @@ import Mapdetail from "@/components/mapdetail";
 import { useModalStore } from "@/app/hooks/modalStore";
 import { getHospitalInfo } from "@/app/lib/codegen/hooks/info/info";
 import { formStyles } from "@/app/styles/forms";
+import { GetHospitalInfoRespDto } from "@/app/lib/codegen/dtos";
 
-// 병원 정보 인터페이스 정의
-interface GetHospitalInfoRespDto {
-  add1?: string; // 주소1
-  add2?: string; // 주소2
-  addNum?: number; // 지역 번호
-  id?: number; // 병원 ID
-  name?: string; // 병원 이름
-  tel?: string; // 전화번호
-  type?: string; // 병원 타입
-  x?: number; // 경도
-  y?: number; // 위도
+// 병원 및 보호소 정보 인터페이스
+interface GetLocationInfoRespDto {
+  add1?: string;
+  add2?: string;
+  addNum?: number;
+  id?: number;
+  name?: string;
+  tel?: string;
+  type?: string;
+  x?: number;
+  y?: number;
 }
 
 export default function InfoHospitalBoardWithMap() {
   // 상태 관리
   const [locations, setLocations] = useState<GetHospitalInfoRespDto[]>([]); // 병원 목록 상태
   const [selectedLocation, setSelectedLocation] =
-    useState<GetHospitalInfoRespDto>({
-      id: 0, // 임의 ID
+    useState<GetLocationInfoRespDto>({
+      id: 0,
       name: "서울역",
       add1: "서울특별시 중구 봉래동2가",
       tel: "02-123-4567",
@@ -41,12 +42,12 @@ export default function InfoHospitalBoardWithMap() {
   const mapInitialized = useRef(false); // 지도 초기화 여부 추적
   const [initializedLocationId, setInitializedLocationId] = useState<
     number | null | undefined
-  >(null); // 초기화된 병원 ID 추적
+  >(null);
   const { openModal } = useModalStore();
 
-  // 병원 정보를 가져오는 useEffect
+  // 병원 및 보호소 정보 가져오기
   useEffect(() => {
-    const fetchHospitalInfo = async () => {
+    const fetchInfo = async () => {
       try {
         const response = await getHospitalInfo(regionFilter, {
           pageNo: 1,
@@ -54,15 +55,15 @@ export default function InfoHospitalBoardWithMap() {
           sortBy: "",
           direction: "DESC",
         });
-        setLocations(response?.data || []); // 병원 정보 설정
+        setLocations(response?.data || []); //
       } catch (error) {
-        console.error("Error fetching hospital info:", error); // 에러 로그 출력
+        console.error("Error fetching info:", error);
       }
     };
-    fetchHospitalInfo();
-  }, [regionFilter, pageSize]); // 의존성 배열: 필터와 페이지 정보
+    fetchInfo();
+  }, [regionFilter, pageSize]);
 
-  // 지도 초기화 및 마커 설정
+  // 지도 초기화
   useEffect(() => {
     if (
       selectedLocation &&
@@ -83,6 +84,7 @@ export default function InfoHospitalBoardWithMap() {
             },
             zoom: 14,
           });
+
           const marker = new google.maps.Marker({
             position: {
               lat: Number(selectedLocation.x) || 126.9723,
@@ -100,26 +102,23 @@ export default function InfoHospitalBoardWithMap() {
         }
       });
     }
-  }, [selectedLocation, initializedLocationId]); // 의존성 배열에 추가
+  }, [selectedLocation, initializedLocationId]);
 
-  // 필터를 적용한 병원 목록
+  // 필터링된 병원/보호소 목록
   const filteredLocations = locations
-    .filter((location) => location.addNum === regionFilter) // 지역 필터
-    .filter(
-      (location) => (nameFilter ? location?.name?.includes(nameFilter) : true) // 이름 필터
+    .filter((location) => location.addNum === regionFilter)
+    .filter((location) =>
+      nameFilter ? location?.name?.includes(nameFilter) : true
     );
 
-  // 병원 클릭 이벤트 핸들러
-  const handleLocationClick = (location: GetHospitalInfoRespDto) => {
-    setSelectedLocation(location); // 선택된 병원 정보 설정
-    mapInitialized.current = false; // 지도 초기화를 다시 트리거
+  const handleLocationClick = (location: GetLocationInfoRespDto) => {
+    setSelectedLocation(location);
+    mapInitialized.current = false;
   };
 
-  // "더보기" 버튼 클릭 시 페이지 크기 증가
   const handleSearchPageSize = () => {
     setPageSize((prev) => prev + 5);
   };
-  // UI 렌더링
   return (
     <div className="flex w-custom-width">
       <div className="w-custom-sidew"></div>
@@ -168,8 +167,7 @@ export default function InfoHospitalBoardWithMap() {
         </form>
 
         <section className="h-[500px] p-4">
-          <h2 className="text-lg font-bold mb-4">병원 목록</h2>
-          {/* 병원 목록 */}
+          <h2 className="text-lg font-bold mb-4">보호소 목록</h2>
           <ul className="space-y-2">
             {filteredLocations.map((location) => (
               <li

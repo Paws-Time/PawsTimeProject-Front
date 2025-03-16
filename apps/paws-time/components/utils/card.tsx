@@ -11,6 +11,7 @@ type CardProps = {
   imageUrl?: string;
   $views?: number;
   $likeCount?: number;
+  $nick: string;
 };
 
 type Props = CardProps & React.ButtonHTMLAttributes<HTMLElement>;
@@ -21,6 +22,7 @@ export function Card({
   $contentPreview,
   $views,
   $likeCount,
+  $nick,
   ...rest
 }: Props) {
   const { data } = useGetCommentByPost(postId);
@@ -33,6 +35,7 @@ export function Card({
       <div className="image-field">
         <img src={setImageUrl} alt={$title || "이미지"} loading="lazy" />
       </div>
+      <div className="nick">{$nick ?? "알 수 없음"}</div>
       <div className="contentPreview">{$contentPreview}</div>
       <div className="foot">
         <span className="views">💬 {$views ?? 0} 조회수</span>
@@ -102,6 +105,17 @@ const CardWrapper = styled.div`
     margin-left: 10px;
     text-align: center;
     font-size: ${theme.fontSize.text.xs};
+  }
+
+  .nick {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${theme.colors.ref.base.black};
+    font-size: ${theme.fontSize.text.m};
+    margin-top: 5px;
   }
 
   .foot {
