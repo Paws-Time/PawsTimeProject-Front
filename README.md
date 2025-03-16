@@ -140,6 +140,11 @@
 
 ![로그인](https://github.com/user-attachments/assets/f566844b-6160-4648-af02-d8102cc73f99)
 
+메인 페이지
+
+![메인페이지](https://github.com/user-attachments/assets/4d387308-e2c2-4042-be4e-81c1b3cbf7b8)
+
+
 검색 설정
 
 ![검색설정](https://github.com/user-attachments/assets/d5c3f4b6-9921-4742-8b25-db5e080f3d18)
