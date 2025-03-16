@@ -134,9 +134,15 @@
 ## 🖥 화면 구현
 회원가입
 
+![회원가입](https://github.com/user-attachments/assets/fb9928c3-fe9f-4def-a564-9798a25fa60c)
 
 로그인
 
 ![로그인](https://github.com/user-attachments/assets/f566844b-6160-4648-af02-d8102cc73f99)
+
+검색 설정
+
+![검색설정](https://github.com/user-attachments/assets/d5c3f4b6-9921-4742-8b25-db5e080f3d18)
+
 
 
