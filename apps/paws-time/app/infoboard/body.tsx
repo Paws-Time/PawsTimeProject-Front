@@ -78,15 +78,15 @@ export default function InfoBoardWithMap() {
         if (mapRef.current) {
           const map = new google.maps.Map(mapRef.current, {
             center: {
-              lat: Number(selectedLocation.y) || 126.9723,
-              lng: Number(selectedLocation.x) || 37.5561,
+              lat: Number(selectedLocation.x) || 126.9723,
+              lng: Number(selectedLocation.y) || 37.5561,
             },
             zoom: 14,
           });
           const marker = new google.maps.Marker({
             position: {
-              lat: Number(selectedLocation.y) || 126.9723,
-              lng: Number(selectedLocation.x) || 37.5561,
+              lat: Number(selectedLocation.x) || 126.9723,
+              lng: Number(selectedLocation.y) || 37.5561,
             },
             map: map,
             title: selectedLocation.name || "Location",

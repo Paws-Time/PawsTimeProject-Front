@@ -31,7 +31,7 @@ export const createUser = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/api/v1/member`,
+      url: `/users`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: userCreateReqDto,
@@ -110,7 +110,7 @@ export const logoutUser = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/api/v1/logout`, method: "POST", signal },
+    { url: `/users/logout`, method: "POST", signal },
     options,
   );
 };
@@ -184,7 +184,7 @@ export const loginUser = (
 ) => {
   return customInstance<ApiResponseString>(
     {
-      url: `/api/v1/login`,
+      url: `/users/login`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: loginUserReqDto,

@@ -42,11 +42,11 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 export const getDetailPost = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseGetDetailPostRespDto>(
     { url: `/post/${postId}`, method: "GET", signal },
-    options
+    options,
   );
 };
 
@@ -66,7 +66,7 @@ export const getGetDetailPostInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -109,7 +109,7 @@ export function useGetDetailPostInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostInfiniteQueryOptions(postId, options);
 
@@ -135,7 +135,7 @@ export const getGetDetailPostQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -178,7 +178,7 @@ export function useGetDetailPost<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDetailPostQueryOptions(postId, options);
 
@@ -198,7 +198,7 @@ export function useGetDetailPost<
 export const updatePost = (
   postId: number,
   updatePostReqDto: BodyType<UpdatePostReqDto>,
-  options?: SecondParameter<typeof customInstance>
+  options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
     {
@@ -207,7 +207,7 @@ export const updatePost = (
       headers: { "Content-Type": "application/json" },
       data: updatePostReqDto,
     },
-    options
+    options,
   );
 };
 
@@ -280,12 +280,12 @@ export const uploadImages = (
   postId: number,
   uploadImagesBody: BodyType<UploadImagesBody>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   const formData = new FormData();
   if (uploadImagesBody.images !== undefined) {
     uploadImagesBody.images.forEach((value) =>
-      formData.append("images", value)
+      formData.append("images", value),
     );
   }
 
@@ -297,7 +297,7 @@ export const uploadImages = (
       data: formData,
       signal,
     },
-    options
+    options,
   );
 };
 
@@ -368,11 +368,11 @@ export const useUploadImages = <
  */
 export const deletePost = (
   postId: number,
-  options?: SecondParameter<typeof customInstance>
+  options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
     { url: `/post/${postId}`, method: "DELETE" },
-    options
+    options,
   );
 };
 
@@ -443,11 +443,11 @@ export const useDeletePost = <
 export const getImages = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
     { url: `/post/${postId}/images`, method: "GET", signal },
-    options
+    options,
   );
 };
 
@@ -467,7 +467,7 @@ export const getGetImagesInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -510,7 +510,7 @@ export function useGetImagesInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetImagesInfiniteQueryOptions(postId, options);
 
@@ -536,7 +536,7 @@ export const getGetImagesQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -577,7 +577,7 @@ export function useGetImages<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetImagesQueryOptions(postId, options);
 
@@ -598,12 +598,12 @@ export const updatePostImages = (
   postId: number,
   updatePostImagesBody: BodyType<UpdatePostImagesBody>,
   params?: UpdatePostImagesParams,
-  options?: SecondParameter<typeof customInstance>
+  options?: SecondParameter<typeof customInstance>,
 ) => {
   const formData = new FormData();
   if (updatePostImagesBody.newImages !== undefined) {
     updatePostImagesBody.newImages.forEach((value) =>
-      formData.append("newImages", value)
+      formData.append("newImages", value),
     );
   }
 
@@ -614,19 +614,11 @@ export const updatePostImages = (
       headers: { "Content-Type": "multipart/form-data" },
       data: formData,
       params,
-      paramsSerializer: (params) => {
-        const searchParams = new URLSearchParams();
-        if (params?.deletedImageIds) {
-          params.deletedImageIds.forEach((id: number) =>
-            searchParams.append("deletedImageIds", id.toString())
-          );
-        }
-        return searchParams.toString();
-      },
     },
-    options
+    options,
   );
 };
+
 export const getUpdatePostImagesMutationOptions = <
   TError = ErrorType<unknown>,
   TContext = unknown,
@@ -715,11 +707,11 @@ export const useUpdatePostImages = <
 export const getPosts = (
   params?: GetPostsParams,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetListPostRespDto>(
     { url: `/post`, method: "GET", params, signal },
-    options
+    options,
   );
 };
 
@@ -739,7 +731,7 @@ export const getGetPostsInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -777,7 +769,7 @@ export function useGetPostsInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsInfiniteQueryOptions(params, options);
 
@@ -803,7 +795,7 @@ export const getGetPostsQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -841,7 +833,7 @@ export function useGetPosts<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPostsQueryOptions(params, options);
 
@@ -861,7 +853,7 @@ export function useGetPosts<
 export const createPost = (
   createPostReqDto: BodyType<CreatePostReqDto>,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseLong>(
     {
@@ -871,7 +863,7 @@ export const createPost = (
       data: createPostReqDto,
       signal,
     },
-    options
+    options,
   );
 };
 
@@ -943,11 +935,11 @@ export const useCreatePost = <
 export const toggleLike = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseInteger>(
     { url: `/post/${postId}/likes`, method: "POST", signal },
-    options
+    options,
   );
 };
 
@@ -1018,11 +1010,11 @@ export const useToggleLike = <
 export const getThumbnail = (
   postId: number,
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
     { url: `/post/${postId}/thumbnail`, method: "GET", signal },
-    options
+    options,
   );
 };
 
@@ -1042,7 +1034,7 @@ export const getGetThumbnailInfiniteQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -1085,7 +1077,7 @@ export function useGetThumbnailInfinite<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetThumbnailInfiniteQueryOptions(postId, options);
 
@@ -1111,7 +1103,7 @@ export const getGetThumbnailQueryOptions = <
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -1154,7 +1146,7 @@ export function useGetThumbnail<
       TData
     >;
     request?: SecondParameter<typeof customInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetThumbnailQueryOptions(postId, options);
 
@@ -1172,11 +1164,11 @@ export function useGetThumbnail<
  */
 export const getRandomImages = (
   options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetImageRespDto>(
     { url: `/post/images/random`, method: "GET", signal },
-    options
+    options,
   );
 };
 

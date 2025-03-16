@@ -4,10 +4,20 @@
  * BASIC PAWSTIME API
  * OpenAPI spec version: v1
  */
+import type { UserCreateReqDtoRole } from "./userCreateReqDtoRole";
 
 export interface UserCreateReqDto {
   email: string;
+  /**
+   * @minLength 2
+   * @maxLength 12
+   */
   nick: string;
-  /** @pattern ^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()-+=]).{8,}$ */
+  /**
+   * @minLength 8
+   * @maxLength 20
+   * @pattern ^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()-+=]).*$
+   */
   password: string;
+  role?: UserCreateReqDtoRole;
 }

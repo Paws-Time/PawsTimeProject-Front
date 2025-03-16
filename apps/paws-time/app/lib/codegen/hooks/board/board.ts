@@ -39,13 +39,13 @@ export const getBoard = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseGetBoardRespDto>(
-    { url: `/board/${boardId}`, method: "GET", signal },
+    { url: `/boards/${boardId}`, method: "GET", signal },
     options,
   );
 };
 
 export const getGetBoardQueryKey = (boardId: number) => {
-  return [`/board/${boardId}`] as const;
+  return [`/boards/${boardId}`] as const;
 };
 
 export const getGetBoardInfiniteQueryOptions = <
@@ -194,7 +194,7 @@ export const updateBoard = (
 ) => {
   return customInstance<ApiResponseVoid>(
     {
-      url: `/board/${boardId}`,
+      url: `/boards/${boardId}`,
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       data: updateBoardReqDto,
@@ -273,7 +273,7 @@ export const deleteBoard = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ApiResponseVoid>(
-    { url: `/board/delete/${boardId}`, method: "PUT" },
+    { url: `/boards/${boardId}`, method: "DELETE" },
     options,
   );
 };
@@ -340,88 +340,6 @@ export const useDeleteBoard = <
   return useMutation(mutationOptions);
 };
 /**
- * 새로운 게시판을 생성할 수 있습니다.
- * @summary 게시판 생성
- */
-export const createBoard = (
-  createBoardReqDto: BodyType<CreateBoardReqDto>,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<ApiResponseVoid>(
-    {
-      url: `/board/boards`,
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: createBoardReqDto,
-      signal,
-    },
-    options,
-  );
-};
-
-export const getCreateBoardMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createBoard>>,
-    TError,
-    { data: BodyType<CreateBoardReqDto> },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createBoard>>,
-  TError,
-  { data: BodyType<CreateBoardReqDto> },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createBoard>>,
-    { data: BodyType<CreateBoardReqDto> }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return createBoard(data, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type CreateBoardMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createBoard>>
->;
-export type CreateBoardMutationBody = BodyType<CreateBoardReqDto>;
-export type CreateBoardMutationError = ErrorType<unknown>;
-
-/**
- * @summary 게시판 생성
- */
-export const useCreateBoard = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createBoard>>,
-    TError,
-    { data: BodyType<CreateBoardReqDto> },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof createBoard>>,
-  TError,
-  { data: BodyType<CreateBoardReqDto> },
-  TContext
-> => {
-  const mutationOptions = getCreateBoardMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
  * 생성되어있는 모든 게시판을 조회합니다.
  * @summary 게시판 목록 조회
  */
@@ -431,13 +349,13 @@ export const getBoardList = (
   signal?: AbortSignal,
 ) => {
   return customInstance<ApiResponseListGetBoardRespDto>(
-    { url: `/board/list`, method: "GET", params, signal },
+    { url: `/boards`, method: "GET", params, signal },
     options,
   );
 };
 
 export const getGetBoardListQueryKey = (params?: GetBoardListParams) => {
-  return [`/board/list`, ...(params ? [params] : [])] as const;
+  return [`/boards`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetBoardListInfiniteQueryOptions = <
@@ -566,3 +484,86 @@ export function useGetBoardList<
 
   return query;
 }
+
+/**
+ * 새로운 게시판을 생성할 수 있습니다.
+ * @summary 게시판 생성
+ */
+export const createBoard = (
+  createBoardReqDto: BodyType<CreateBoardReqDto>,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseVoid>(
+    {
+      url: `/boards`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createBoardReqDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateBoardMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBoard>>,
+    TError,
+    { data: BodyType<CreateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createBoard>>,
+  TError,
+  { data: BodyType<CreateBoardReqDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createBoard>>,
+    { data: BodyType<CreateBoardReqDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createBoard(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateBoardMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createBoard>>
+>;
+export type CreateBoardMutationBody = BodyType<CreateBoardReqDto>;
+export type CreateBoardMutationError = ErrorType<unknown>;
+
+/**
+ * @summary 게시판 생성
+ */
+export const useCreateBoard = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBoard>>,
+    TError,
+    { data: BodyType<CreateBoardReqDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createBoard>>,
+  TError,
+  { data: BodyType<CreateBoardReqDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateBoardMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};

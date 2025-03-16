@@ -11,7 +11,6 @@ export interface GetBoardRespDto {
   boardType?: GetBoardRespDtoBoardType;
   createdAt?: string;
   description?: string;
-  isDelete?: boolean;
   title?: string;
   updatedAt?: string;
 }
