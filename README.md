@@ -133,5 +133,7 @@
 
 ## 🖥 화면 구현
 (화면 UI/UX 관련 설명 및 스크린샷을 첨부하세요.)
-![Image](https://github.com/user-attachments/assets/577f0236-bfd5-4c33-b9f8-d08eb58024ca)
+
+닉네임 변경
+![Image](https://github.com/user-attachments/assets/86cb9996-5ec0-48b4-96de-d43cc71c6965)
 
