@@ -132,8 +132,10 @@
 ![Image](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
 
 ## 🖥 화면 구현
-(화면 UI/UX 관련 설명 및 스크린샷을 첨부하세요.)
+회원가입
+![회원가입](https://github.com/user-attachments/assets/6aeaa8e7-b6b2-48f8-9b34-6378c054f65f)
 
-닉네임 변경
-![Image](https://github.com/user-attachments/assets/86cb9996-5ec0-48b4-96de-d43cc71c6965)
+로그인
+![로그인](https://github.com/user-attachments/assets/0c8004a6-e4f9-4e6d-b301-7e8bcbae42d9)
+
 
