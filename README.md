@@ -144,10 +144,33 @@
 
 ![메인페이지](https://github.com/user-attachments/assets/4d387308-e2c2-4042-be4e-81c1b3cbf7b8)
 
-
 검색 설정
 
 ![검색설정](https://github.com/user-attachments/assets/d5c3f4b6-9921-4742-8b25-db5e080f3d18)
+
+게시글 작성
+
+![1게시글 작성](https://github.com/user-attachments/assets/a2c487cf-0c32-4cc3-9538-8eece6280f33)
+
+게시글 수정 및 삭제
+
+![2게시글 수정, 삭제](https://github.com/user-attachments/assets/17c0d0c8-a946-4a28-aa25-2bb3a104d188)
+
+댓글 작성 및 수정, 삭제
+
+![3댓글](https://github.com/user-attachments/assets/befd9e26-1002-4bd5-aeab-bc88656e4744)
+
+내가 쓴 글과 댓글
+
+![5내가쓴 글, 댓글](https://github.com/user-attachments/assets/f3745094-ea12-48c5-9e7a-c2d655ab257f)
+
+프로필 변경
+
+![6프로필변경](https://github.com/user-attachments/assets/5ab5d0b7-bfe0-44ff-86e4-d8fb8b783195)
+
+비밀번호 변경
+
+![7 비밀번호 변경](https://github.com/user-attachments/assets/b3980171-6de3-459f-be29-984434f47f99)
 
 
 
