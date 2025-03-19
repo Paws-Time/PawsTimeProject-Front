@@ -8,6 +8,7 @@ import { useLoginUser } from "../../lib/codegen/hooks/user-api/user-api";
 import { useAuthStore } from "@/app/hooks/authStore";
 import { decodeJWT } from "@/components/utils/jwt";
 import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api"; // 추가
+import { AxiosError } from "axios";
 
 const LoginBody = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ const LoginBody = () => {
   const mutation = useLoginUser({
     mutation: {
       onSuccess: async (data) => {
-        alert("로그인에 성공했습니다!");
+        alert(data.message);
 
         const token = data.data;
         setToken(token as string);
@@ -49,11 +50,10 @@ const LoginBody = () => {
 
         router.push("/");
       },
-      onError: (error: any) => {
-        console.error("로그인 실패:", error);
-        setErrorMessage(
-          "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요."
-        );
+      onError: (error: AxiosError<{ message: string }>) => {
+        const message = error.response?.data?.message ?? "";
+        // * ?? "" 라고 빈 문자열을 명시하는 이유 -> setErrorMessage에 초기값을 string을 주었는데 message는 string | undefined 타입일 수 있기 때문에
+        setErrorMessage(message);
       },
     },
   });

@@ -10,36 +10,41 @@ import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
 
-export default function EditBoardBody({}) {
+export default function EditBoardBody() {
   const [title, setTitle] = useState<string>("");
   const [newTitle, setNewTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [newDescription, setNewDescription] = useState<string>("");
   const router = useRouter();
   const { boardId } = useParams();
-  const { data } = useGetBoard(Number(boardId));
+  const numberBoardId = Number(boardId);
+
+  const { data } = useGetBoard(numberBoardId);
+
   useEffect(() => {
     if (data?.data) {
       setTitle(data?.data?.title || "");
       setDescription(data?.data?.description || "");
     }
   }, [data]);
+
+  // ✅ 게시판 수정 API 호출
   const { mutate, isLoading, isError } = useUpdateBoard({
     mutation: {
-      onSuccess: () => {
-        alert("게시판이 성공적으로 수정되었습니다!");
+      onSuccess: (data) => {
+        alert(data.message); // ✅ 백엔드 메시지 출력
         setNewTitle("");
         setNewDescription("");
         router.push(`/board`);
       },
-      onError: (error) => {
-        console.error(error);
-        alert("게시판 수정 중 오류가 발생했습니다.");
+      onError: (error: AxiosError<{ message: string }>) => {
+        const message = error?.response?.data?.message;
+        alert(message);
       },
     },
   });
-  const numberBoardId = Number(boardId);
 
   const handleEditBoard = () => {
     const params: UpdateBoardReqDto = {
@@ -49,6 +54,21 @@ export default function EditBoardBody({}) {
     mutate({ boardId: numberBoardId, data: params });
   };
 
+  // ✅ 게시판 삭제 API 호출
+  const handleDeleteBoard = async () => {
+    try {
+      const response = await deleteBoard(numberBoardId);
+      alert(response.message); // ✅ 백엔드 메시지 출력
+      router.push(`/board`);
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      const message =
+        axiosError.response?.data?.message ||
+        "게시판 삭제 중 오류가 발생했습니다.";
+      alert(message);
+    }
+  }; // * 일반 비동기 에러 처리 -> 이미지 참고
+
   if (isLoading) {
     return <div>게시판을 수정 중입니다...</div>;
   }
@@ -56,10 +76,7 @@ export default function EditBoardBody({}) {
   if (isError) {
     return <div>게시판 수정 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
   }
-  const handleDeleteBoard = () => {
-    deleteBoard(numberBoardId);
-    router.push(`/board`);
-  };
+
   return (
     <div style={formStyles.container}>
       <div style={formStyles.background}></div>
@@ -67,7 +84,7 @@ export default function EditBoardBody({}) {
         <div className="flex w-6/7 justify-center items-center ml-16">
           <h1 style={formStyles.heading} className="w-5/6 ml-16">
             게시판 정보수정
-          </h1>{" "}
+          </h1>
           <div className="w-1/6 ml-5">
             <CustomButton
               $label="삭제"
@@ -77,19 +94,7 @@ export default function EditBoardBody({}) {
             />
           </div>
         </div>
-        {/* <div style={formStyles.field}>
-          <label style={formStyles.label}>게시판 유형</label>
-          <select
-            value={boardType}
-            onChange={(e) =>
-              setBoardType(e.target.value as CreateBoardReqDtoBoardType)
-            }
-            style={formStyles.select}
-          >
-            <option value="GENERAL">일반게시판</option>
-            <option value="INFORMATION">정보게시판</option>
-          </select>
-        </div> */}
+
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판 이름</label>
           <input

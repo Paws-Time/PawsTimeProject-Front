@@ -9,6 +9,7 @@ import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AxiosError } from "axios";
 
 export default function CreateBoardComponent() {
   const [title, setTitle] = useState<string>("");
@@ -19,15 +20,15 @@ export default function CreateBoardComponent() {
 
   const { mutate, isLoading, isError } = useCreateBoard({
     mutation: {
-      onSuccess: () => {
-        alert("게시판이 성공적으로 생성되었습니다!");
+      onSuccess: (data) => {
+        alert(data.message);
         setTitle("");
         setDescription("");
         router.push(`/board`);
       },
-      onError: (error) => {
-        console.error(error);
-        alert("게시판 생성 중 오류가 발생했습니다.");
+      onError: (error: AxiosError<{ message?: string }>) => {
+        const message = error.response?.data?.message;
+        alert(message);
       },
     },
   });
@@ -39,10 +40,6 @@ export default function CreateBoardComponent() {
 
   if (isLoading) {
     return <div>게시판을 생성 중입니다...</div>;
-  }
-
-  if (isError) {
-    return <div>게시판 생성 중 오류가 발생했습니다. 다시 시도해주세요.</div>;
   }
 
   return (

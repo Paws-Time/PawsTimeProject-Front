@@ -5,6 +5,7 @@ import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useCreateUser } from "../../lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 // interface PostData {
 //   email: string;
@@ -22,6 +23,8 @@ const SignupBody = () => {
   const [checkPassword, setCheckPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [emailPlaceholder, setEmailPlaceholder] = useState("이메일");
+  const [nickPlaceholder, setNickPlaceholder] = useState("닉네임");
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex =
@@ -33,8 +36,23 @@ const SignupBody = () => {
         alert("회원가입이 완료되었습니다.");
         router.push("/auth/login"); // 회원가입 성공 후 로그인 페이지로 이동
       },
-      onError: (error: any) => {
-        alert(`회원가입에 실패했습니다: ${error.message}`);
+      onError: (error: AxiosError<{ message: string; status?: string }>) => {
+        // * status 값에 따라 오류 메세지 구분 하기 때문에 status 타입 명시해주기
+        const message =
+          error?.response?.data?.message || "회원가입에 실패했습니다.";
+        const status = error?.response?.data?.status;
+
+        if (status === "DUPLICATE") {
+          if (message.includes("이메일")) {
+            setEmail("");
+            setEmailPlaceholder(message);
+          } else if (message.includes("닉네임")) {
+            setNick("");
+            setNickPlaceholder(message);
+          }
+        } else {
+          alert(message); // 기타 오류는 일반 경고창으로 표시
+        }
       },
     },
   });
@@ -105,30 +123,27 @@ const SignupBody = () => {
           <label style={formStyles.label}>이메일</label>
           <input
             type="text"
-            placeholder="이메일"
-            className="border rounded p-2 w-full"
+            placeholder={emailPlaceholder}
+            className={`border rounded p-2 w-full ${emailPlaceholder !== "이메일" ? "text-red-500 placeholder-red-500" : ""}`}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              if (!emailRegex.test(e.target.value)) {
-                setEmailError("유효한 이메일 주소를 입력해주세요.");
-              } else {
-                setEmailError("");
-              }
+              setEmailPlaceholder("이메일");
             }}
           />
-          {emailError && (
-            <span className="text-red-500 text-sm">{emailError}</span>
-          )}
         </div>
+
         <div style={formStyles.field}>
           <label style={formStyles.label}>닉네임</label>
           <input
             type="text"
-            placeholder="닉네임"
-            className="border rounded p-2 w-full"
+            placeholder={nickPlaceholder}
+            className={`border rounded p-2 w-full ${nickPlaceholder !== "닉네임" ? "text-red-500 placeholder-red-500" : ""}`}
             value={nick}
-            onChange={(e) => setNick(e.target.value)}
+            onChange={(e) => {
+              setNick(e.target.value);
+              setNickPlaceholder("닉네임");
+            }}
           />
         </div>
 

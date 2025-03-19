@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { CustomButton } from "./utils/button";
 import useSideBarStore from "@/app/hooks/sidebarStore";
 import { useAuthStore } from "@/app/hooks/authStore";
-// import { useLogoutUser } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useHandleLogout } from "@/app/hooks/logout"; // 새로운 훅 가져오기
 
 export default function Sidebar() {
@@ -12,14 +11,17 @@ export default function Sidebar() {
   const { isShow } = sideBarState;
 
   const router = useRouter();
-  const nick = useAuthStore((state) => state.nick); // email 대신 nick 사용
+  const { nick, role } = useAuthStore(); // role 추가
 
-  const handleLogout = useHandleLogout(); // 변경된 훅 사용
+  const handleLogout = useHandleLogout();
 
+  // 메뉴 배열 (ADMIN이 아닐 경우 "게시판 작성" 메뉴 제거)
   const menus = [
     { id: 1, path: "/", name: "메인페이지" },
     { id: 2, path: "/board", name: "게시판" },
-    { id: 3, path: "/board/createBoard", name: "게시판 작성" },
+    ...(role === "ADMIN"
+      ? [{ id: 3, path: "/board/createBoard", name: "게시판 작성" }]
+      : []), // ADMIN만 게시판 작성 가능
     { id: 4, path: "/infoboard/hospital", name: "병원 게시판" },
     { id: 6, path: "/infoboard/shelter", name: "보호소 게시판" },
     nick
@@ -31,6 +33,7 @@ export default function Sidebar() {
           onClick: () => router.push("/auth/login"),
         },
   ];
+
   return (
     <aside
       style={{
@@ -57,9 +60,7 @@ export default function Sidebar() {
                 $label={menu.name}
                 $sizeType="menu"
                 onClick={
-                  menu.onClick
-                    ? menu.onClick // 🔹 로그아웃 시 handleLogout 사용
-                    : () => router.push(menu.path) // 나머지 메뉴는 path로 이동
+                  menu.onClick ? menu.onClick : () => router.push(menu.path)
                 }
               />
             </li>
