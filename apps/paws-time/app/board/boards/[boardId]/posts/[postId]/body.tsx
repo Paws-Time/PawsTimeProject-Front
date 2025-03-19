@@ -17,6 +17,8 @@ import { GetImageRespDto } from "@/app/lib/codegen/dtos";
 import { useQuery } from "@tanstack/react-query";
 import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useAuth } from "@/app/hooks/authStore";
+import Image from "next/image";
+import { AxiosError } from "axios";
 
 interface PostData {
   postId?: number;
@@ -54,9 +56,15 @@ const PostDetailBody = () => {
   // ✅ 게시글 삭제 함수
   const { mutate: deletePost } = useDeletePost({
     mutation: {
-      onSuccess: () => {
-        alert("게시글이 삭제되었습니다.");
+      onSuccess: (data) => {
+        alert(data.message); // ✅ 백엔드에서 내려준 메시지 출력
         router.push(`/board/boards/${boardId}`);
+      },
+      onError: (error: AxiosError<{ message?: string }>) => {
+        const message =
+          error.response?.data?.message ??
+          "게시글 삭제 중 오류가 발생했습니다.";
+        alert(message); // ✅ 백엔드에서 내려준 에러 메시지 출력
       },
     },
   });
@@ -125,10 +133,18 @@ const PostDetailBody = () => {
             />
           )}
 
-          <img
+          {/* <img
             src={imagesUrl[curImageNum] || defaultImage}
             alt="게시글 이미지"
             className="w-[650px] h-[550px]"
+          /> */}
+          <Image
+            src={imagesUrl[curImageNum] || defaultImage}
+            alt="게시글 이미지"
+            width={650} // 원래 설정된 크기
+            height={550}
+            className="w-[650px] h-[550px]"
+            unoptimized // 외부 URL일 경우 필요 (정적 파일이면 제거 가능)
           />
 
           {imagesUrl.length > 1 && (

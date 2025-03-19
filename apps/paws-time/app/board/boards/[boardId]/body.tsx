@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { formStyles } from "@/app/styles/forms";
 import "@/app/styles/css/board.css";
 import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api";
+import { useAuthStore } from "@/app/hooks/authStore"; // ✅ 로그인 상태 가져오기
 
 interface PostData {
   id?: number;
@@ -40,6 +41,8 @@ const BoardDetailBody = () => {
   const [pageNo, setPageNo] = useState(0);
   const { pageSize, sortBy, direction } = boardState;
   const [postDatas, setPostDatas] = useState<PostData[]>([]);
+
+  const { token } = useAuthStore(); // ✅ 로그인 여부 확인
 
   const params = {
     boardId: Number(boardId),
@@ -74,10 +77,7 @@ const BoardDetailBody = () => {
   const userQueries = useQueries({
     queries: userIds.map((userId) => ({
       queryKey: ["user", userId],
-      queryFn: () => {
-        console.log("Fetching user for userId:", userId); // ✅ userId 확인
-        return getUserFromUserId(userId);
-      },
+      queryFn: () => getUserFromUserId(userId),
       enabled: !!userId, // userId가 있을 때만 실행
     })),
   });
@@ -85,7 +85,7 @@ const BoardDetailBody = () => {
   const userNicks = userQueries.reduce(
     (acc, query, index) => {
       const userId = userIds[index];
-      acc[userId] = query.data?.data?.nick ?? "알 수 없음"; // 경로 주의: data?.data?.nick
+      acc[userId] = query.data?.data?.nick ?? "알 수 없음";
       return acc;
     },
     {} as Record<number, string>
@@ -98,6 +98,16 @@ const BoardDetailBody = () => {
 
   const resetPage = () => {
     setPageNo(0);
+  };
+
+  // ✅ 로그인 여부 체크 후 새 글 작성 페이지로 이동
+  const handleNewPostClick = () => {
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      router.push("/auth/login"); // 로그인 페이지로 이동
+    } else {
+      router.push(`/board/write/`); // 게시글 작성 페이지로 이동
+    }
   };
 
   return (
@@ -115,11 +125,14 @@ const BoardDetailBody = () => {
             required
           />
         </form>
+
+        {/* ✅ 로그인 확인 후 새글 쓰기 버튼 동작 */}
         <CustomButton
           $label="새글 쓰기"
           $sizeType="normal"
-          onClick={() => router.push(`/board/write/`)}
+          onClick={handleNewPostClick}
         />
+
         <CustomButton
           $label="검색설정"
           $sizeType="normal"
@@ -140,7 +153,7 @@ const BoardDetailBody = () => {
               $contentPreview={post.contentPreview}
               $views={post.views}
               $likeCount={post.likesCount}
-              $nick={userNicks[post.userId!] ?? "알 수 없음"} // ✅ 닉네임 전달
+              $nick={userNicks[post.userId!] ?? "알 수 없음"}
               onClick={() =>
                 router.push(`/board/boards/${boardId}/posts/${post.id}`)
               }

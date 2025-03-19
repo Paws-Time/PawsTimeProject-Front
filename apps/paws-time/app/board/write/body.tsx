@@ -8,6 +8,7 @@ import {
 } from "@/app/lib/codegen/hooks/post/post";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -48,6 +49,7 @@ const BoardWriteBody = () => {
   const { mutate, isLoading, isError } = useCreatePost({
     mutation: {
       onSuccess: async (response) => {
+        alert(response.message);
         const newPostId = response.data; // 게시글 ID
 
         if (images.length > 0) {
@@ -74,7 +76,6 @@ const BoardWriteBody = () => {
           }
         }
 
-        alert("게시글이 성공적으로 생성되었습니다.");
         setTitle(""); // 제목 초기화
         setContent(""); // 내용 초기화
         setImages([]); // 이미지 초기화
@@ -82,9 +83,9 @@ const BoardWriteBody = () => {
         // 이미지 업로드 완료 후 페이지 이동
         router.push(`/board/boards/${boardId}`);
       },
-      onError: (error) => {
-        console.error("Error response:", error.response?.data || error.message);
-        alert("게시글 생성 중 오류가 발생했습니다.");
+      onError: (error: AxiosError<{ message?: string }>) => {
+        const message = error.response?.data?.message;
+        alert(message);
       },
     },
   });

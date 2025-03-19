@@ -5,8 +5,6 @@ import { useParams } from "next/navigation";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import {
-  getGetDetailPostQueryKey,
-  getGetImagesQueryKey,
   useGetDetailPost,
   useGetImages,
   useUpdatePost,

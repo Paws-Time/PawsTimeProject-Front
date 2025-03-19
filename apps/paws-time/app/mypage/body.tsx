@@ -16,6 +16,7 @@ import {
 } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
 import { GetListPostRespDto, GetCommentRespDto } from "../lib/codegen/dtos";
+import { AxiosError } from "axios";
 
 const MyPage = () => {
   const { userId, nick } = useAuth();
@@ -91,12 +92,14 @@ const MyPage = () => {
     updateProfileImgMutation.mutate(
       { userId, data: { file } },
       {
-        onSuccess: () => {
-          alert("프로필 이미지가 변경되었습니다!");
+        onSuccess: (response) => {
+          alert(response.message);
           refetchProfileImg();
         },
-        onError: () => {
-          alert("이미지 변경에 실패했습니다.");
+        onError: (error: unknown) => {
+          const axiosError = error as AxiosError<{ message?: string }>;
+          const message = axiosError.response?.data?.message;
+          alert(message);
         },
       }
     );
@@ -132,11 +135,15 @@ const MyPage = () => {
     updateNickMutation.mutate(
       { data: { nick: newNick } },
       {
-        onSuccess: () => {
-          alert("닉네임이 변경되었습니다!");
+        onSuccess: (response) => {
+          alert(response.message);
           setIsEditingNick(false);
         },
-        onError: () => alert("닉네임 변경에 실패했습니다."),
+        onError: (error: unknown) => {
+          const axiosError = error as AxiosError<{ message?: string }>;
+          const message = axiosError.response?.data?.message;
+          alert(message);
+        },
       }
     );
   };
@@ -152,12 +159,14 @@ const MyPage = () => {
       deleteUserMutation.mutate(
         { userId },
         {
-          onSuccess: () => {
-            alert("회원 탈퇴가 완료되었습니다.");
+          onSuccess: (response) => {
+            alert(response.message);
             router.push("/home");
           },
-          onError: () => {
-            alert("회원 탈퇴에 실패했습니다.");
+          onError: (error: unknown) => {
+            const axiosError = error as AxiosError<{ message?: string }>;
+            const message = axiosError.response?.data?.message;
+            alert(message);
           },
         }
       );

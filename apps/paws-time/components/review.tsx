@@ -53,11 +53,11 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
   // ✅ 댓글 수정
   const { mutate: updateComment } = useUpdateComment({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries(["getCommentByPost", postId]);
         setEditingCommentId(null);
         setEditingContent("");
-        alert("댓글이 수정되었습니다.");
+        alert(response.message);
         refetch();
       },
     },
@@ -66,9 +66,9 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
   // ✅ 댓글 삭제
   const { mutate: deleteComment } = useDeleteComment({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (respose) => {
         queryClient.invalidateQueries(["getCommentByPost", postId]);
-        alert("댓글이 삭제되었습니다.");
+        alert(respose.message);
         refetch();
       },
     },

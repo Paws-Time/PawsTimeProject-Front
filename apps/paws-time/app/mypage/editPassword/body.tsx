@@ -5,6 +5,7 @@ import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useUpdatePassword } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 const PasswordChangePage = () => {
   const router = useRouter();
@@ -19,12 +20,13 @@ const PasswordChangePage = () => {
 
   const mutation = useUpdatePassword({
     mutation: {
-      onSuccess: () => {
-        alert("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+      onSuccess: (response) => {
+        alert(response.message);
         router.push("/auth/login"); // 변경 후 로그인 페이지로 이동
       },
-      onError: (error: any) => {
-        alert(`비밀번호 변경에 실패했습니다: ${error.message}`);
+      onError: (error: AxiosError<{ message?: string }>) => {
+        const message = error.response?.data?.message;
+        alert(message);
       },
     },
   });

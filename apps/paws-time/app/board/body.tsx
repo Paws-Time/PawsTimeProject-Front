@@ -11,6 +11,8 @@ import {
 import { Direction, directionBoardDescription } from "@/app/lib/policy";
 import { postFormStyles } from "../styles/postforms";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/app/hooks/authStore"; // ✅ 사용자 권한 가져오기
+import { AxiosError } from "axios";
 
 interface Board {
   boardId: number;
@@ -23,6 +25,7 @@ interface Board {
 
 export default function BoardList() {
   const router = useRouter();
+  const { role } = useAuthStore(); // ✅ role 추가
   const [direction, setDirection] = useState<Direction>(Direction.DESC);
   const [pageSize, setPageSize] = useState(4);
   const [boardList, setBoardList] = useState<Board[]>([]);
@@ -33,14 +36,17 @@ export default function BoardList() {
     direction,
   };
   const queryClient = useQueryClient();
+
   const handleDirectionChange = (newDirection: Direction) => {
     setDirection(newDirection);
   };
+
   const { data, isLoading, isError } = useGetBoardList<{
     status: string;
     message: string | null;
     data: Board[];
   }>(params);
+
   useEffect(() => {
     if (data?.data) {
       setBoardList(data?.data);
@@ -59,17 +65,20 @@ export default function BoardList() {
   const handlePage = () => {
     setPageSize((prev) => prev + 5);
   };
+
   const handleDelete = async (boardId: number) => {
     try {
-      await deleteBoard(boardId); // 삭제 API 호출
-      alert(`${boardId}게시판이 삭제되었습니다.`);
+      const response = await deleteBoard(boardId); // 삭제 API 호출
+      alert(response.message); // ✅ 백엔드에서 내려준 성공 메시지 출력
       setBoardList((prevList) =>
         prevList.filter((board) => board.boardId !== boardId)
       );
       queryClient.invalidateQueries({ queryKey: [getBoardList(params)] }); // ReactQuery의 캐시를 무효화
-    } catch (error) {
-      console.error("게시판 삭제 중 에러 발생:", error);
-      alert("게시판 삭제에 실패했습니다.");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const message =
+        axiosError.response?.data?.message ?? "게시판 삭제에 실패했습니다.";
+      alert(message); // ✅ 백엔드에서 내려준 에러 메시지 출력
     }
   };
 
@@ -96,11 +105,14 @@ export default function BoardList() {
             )}
           </div>
 
-          <CustomButton
-            $label="새 게시판"
-            $sizeType="normal"
-            onClick={() => router.push(`/board/createBoard`)}
-          />
+          {/* ✅ ADMIN만 새 게시판 버튼 표시 */}
+          {role === "ADMIN" && (
+            <CustomButton
+              $label="새 게시판"
+              $sizeType="normal"
+              onClick={() => router.push(`/board/createBoard`)}
+            />
+          )}
         </div>
 
         {/* 게시판 목록 */}
@@ -120,30 +132,34 @@ export default function BoardList() {
                   생성일: {new Date(board.createdAt).toLocaleDateString()}
                 </p>
               </div>
-              <div style={postFormStyles.buttonBox}>
-                <button
-                  style={{
-                    ...postFormStyles.button,
-                    ...postFormStyles.deleteButton,
-                  }}
-                  onClick={() => {
-                    handleDelete(board.boardId);
-                  }}
-                >
-                  삭제
-                </button>
-                <button
-                  style={{
-                    ...postFormStyles.button,
-                    ...postFormStyles.editButton,
-                  }}
-                  onClick={() => {
-                    router.push(`board/boards/${board.boardId}/edit`);
-                  }}
-                >
-                  수정
-                </button>
-              </div>
+
+              {/* ✅ ADMIN만 삭제 및 수정 버튼 표시 */}
+              {role === "ADMIN" && (
+                <div style={postFormStyles.buttonBox}>
+                  <button
+                    style={{
+                      ...postFormStyles.button,
+                      ...postFormStyles.deleteButton,
+                    }}
+                    onClick={() => {
+                      handleDelete(board.boardId);
+                    }}
+                  >
+                    삭제
+                  </button>
+                  <button
+                    style={{
+                      ...postFormStyles.button,
+                      ...postFormStyles.editButton,
+                    }}
+                    onClick={() => {
+                      router.push(`board/boards/${board.boardId}/edit`);
+                    }}
+                  >
+                    수정
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
