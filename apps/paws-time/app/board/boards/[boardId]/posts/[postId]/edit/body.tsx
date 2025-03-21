@@ -11,27 +11,32 @@ import {
   useUpdatePostImages,
 } from "@/app/lib/codegen/hooks/post/post";
 import { UpdatePostImagesBody } from "@/app/lib/codegen/dtos";
+import qs from "qs";
+import Image from "next/image";
 
 export function PostEditBody() {
-  const { boardId, postId } = useParams(); //위 주소를 통해 boardid와 postid르 받아온다
+  const { boardId, postId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [postImage, setPostImage] = useState<{ id?: number; url?: string }[]>(
     []
-  ); //받아온 이미지 전체를 저장
+  );
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
-  const [deleteImage, setDeleteImage] = useState<number[]>([]); //삭제할 이미지 id를 저장
-  const [updateImage, setUpdateImage] = useState<UpdatePostImagesBody>({
-    newImages: [],
-  }); //새로 추가할 이미지를 저장.
+  const [deleteImage, setDeleteImage] = useState<number[]>([]); // ✅ 삭제할 이미지 ID 저장
+  const [updateImage, setUpdateImage] = useState<Blob[]>([]); // ✅ 추가할 이미지 저장
 
-  //게시글 상세조회
+  // ✅ 게시글 상세 조회
   const { data: postData } = useGetDetailPost(Number(postId));
   const { data: imageData } = useGetImages(Number(postId));
   const { mutate: updatePost } = useUpdatePost();
-  const { mutate: updatePostImage } = useUpdatePostImages();
-  // 게시글 데이터와 이미지 데이터를 상태로 설정
+  // 1. 훅 정의 시 request 옵션에 qs 설정 추가
+  const updatePostImage = useUpdatePostImages({
+    request: {
+      paramsSerializer: (params: Record<string, any>) =>
+        qs.stringify(params, { arrayFormat: "repeat" }),
+    },
+  });
 
   useEffect(() => {
     if (postData) {
@@ -47,13 +52,13 @@ export function PostEditBody() {
       setPostImage(images);
     }
   }, [postData, imageData]);
-  // 이미지 변경 처리
+
+  // ✅ 이미지 변경 처리 (새로운 이미지 추가)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      setUpdateImage((prev) => ({
-        newImages: [...(prev?.newImages || []), ...files], // 이전 이미지와 새 이미지를 병합
-      }));
+      setUpdateImage((prev) => [...prev, ...files]); // ✅ Blob[] 배열에 추가
+
       const newImages = files.map((file) => ({
         id: Date.now(),
         url: URL.createObjectURL(file),
@@ -61,13 +66,16 @@ export function PostEditBody() {
       setPostImage((prev) => [...prev, ...newImages]);
     }
   };
-  // 이미지 삭제 처리
+
+  // ✅ 이미지 삭제 처리 (삭제할 ID 배열에 추가)
   const handleDeleteImage = (id: number) => {
     setPostImage((prev) => prev.filter((img) => img.id !== id));
     setDeleteImage((prev) => [...prev, id]);
+
+    console.log("삭제할 이미지 ID 목록:", [...deleteImage, id]); // ✅ 삭제할 이미지 ID 확인용 로그
   };
 
-  //게시글 및 이미지 업데이트 핸들러
+  // ✅ 게시글 및 이미지 업데이트 핸들러
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmedTitle = newTitle.trim() || title.trim();
@@ -90,21 +98,28 @@ export function PostEditBody() {
       return;
     }
 
+    console.log("🛠 최종 삭제할 이미지 ID 목록:", deleteImage); // ✅ 삭제할 이미지 ID 확인
+    console.log("🛠 추가할 이미지 개수:", updateImage.length);
+    // ✅ 게시글 내용 수정
     updatePost({
       postId: Number(postId),
       data: { title: trimmedTitle, content: trimmedContent },
     });
 
-    updatePostImage({
+    // 이미지 수정
+
+    updatePostImage.mutate({
       postId: Number(postId),
-      data: { newImages: updateImage?.newImages || [] },
+      data: { newImages: updateImage },
       params: { deletedImageIds: deleteImage },
     });
-    //수정 완료
+
+    // ✅ 수정 완료 후 이동
     location.replace(
       `/board/boards/${Number(boardId)}/posts/${Number(postId)}`
     );
   };
+
   return (
     <div style={formStyles.container}>
       <div style={formStyles.background}></div>
@@ -137,15 +152,16 @@ export function PostEditBody() {
               {postImage.map((image) => (
                 <div key={image.id} style={formStyles.imagePreview}>
                   {image.url && (
-                    <img
-                      src={image.url}
+                    <Image
+                      src={image.url ?? "/default.png"} // undefined 방지
                       alt="미리보기"
+                      width={100}
+                      height={100}
                       style={{
-                        width: "100px",
-                        height: "100px",
                         objectFit: "cover",
                         marginBottom: "10px",
                       }}
+                      unoptimized // 외부 이미지라면 꼭 필요
                     />
                   )}
                   {image.url && (

@@ -6,7 +6,7 @@ import {
 import { useToggleLike } from "@/app/lib/codegen/hooks/like/like";
 import { postFormStyles } from "@/app/styles/postforms";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authStore";
 
@@ -24,7 +24,27 @@ function Count({ boardId, postId, commentsCount }: CountProps) {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
 
-  // 좋아요 기능
+  // ✅ 게시글 데이터 조회
+  const { data: postData } = useGetPosts({ boardId });
+
+  // ✅ `likeCount` 및 `isLiked` 초기값을 `useMemo`를 사용하여 SSR과 CSR에서 동일하게 설정
+  const initialLikeCount = useMemo(() => {
+    const post = postData?.data?.find((post) => post.id === postId);
+    return post ? Number(post.likesCount) || 0 : 0;
+  }, [postData, postId]);
+
+  const initialIsLiked = useMemo(() => {
+    const post = postData?.data?.find((post) => post.id === postId);
+    return post ? (post as any).isLiked || false : false;
+  }, [postData, postId]);
+
+  // ✅ CSR에서만 `setState` 실행 (Hydration 오류 방지)
+  useEffect(() => {
+    setLikeCount(initialLikeCount);
+    setIsLiked(initialIsLiked);
+  }, [initialLikeCount, initialIsLiked]);
+
+  // ✅ 좋아요 기능
   const { mutate } = useToggleLike({
     mutation: {
       onSuccess: () => {
@@ -35,22 +55,9 @@ function Count({ boardId, postId, commentsCount }: CountProps) {
     },
   });
 
-  // 게시글 데이터 조회
-  const { data: postData } = useGetPosts({ boardId });
-
-  // 초기 데이터 설정
-  useEffect(() => {
-    const post = postData?.data?.find((post) => post.id === postId);
-    if (post) {
-      setLikeCount(Number(post.likesCount) || 0);
-      setIsLiked((post as any).isLiked || false);
-    }
-  }, [postData, postId]);
-
-  // 좋아요 핸들러
+  // ✅ 좋아요 버튼 핸들러 (로그인 여부 확인)
   const handleToggleLike = () => {
     if (!auth.token) {
-      // 로그인하지 않은 경우 로그인 안내창 표시
       const confirmLogin = window.confirm("로그인 하시겠습니까?");
       if (confirmLogin) {
         router.push("/auth/login"); // 로그인 페이지로 이동

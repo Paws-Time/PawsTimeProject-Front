@@ -7,12 +7,12 @@ import {
   useUpdateComment,
 } from "@/app/lib/codegen/hooks/comment/comment";
 import { postFormStyles } from "@/app/styles/postforms";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { InputField } from "./utils/input";
 import { CustomButton } from "./utils/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api";
-import { useAuth } from "@/app/hooks/authStore"; // ✅ 로그인 상태 확인
+import { useAuth } from "@/app/hooks/authStore";
 
 interface ReviewProps {
   postId: number;
@@ -20,31 +20,31 @@ interface ReviewProps {
 }
 
 function Review({ postId, setCommentsCount }: ReviewProps) {
-  const { userId: loggedInUserId, token } = useAuth(); // ✅ 로그인한 유저 ID 가져오기
+  const { userId: loggedInUserId, token } = useAuth();
   const [content, setContent] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState("");
   const [userNicknames, setUserNicknames] = useState<Record<number, string>>(
     {}
-  ); // 🔹 userId -> 닉네임 캐싱
+  );
   const queryClient = useQueryClient();
 
   // ✅ 댓글 조회
   const { data, refetch } = useGetCommentByPost(postId);
 
-  // ✅ 댓글 개수 업데이트
+  // ✅ `commentsCount`를 `useMemo`를 사용하여 초기값 설정 (SSR과 CSR 동일한 값 유지)
+  const initialCommentsCount = useMemo(() => data?.data?.length ?? 0, [data]);
+
   useEffect(() => {
-    if (data?.data) {
-      setCommentsCount(data.data.length);
-    }
-  }, [data, setCommentsCount]);
+    setCommentsCount(initialCommentsCount);
+  }, [initialCommentsCount, setCommentsCount]);
 
   // ✅ 댓글 작성
   const { mutate: createComment } = useCreateComment({
     mutation: {
       onSuccess: () => {
         queryClient.invalidateQueries(["getCommentByPost", postId]);
-        setContent(""); // 입력창 초기화
+        setContent("");
         refetch();
       },
     },
@@ -66,9 +66,9 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
   // ✅ 댓글 삭제
   const { mutate: deleteComment } = useDeleteComment({
     mutation: {
-      onSuccess: (respose) => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries(["getCommentByPost", postId]);
-        alert(respose.message);
+        alert(response.message);
         refetch();
       },
     },
@@ -81,7 +81,6 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
 
       const newAuthors: Record<number, string> = { ...userNicknames };
 
-      // ✅ userId가 `undefined`가 아닌 값만 필터링
       const uniqueUserIds = [
         ...new Set(
           data.data
@@ -104,7 +103,7 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
         }
       }
 
-      setUserNicknames(newAuthors); // 🔹 닉네임 상태 업데이트 (API 중복 호출 방지)
+      setUserNicknames(newAuthors);
     }
 
     fetchCommentAuthors();
@@ -177,7 +176,6 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
                 : {review.content}
               </div>
 
-              {/* ✅ 로그인한 유저가 작성한 댓글만 수정/삭제 가능 */}
               {loggedInUserId === review.userId && (
                 <div className="flex gap-2">
                   <CustomButton
@@ -199,7 +197,6 @@ function Review({ postId, setCommentsCount }: ReviewProps) {
         </div>
       ))}
 
-      {/* ✅ 로그인한 사용자만 댓글 작성 가능 */}
       {token ? (
         <div>
           <form onSubmit={handleSubmit} style={postFormStyles.commentBox}>

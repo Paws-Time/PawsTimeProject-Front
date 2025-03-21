@@ -14,9 +14,9 @@ import { AxiosError } from "axios";
 
 export default function EditBoardBody() {
   const [title, setTitle] = useState<string>("");
-  const [newTitle, setNewTitle] = useState<string>("");
+  const [newTitle, setNewTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string>("");
-  const [newDescription, setNewDescription] = useState<string>("");
+  const [newDescription, setNewDescription] = useState<string | null>(null);
   const router = useRouter();
   const { boardId } = useParams();
   const numberBoardId = Number(boardId);
@@ -25,10 +25,16 @@ export default function EditBoardBody() {
 
   useEffect(() => {
     if (data?.data) {
-      setTitle(data?.data?.title || "");
-      setDescription(data?.data?.description || "");
+      setTitle(data.data.title || "");
+      setDescription(data.data.description || "");
+
+      // ✅ 초기값 설정: 처음 한 번만 설정
+      if (newTitle === null) setNewTitle(data.data.title || "");
+      if (newDescription === null) {
+        setNewDescription(data.data.description || "");
+      }
     }
-  }, [data]);
+  }, [data, newTitle, newDescription]);
 
   // ✅ 게시판 수정 API 호출
   const { mutate, isLoading, isError } = useUpdateBoard({
@@ -48,8 +54,8 @@ export default function EditBoardBody() {
 
   const handleEditBoard = () => {
     const params: UpdateBoardReqDto = {
-      title: newTitle,
-      description: newDescription,
+      title: newTitle !== null ? newTitle : title, // ✅ 빈칸도 가능하게 설정
+      description: newDescription !== null ? newDescription : description, // ✅ 빈칸도 가능하게 설정
     };
     mutate({ boardId: numberBoardId, data: params });
   };
@@ -99,7 +105,7 @@ export default function EditBoardBody() {
           <label style={formStyles.label}>게시판 이름</label>
           <input
             type="text"
-            value={newTitle !== "" ? newTitle : title}
+            value={newTitle !== null ? newTitle : title} // ✅ null 체크 후 빈칸 허용
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             style={formStyles.input}
@@ -109,13 +115,14 @@ export default function EditBoardBody() {
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판 간략소개</label>
           <textarea
-            value={newDescription !== "" ? newDescription : description}
+            value={newDescription !== null ? newDescription : description} // ✅ null 체크 후 빈칸 허용
             onChange={(e) => setNewDescription(e.target.value)}
             placeholder="내용을 입력하세요"
             style={formStyles.textarea}
             required
           />
         </div>
+
         <CustomButton
           $label="수정하기"
           $sizeType="long"

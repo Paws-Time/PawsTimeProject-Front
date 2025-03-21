@@ -17,14 +17,14 @@ function SortSetting() {
     <div className="p-6 space-y-6 flex-col">
       {/* 정렬 기준 */}
       <div className="flex justify-around border-t border-gray-300">
-        <div className="space-y-4  ">
+        <div className="space-y-4">
           <h4 className="text-lg font-bold mt-3">정렬 기준</h4>
           <div className="space-y-2">
             {Object.entries(sortByDescription).map(([key, description]) => (
               <label key={key} className="flex items-center space-x-2">
                 <input
                   type="radio"
-                  name={sortBy}
+                  name="sortBy"
                   value={key}
                   checked={sortBy === key}
                   onChange={() => setSortBy(key as SortBy)}
@@ -54,6 +54,7 @@ function SortSetting() {
           </div>
         </div>
       </div>
+
       {/* 페이지 크기 */}
       <div className="space-y-4 border-t border-gray-300">
         <h4 className="text-lg font-bold mt-3">페이지 크기</h4>
