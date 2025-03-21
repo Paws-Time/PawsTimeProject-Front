@@ -43,32 +43,44 @@ const BoardDetailBody = () => {
   const [postDatas, setPostDatas] = useState<PostData[]>([]);
 
   const { token } = useAuthStore(); // ✅ 로그인 여부 확인
-
-  const params = {
-    boardId: Number(boardId),
-    keyword: searchKeyword,
-    page: pageNo,
-    size: pageSize,
-    sort: `${sortBy},${direction}`,
-  };
-
   const { data: boardData } = useGetBoard(Number(boardId));
   const boardTitle = boardData?.data?.title;
 
-  // 게시글 목록 가져오기
-  const { data: postData } = useGetPosts(params, {
-    query: {
-      queryKey: getGetPostsQueryKey({ boardId: Number(boardId) }),
-      staleTime: 0,
-      cacheTime: 1000,
+  // ✅ 게시글 목록 가져오기 (boardState 변경 시 자동 업데이트)
+  const { data: postData } = useGetPosts(
+    {
+      boardId: Number(boardId),
+      keyword: searchKeyword || undefined,
+      page: pageNo, // ✅ 현재 페이지 번호 반영
+      size: pageSize, // ✅ 페이지 크기 유지
+      sort: `${sortBy},${direction}`,
     },
-  });
+    {
+      query: {
+        queryKey: getGetPostsQueryKey({
+          boardId: Number(boardId),
+          page: pageNo, // ✅ 페이지 번호 반영
+          size: pageSize, // ✅ 페이지 크기 유지
+          sort: `${sortBy},${direction}`,
+          keyword: searchKeyword || undefined,
+        }),
+        staleTime: 0,
+        cacheTime: 1000,
+      },
+    }
+  );
 
+  // ✅ `postData`가 변경될 때 `postDatas` 업데이트
   useEffect(() => {
     if (postData?.data) {
       setPostDatas([...postData.data]);
     }
   }, [postData]);
+
+  // ✅ boardState(정렬 옵션)가 변경될 때 페이지 번호를 초기화하고 API를 다시 호출
+  useEffect(() => {
+    setPageNo(0);
+  }, [pageSize, sortBy, direction]);
 
   const userIds = postDatas
     .map((post) => post.userId)
@@ -93,12 +105,20 @@ const BoardDetailBody = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchKeyword(keyword);
+
+    if (keyword.trim() === "") {
+      setSearchKeyword(""); // ✅ 빈칸 입력 시 전체 게시글 조회
+    } else {
+      setSearchKeyword(keyword); // ✅ 검색어 입력 후 엔터 시 검색 실행
+    }
   };
 
+  // ✅ API 응답에서 전체 게시글 개수를 가져오기
   const resetPage = () => {
     setPageNo(0);
   };
+  // ✅ 현재 페이지의 게시글 개수 확인
+  const currentPostCount = postData?.data?.length ?? 0;
 
   // ✅ 로그인 여부 체크 후 새 글 작성 페이지로 이동
   const handleNewPostClick = () => {
@@ -122,7 +142,6 @@ const BoardDetailBody = () => {
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="제목을 입력하세요"
             style={formStyles.input}
-            required
           />
         </form>
 
@@ -181,7 +200,7 @@ const BoardDetailBody = () => {
           $label="다음"
           $sizeType="normal"
           onClick={() => setPageNo((prev) => prev + 1)}
-          disabled={postDatas.length < pageSize}
+          disabled={currentPostCount < pageSize} // ✅ 마지막 페이지에서는 "다음" 버튼 비활성화
         />
       </div>
     </div>

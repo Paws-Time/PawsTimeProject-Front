@@ -9,6 +9,7 @@ import { useGetCommentListByUser } from "@/app/lib/codegen/hooks/comment/comment
 import {
   useUpdateProfileImg,
   useGetProfileImg,
+  useDeleteProfileImg,
 } from "@/app/lib/codegen/hooks/-profileimg/-profileimg";
 import {
   useDeleteUser,
@@ -19,7 +20,7 @@ import { GetListPostRespDto, GetCommentRespDto } from "../lib/codegen/dtos";
 import { AxiosError } from "axios";
 
 const MyPage = () => {
-  const { userId, nick } = useAuth();
+  const { userId, nick, setAuth } = useAuth();
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("recentPosts");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,6 +28,7 @@ const MyPage = () => {
   const [myComments, setMyComments] = useState<GetCommentRespDto[]>([]);
   const [isEditingNick, setIsEditingNick] = useState(false);
   const [newNick, setNewNick] = useState(nick ?? "");
+  const [showOptions, setShowOptions] = useState(false);
 
   const params = {
     page: 0,
@@ -75,12 +77,20 @@ const MyPage = () => {
     }
   );
 
-  const imagePreview =
-    profileImgData?.data?.profileImgUrl || "/default-profile.png";
+  const defaultProfileImage = "/profile-img.png"; // public 폴더에 있어야 함
+  const [imagePreview, setImagePreview] = useState(defaultProfileImage);
+
+  useEffect(() => {
+    const serverImgUrl = profileImgData?.data?.profileImgUrl;
+    if (!serverImgUrl || serverImgUrl.trim() === "") {
+      setImagePreview(defaultProfileImage);
+    } else {
+      setImagePreview(serverImgUrl);
+    }
+  }, [profileImgData]);
 
   // ✅ 프로필 이미지 변경
   const updateProfileImgMutation = useUpdateProfileImg();
-  // const deleteProfileImgMutation = useDeleteProfileImg();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -105,28 +115,42 @@ const MyPage = () => {
     );
   };
 
-  // // ✅ 프로필 이미지 삭제
-  // const handleDeleteProfileImage = () => {
-  //   if (!userId) return;
+  // ✅ 프로필 이미지 삭제
+  const deleteProfileImgMutation = useDeleteProfileImg();
 
-  //   deleteProfileImgMutation.mutate(
-  //     { userId },
-  //     {
-  //       onSuccess: () => {
-  //         alert("프로필 이미지가 삭제되었습니다!");
-  //         refetchProfileImg();
-  //       },
-  //       onError: () => {
-  //         alert("프로필 이미지 삭제에 실패했습니다.");
-  //       },
-  //     }
-  //   );
-  // };
+  const handleDeleteProfileImage = () => {
+    if (!userId) return;
 
-  useEffect(() => {
-    setNewNick(nick ?? "");
-  }, [nick]);
+    deleteProfileImgMutation.mutate(
+      { userId },
+      {
+        onSuccess: () => {
+          alert("프로필 이미지가 삭제되었습니다!");
+          refetchProfileImg();
+        },
+        onError: () => {
+          alert("프로필 이미지 삭제에 실패했습니다.");
+        },
+      }
+    );
+  };
 
+  // ✅ 설정 옵션 선택 시 실행
+  const handleProfileOptionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+
+    if (selectedValue === "change") {
+      fileInputRef.current?.click(); // ✅ 파일 업로드 실행
+    } else if (selectedValue === "delete") {
+      handleDeleteProfileImage(); // ✅ 프로필 이미지 삭제 실행
+    }
+
+    setShowOptions(false); // ✅ 옵션 선택 후 닫기
+  };
+
+  // ✅ 닉네임 변경 API 요청
   const updateNickMutation = useUpdateNick();
 
   const handleNickEdit = () => {
@@ -138,6 +162,9 @@ const MyPage = () => {
         onSuccess: (response) => {
           alert(response.message);
           setIsEditingNick(false);
+
+          // ✅ 상태 즉시 업데이트 (새로고침 없이 반영)
+          setAuth({ nick: newNick });
         },
         onError: (error: unknown) => {
           const axiosError = error as AxiosError<{ message?: string }>;
@@ -147,6 +174,11 @@ const MyPage = () => {
       }
     );
   };
+
+  // ✅ nick이 변경될 때 `newNick`도 업데이트
+  useEffect(() => {
+    setNewNick(nick ?? "");
+  }, [nick]);
 
   // ✅ 회원 탈퇴 처리
   const deleteUserMutation = useDeleteUser();
@@ -161,7 +193,7 @@ const MyPage = () => {
         {
           onSuccess: (response) => {
             alert(response.message);
-            router.push("/home");
+            router.push("/auth/login");
           },
           onError: (error: unknown) => {
             const axiosError = error as AxiosError<{ message?: string }>;
@@ -185,23 +217,33 @@ const MyPage = () => {
               width={100}
               height={100}
               className="profile-img"
+              onError={() => setImagePreview(defaultProfileImage)}
               priority
             />
           </div>
 
+          {/* ✅ 설정 버튼 */}
           <span
             className="material-symbols-outlined profile-settings-icon"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setShowOptions(!showOptions)}
           >
             settings
           </span>
 
-          {/* <span
-            className="material-symbols-outlined profile-delete-icon"
-            onClick={handleDeleteProfileImage}
-          >
-            close
-          </span> */}
+          {/* ✅ 설정 옵션 (드롭다운 메뉴) */}
+          {showOptions && (
+            <select
+              className="profile-options"
+              onChange={handleProfileOptionChange}
+              value=""
+            >
+              <option value="" disabled>
+                프로필 설정
+              </option>
+              <option value="change">🖼 이미지 변경</option>
+              <option value="delete">❌ 이미지 삭제</option>
+            </select>
+          )}
 
           <input
             type="file"

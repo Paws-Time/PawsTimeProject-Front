@@ -1,5 +1,6 @@
 .main-page-container {
-  margin-left: 300px; /* 왼쪽과 오른쪽에 300px 마진 추가 */
+  margin-left: 300px;
+  margin-right: 50px;
   display: flex;
   flex-direction: column;
   gap: 40px;

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { useAuthStore } from "@/app/hooks/authStore";
@@ -9,7 +9,7 @@ import { useHandleLogout } from "@/app/hooks/logout";
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
-  justify-content: center; /* 로고를 중앙에 배치 */
+  justify-content: center;
   height: 60px;
   background-color: #f8f9fa;
   padding: 0 20px;
@@ -40,7 +40,7 @@ const BrandLogo = styled.div`
 
 const ToggleButton = styled.button`
   position: absolute;
-  left: 10px; /* 헤더의 왼쪽 상단에 고정 */
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   width: 30px;
@@ -55,7 +55,7 @@ const ToggleButton = styled.button`
 
 const UserInfo = styled.div`
   position: absolute;
-  right: 20px; /* 헤더의 오른쪽 상단에 고정 */
+  right: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -66,12 +66,21 @@ export default function Header() {
   const { sideBarActions } = useSideBarStore();
   const { toggleIsShow } = sideBarActions;
 
-  const nick = useAuthStore((state) => state.nick); // email 대신 nick 사용
   const restoreState = useAuthStore((state) => state.restoreState);
   const handleLogout = useHandleLogout();
 
+  // ✅ 상태를 직접 구독하여 닉네임 변경 감지
+  const [nick, setNick] = useState(useAuthStore.getState().nick);
+
   useEffect(() => {
-    restoreState();
+    restoreState(); // 로그인 상태 복원
+
+    // ✅ `zustand`의 `subscribe`을 사용하여 상태 변경 감지
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      setNick(state.nick);
+    });
+
+    return () => unsubscribe(); // ✅ 컴포넌트 언마운트 시 구독 해제
   }, []);
 
   const handleLoginNavigation = () => {
@@ -99,19 +108,17 @@ export default function Header() {
 
       {/* 사용자 정보 */}
       <UserInfo>
-        {" "}
-        {/* 🔹 강제 리렌더링을 위한 key 설정 */}
-        {nick ? ( // email 대신 nick을 확인
+        {nick ? (
           <>
             <p
               className="text-sm text-neutral-950 cursor-pointer"
               onClick={handleMypageNavigation}
             >
-              {nick} {/* email 대신 nick 표시 */}
+              {nick}
             </p>
             <button
               className="text-xs text-red-500 underline"
-              onClick={handleLogout} // 🔹 변경된 handleLogout 사용
+              onClick={handleLogout}
             >
               로그아웃
             </button>
