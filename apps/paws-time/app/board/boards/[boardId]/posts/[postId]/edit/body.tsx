@@ -10,7 +10,6 @@ import {
   useUpdatePost,
   useUpdatePostImages,
 } from "@/app/lib/codegen/hooks/post/post";
-import { UpdatePostImagesBody } from "@/app/lib/codegen/dtos";
 import qs from "qs";
 import Image from "next/image";
 
@@ -39,9 +38,11 @@ export function PostEditBody() {
   });
 
   useEffect(() => {
-    if (postData) {
-      setTitle(postData?.data?.title || "");
-      setContent(postData?.data?.content || "");
+    if (postData?.data) {
+      setTitle(postData.data.title || "");
+      setContent(postData.data.content || "");
+      setNewTitle(postData.data.title || ""); // ✅ 초기값 설정
+      setNewContent(postData.data.content || "");
     }
     if (imageData) {
       const images =
@@ -129,7 +130,7 @@ export function PostEditBody() {
           <label style={formStyles.label}>제목</label>
           <input
             type="text"
-            value={newTitle !== "" ? newTitle : title}
+            value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder={"제목을 입력하세요"}
             style={formStyles.input}
@@ -188,7 +189,7 @@ export function PostEditBody() {
           <div className="flex flex-col w-full" style={formStyles.posttextarea}>
             <label style={formStyles.label}>내용</label>
             <textarea
-              value={newContent !== "" ? newContent : content}
+              value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               placeholder={"내용을 입력하세요"}
               style={formStyles.posttextarea}

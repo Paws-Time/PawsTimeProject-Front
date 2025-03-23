@@ -22,8 +22,15 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // 예: 401 Unauthorized 처리 (로그아웃, 알림 등)
-      useAuthStore.getState().clearToken(); // Zustand에서 토큰 초기화
+      const requestUrl = error.config?.url;
+
+      // ✅ 비밀번호 변경 요청은 예외 처리
+      const isPasswordChangeRequest =
+        requestUrl?.includes("/users/me/password");
+
+      if (!isPasswordChangeRequest) {
+        useAuthStore.getState().clearToken(); // Zustand에서 토큰 초기화
+      }
     }
     return Promise.reject(error);
   }

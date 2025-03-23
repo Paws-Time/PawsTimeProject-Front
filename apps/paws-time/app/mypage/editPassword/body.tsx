@@ -6,6 +6,7 @@ import { CustomButton } from "@/components/utils/button";
 import { useUpdatePassword } from "@/app/lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import { useAuthStore } from "@/app/hooks/authStore";
 
 const PasswordChangePage = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const PasswordChangePage = () => {
     mutation: {
       onSuccess: (response) => {
         alert(response.message);
+        useAuthStore.getState().clearToken();
         router.push("/auth/login"); // 변경 후 로그인 페이지로 이동
       },
       onError: (error: AxiosError<{ message?: string }>) => {

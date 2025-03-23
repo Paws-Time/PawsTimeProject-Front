@@ -65,7 +65,6 @@ const BoardDetailBody = () => {
           keyword: searchKeyword || undefined,
         }),
         staleTime: 0,
-        cacheTime: 1000,
       },
     }
   );
