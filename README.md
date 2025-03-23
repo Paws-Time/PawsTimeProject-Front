@@ -1169,12 +1169,15 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 
 ## 📋 메뉴 구조도
 
-초기 페이지 (Figma)
-![초기 메뉴 구조도](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
+> 피그마로 구성한 초기 페이지
 
-![하위 메뉴 구조도](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
+### 🔹 페이지 구조 (1)
+![페이지 구조도 1](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
 
-메인 페이지
+### 🔹 페이지 구조 (2)
+![페이지 구조도 2](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
+
+### 🔹 메인 페이지 레이아웃
 ![메인 페이지](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
 
 ---
@@ -1195,16 +1198,15 @@ https://github.com/user-attachments/assets/590e51c4-dbdd-4c9e-9b7d-a493168e58ac
 
 ---
 
-### ✅ 게시판 기능
+### ✅ 게시판 생성
+ https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
+ 
+### ✅ 게시판 수정
+https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
 
-- **게시판 생성**  
-  https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
 
-- **게시판 수정**  
-  https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
-
-- **게시판 삭제**  
-  https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
+### ✅ 게시판 삭제
+https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
 
 ---
 
@@ -1218,16 +1220,14 @@ https://github.com/user-attachments/assets/49c47367-dcb3-48b8-9f70-6c7212864c10
 
 ---
 
-### ✅ 게시글 관련 기능
+### ✅ 게시글 작성
+https://github.com/user-attachments/assets/b32c77aa-6682-4aac-b887-faad368b452f
 
-- **게시글 작성**  
-  https://github.com/user-attachments/assets/b32c77aa-6682-4aac-b887-faad368b452f
+### ✅ 게시글 수정
+https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
 
-- **게시글 수정**  
-  https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
-
-- **게시글 삭제**  
-  https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
+### ✅ 게시글 삭제
+https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
 
 ---
 
