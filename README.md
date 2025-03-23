@@ -1179,11 +1179,11 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 ## 🖥 화면 구현
 회원가입
 
-![회원가입](https://github.com/user-attachments/assets/fb9928c3-fe9f-4def-a564-9798a25fa60c)
+https://github.com/user-attachments/assets/55df9db7-ae38-4926-b57f-1712c46fa7cf
 
 로그인
 
-![로그인](https://github.com/user-attachments/assets/f566844b-6160-4648-af02-d8102cc73f99)
+https://github.com/user-attachments/assets/d3d39734-69a5-4489-bcce-b2d3c0e1e768
 
 로그아웃
 
@@ -1195,21 +1195,15 @@ https://github.com/user-attachments/assets/590e51c4-dbdd-4c9e-9b7d-a493168e58ac
 
 게시판 생성
 
-
 https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
-
 
 게시판 수정
 
-
 https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
-
 
 게시판 삭제
 
-
 https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
-
 
 메인 페이지 이미지
 
@@ -1233,7 +1227,7 @@ https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
 
 댓글 작성 및 수정, 삭제
 
-![3댓글](https://github.com/user-attachments/assets/befd9e26-1002-4bd5-aeab-bc88656e4744)
+https://github.com/user-attachments/assets/632d2f2a-174a-476c-81f6-74e2d05428c9
 
 좋아요
 
@@ -1245,7 +1239,7 @@ https://github.com/user-attachments/assets/2aa59006-49eb-4a62-b3a3-b9edb364882f
 
 내가 쓴 글과 댓글
 
-![5내가쓴 글, 댓글](https://github.com/user-attachments/assets/f3745094-ea12-48c5-9e7a-c2d655ab257f)
+https://github.com/user-attachments/assets/0c3807ed-7e81-4cc8-b74e-1f77cc479944
 
 프로필 수정 및 삭제
 
