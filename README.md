@@ -1239,7 +1239,8 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 ### 💬 댓글 및 좋아요
 
 - **댓글 작성 / 수정 / 삭제**  
-  [🔗 댓글 기능](https://github.com/user-attachments/assets/632d2f2a-174a-476c-81f6-74e2d05428c9)
+  [🔗 댓글 기능]
+  (https://github.com/user-attachments/assets/632d2f2a-174a-476c-81f6-74e2d05428c9)
 
 - **좋아요 기능**  
   [🔗 좋아요](https://github.com/user-attachments/assets/fb922e4f-6554-4575-accf-e0123fa7af42)
