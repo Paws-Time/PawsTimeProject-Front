@@ -1168,83 +1168,94 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 
 
 ## 📋 메뉴 구조도
-피그마로 구성한 초기 페이지
-![Image](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
 
-![Image](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
+초기 페이지 (Figma)
+![초기 메뉴 구조도](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
+
+![하위 메뉴 구조도](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
 
 메인 페이지
-![Image](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
+![메인 페이지](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
+
+---
 
 ## 🖥 화면 구현
-회원가입
 
+### ✅ 회원가입
 https://github.com/user-attachments/assets/55df9db7-ae38-4926-b57f-1712c46fa7cf
 
-로그인
-
+### ✅ 로그인
 https://github.com/user-attachments/assets/d3d39734-69a5-4489-bcce-b2d3c0e1e768
 
-로그아웃
-
+### ✅ 로그아웃
 https://github.com/user-attachments/assets/590e51c4-dbdd-4c9e-9b7d-a493168e58ac
 
-회원탈퇴
-
+### ✅ 회원 탈퇴
 ![회원탈퇴](https://github.com/user-attachments/assets/042e2d4a-86c4-454b-bc48-bb6bc99345d7)
 
-게시판 생성
+---
 
-https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
+### ✅ 게시판 기능
 
-게시판 수정
+- **게시판 생성**  
+  https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
 
-https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
+- **게시판 수정**  
+  https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
 
-게시판 삭제
+- **게시판 삭제**  
+  https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
 
-https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
+---
 
-메인 페이지 이미지
-
+### ✅ 메인 페이지 이미지 슬라이드
 https://github.com/user-attachments/assets/78d1f899-a2c9-419f-b352-3a5f4ba06e3a
 
-검색 설정
+---
 
+### ✅ 검색 설정 (정렬 및 필터)
 https://github.com/user-attachments/assets/49c47367-dcb3-48b8-9f70-6c7212864c10
 
-게시글 작성
+---
 
-https://github.com/user-attachments/assets/b32c77aa-6682-4aac-b887-faad368b452f
+### ✅ 게시글 관련 기능
 
-게시글 수정
+- **게시글 작성**  
+  https://github.com/user-attachments/assets/b32c77aa-6682-4aac-b887-faad368b452f
 
-https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
+- **게시글 수정**  
+  https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
 
-게시글 삭제
+- **게시글 삭제**  
+  https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
 
-https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
+---
 
-댓글 작성 및 수정, 삭제
-
+### ✅ 댓글 작성, 수정, 삭제
 https://github.com/user-attachments/assets/632d2f2a-174a-476c-81f6-74e2d05428c9
 
-좋아요
+---
 
+### ✅ 좋아요 기능
 https://github.com/user-attachments/assets/fb922e4f-6554-4575-accf-e0123fa7af42
 
-닉네임 변경
+---
 
+### ✅ 닉네임 변경
 https://github.com/user-attachments/assets/2aa59006-49eb-4a62-b3a3-b9edb364882f
 
-내가 쓴 글과 댓글
+---
 
+### ✅ 내가 쓴 글 / 댓글
 https://github.com/user-attachments/assets/0c3807ed-7e81-4cc8-b74e-1f77cc479944
 
-프로필 수정 및 삭제
+---
 
+### ✅ 프로필 이미지 수정 및 삭제
 https://github.com/user-attachments/assets/0989cc2f-0c05-403b-8631-26d673652f42
 
-비밀번호 변경
+---
 
+### ✅ 비밀번호 변경
 https://github.com/user-attachments/assets/16dcd8cc-1204-4744-8117-928ac7fc726d
+
