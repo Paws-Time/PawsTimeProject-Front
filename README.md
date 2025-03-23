@@ -1229,7 +1229,7 @@ https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
 
 게시글 삭제
 
-https://github.com/user-attachments/assets/432f3e97-e214-4708-842d-7d90319fff36
+https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
 
 댓글 작성 및 수정, 삭제
 
