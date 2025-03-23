@@ -1209,9 +1209,9 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 
 ![5내가쓴 글, 댓글](https://github.com/user-attachments/assets/f3745094-ea12-48c5-9e7a-c2d655ab257f)
 
-프로필 변경
+프로필 수정 및 삭제
 
-![6프로필변경](https://github.com/user-attachments/assets/5ab5d0b7-bfe0-44ff-86e4-d8fb8b783195)
+https://github.com/user-attachments/assets/0989cc2f-0c05-403b-8631-26d673652f42
 
 비밀번호 변경
 
