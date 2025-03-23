@@ -1247,6 +1247,4 @@ https://github.com/user-attachments/assets/0989cc2f-0c05-403b-8631-26d673652f42
 
 비밀번호 변경
 
-![7 비밀번호 변경](https://github.com/user-attachments/assets/b3980171-6de3-459f-be29-984434f47f99)
-
-
+https://github.com/user-attachments/assets/16dcd8cc-1204-4744-8117-928ac7fc726d
