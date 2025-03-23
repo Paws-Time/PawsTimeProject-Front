@@ -32,7 +32,7 @@ interface PostData {
 const PostDetailBody = () => {
   const router = useRouter();
   const { boardId, postId } = useParams();
-  const { userId: loggedInUserId } = useAuth(); // ✅ 현재 로그인한 사용자 ID 가져오기
+  const { userId: loggedInUserId, role } = useAuth(); // ✅ 현재 로그인한 사용자 ID 가져오기
   const [curImageNum, setCurImageNum] = useState<number>(0);
   const [post, setPost] = useState<PostData | null>(null);
   const [commentsCount, setCommentsCount] = useState<number>(0);
@@ -118,8 +118,8 @@ const PostDetailBody = () => {
 
   const authorNick = userData?.data?.nick ?? "알 수 없음";
 
-  // ✅ 로그인한 유저가 게시글의 작성자인지 확인
-  const isOwner = loggedInUserId === post?.userId;
+  const isOwner = loggedInUserId === post?.userId; // ✅ 로그인한 유저가 게시글의 작성자인지 확인
+  const isAdmin = role === "ADMIN";
 
   return (
     <div style={postFormStyles.container}>
@@ -167,7 +167,7 @@ const PostDetailBody = () => {
       <div style={postFormStyles.contentSection}>
         <div>
           {/* ✅ 본인이 작성한 글만 수정 및 삭제 가능 */}
-          {isOwner && (
+          {(isOwner || isAdmin) && (
             <div style={postFormStyles.buttonBox}>
               <button
                 style={{
