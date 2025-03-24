@@ -232,8 +232,7 @@ Response는 DTO를 통해 가공 후 반환합니다.<br>
 
 
 ## ⚙ 배포
-![image](https://github.com/user-attachments/assets/2b609cd2-3d9f-4e92-aa1d-e96cc2f82b83)
-
+![image](https://github.com/user-attachments/assets/6019ce42-becb-4734-a5e4-1bb7fee53426)
 
 ### 배포 방식
 이 프로젝트는 AWS EC2 인스턴스를 이용해 배포되었습니다. <br>
