@@ -1193,7 +1193,7 @@ https://github.com/user-attachments/assets/d3d39734-69a5-4489-bcce-b2d3c0e1e768
 https://github.com/user-attachments/assets/590e51c4-dbdd-4c9e-9b7d-a493168e58ac
 
 ### ✅ 회원 탈퇴
-![회원탈퇴](https://github.com/user-attachments/assets/042e2d4a-86c4-454b-bc48-bb6bc99345d7)
+https://github.com/user-attachments/assets/f3359df8-e0a2-43e2-a42c-70f36d5147f4
 
 ---
 
