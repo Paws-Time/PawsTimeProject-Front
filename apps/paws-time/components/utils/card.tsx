@@ -29,6 +29,18 @@ export function Card({
   const commentCount = data?.data?.length ?? 0; // 댓글 수 기본값 0 처리
   const { data: imageData } = useGetThumbnail(postId);
   const setImageUrl = imageData?.data?.[0].imageUrl || defaultImage;
+
+  const trimText = (text: string | undefined, maxLength = 25): string => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return (
+      text
+        .slice(0, maxLength)
+        .trim()
+        .replace(/\s+\S*$/, "") + "..."
+    );
+  };
+
   return (
     <CardWrapper role="button" tabIndex={0} {...rest}>
       <div className="title">{$title}</div>
@@ -36,7 +48,7 @@ export function Card({
         <img src={setImageUrl} alt={$title || "이미지"} loading="lazy" />
       </div>
       <div className="nick">{$nick ?? "알 수 없음"}</div>
-      <div className="contentPreview">{$contentPreview}</div>
+      <div className="contentPreview">{trimText($contentPreview)}</div>
       <div className="foot">
         <span className="views">💬 {$views ?? 0} 조회수</span>
         <span className="likesCount">👍 {$likeCount ?? 0} 좋아요</span>
