@@ -1,5 +1,6 @@
 "use client";
 import {
+  getGetDetailPostQueryKey,
   getGetPostsQueryKey,
   useGetPosts,
 } from "@/app/lib/codegen/hooks/post/post";
@@ -50,6 +51,10 @@ function Count({ boardId, postId, commentsCount }: CountProps) {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: getGetPostsQueryKey({ boardId }),
+        });
+        // ✅ 상세 페이지에서도 즉시 반영되게
+        queryClient.invalidateQueries({
+          queryKey: getGetDetailPostQueryKey(postId),
         });
       },
     },

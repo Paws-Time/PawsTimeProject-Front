@@ -33,7 +33,7 @@ const HotPostsBody = () => {
 
   const { data, isLoading, error } = useGetPosts(params, {
     query: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
     },
   });
 

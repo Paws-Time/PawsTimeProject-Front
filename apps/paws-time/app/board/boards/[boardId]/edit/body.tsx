@@ -89,7 +89,7 @@ export default function EditBoardBody() {
       <form style={formStyles.form} onSubmit={(e) => e.preventDefault()}>
         <div className="flex w-6/7 justify-center items-center ml-16">
           <h1 style={formStyles.heading} className="w-5/6 ml-16">
-            게시판 정보수정
+            게시판 정보 수정
           </h1>
           <div className="w-1/6 ml-5">
             <CustomButton

@@ -99,8 +99,7 @@ export default function Header() {
       {/* 브랜드 로고 */}
       <BrandLogo
         onClick={() => {
-          router.push("/");
-          router.refresh();
+          router.push("/home");
         }}
       >
         <p>PAWS TIME</p>

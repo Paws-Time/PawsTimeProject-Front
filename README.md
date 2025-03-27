@@ -232,8 +232,7 @@ Response는 DTO를 통해 가공 후 반환합니다.<br>
 
 
 ## ⚙ 배포
-![image](https://github.com/user-attachments/assets/2b609cd2-3d9f-4e92-aa1d-e96cc2f82b83)
-
+![image](https://github.com/user-attachments/assets/6019ce42-becb-4734-a5e4-1bb7fee53426)
 
 ### 배포 방식
 이 프로젝트는 AWS EC2 인스턴스를 이용해 배포되었습니다. <br>
@@ -1168,53 +1167,94 @@ Kakao Map API Key 등 외부 API와 연동되는 비밀 키들
 
 
 ## 📋 메뉴 구조도
-피그마로 구성한 초기 페이지
-![Image](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
 
-![Image](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
+> 피그마로 구성한 초기 페이지
 
-메인 페이지
-![Image](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
+### 🔹 페이지 구조 (1)
+![페이지 구조도 1](https://github.com/user-attachments/assets/b0b78903-2fa3-4e04-9cb9-06bf319cc7bf)
+
+### 🔹 페이지 구조 (2)
+![페이지 구조도 2](https://github.com/user-attachments/assets/36aa4a4c-73bd-4287-bcb5-003cdd409459)
+
+### 🔹 메인 페이지 레이아웃
+![메인 페이지](https://github.com/user-attachments/assets/6df20ec0-567f-4cf2-96df-0a55e8fb3214)
+
+---
 
 ## 🖥 화면 구현
-회원가입
 
-![회원가입](https://github.com/user-attachments/assets/fb9928c3-fe9f-4def-a564-9798a25fa60c)
+### ✅ 회원가입
+https://github.com/user-attachments/assets/55df9db7-ae38-4926-b57f-1712c46fa7cf
 
-로그인
+### ✅ 로그인
+https://github.com/user-attachments/assets/d3d39734-69a5-4489-bcce-b2d3c0e1e768
 
-![로그인](https://github.com/user-attachments/assets/f566844b-6160-4648-af02-d8102cc73f99)
+### ✅ 로그아웃
+https://github.com/user-attachments/assets/590e51c4-dbdd-4c9e-9b7d-a493168e58ac
 
-메인 페이지
+### ✅ 회원 탈퇴
+https://github.com/user-attachments/assets/f3359df8-e0a2-43e2-a42c-70f36d5147f4
 
-![메인페이지](https://github.com/user-attachments/assets/4d387308-e2c2-4042-be4e-81c1b3cbf7b8)
+---
 
-검색 설정
+### ✅ 게시판 생성
+ https://github.com/user-attachments/assets/bdd44cb2-a0aa-4bcb-9955-0e2dbaced559
+ 
+### ✅ 게시판 수정
+https://github.com/user-attachments/assets/10c05536-76fa-4925-8cfb-d94059504df6
 
-![검색설정](https://github.com/user-attachments/assets/d5c3f4b6-9921-4742-8b25-db5e080f3d18)
 
-게시글 작성
+### ✅ 게시판 삭제
+https://github.com/user-attachments/assets/d3e78a73-9ae9-43c1-8276-62a43b114805
 
-![1게시글 작성](https://github.com/user-attachments/assets/a2c487cf-0c32-4cc3-9538-8eece6280f33)
+---
 
-게시글 수정 및 삭제
+### ✅ 메인 페이지 이미지 슬라이드
+https://github.com/user-attachments/assets/78d1f899-a2c9-419f-b352-3a5f4ba06e3a
 
-![2게시글 수정, 삭제](https://github.com/user-attachments/assets/17c0d0c8-a946-4a28-aa25-2bb3a104d188)
+---
 
-댓글 작성 및 수정, 삭제
+### ✅ 검색 설정 (정렬 및 필터)
+https://github.com/user-attachments/assets/49c47367-dcb3-48b8-9f70-6c7212864c10
 
-![3댓글](https://github.com/user-attachments/assets/befd9e26-1002-4bd5-aeab-bc88656e4744)
+---
 
-내가 쓴 글과 댓글
+### ✅ 게시글 작성
+https://github.com/user-attachments/assets/b32c77aa-6682-4aac-b887-faad368b452f
 
-![5내가쓴 글, 댓글](https://github.com/user-attachments/assets/f3745094-ea12-48c5-9e7a-c2d655ab257f)
+### ✅ 게시글 수정
+https://github.com/user-attachments/assets/8263c63b-99c5-4241-a2c7-8de25f4b20bc
 
-프로필 변경
+### ✅ 게시글 삭제
+https://github.com/user-attachments/assets/0301c482-5c29-4221-81b7-aec17910ba90
 
-![6프로필변경](https://github.com/user-attachments/assets/5ab5d0b7-bfe0-44ff-86e4-d8fb8b783195)
+---
 
-비밀번호 변경
+### ✅ 댓글 작성, 수정, 삭제
+https://github.com/user-attachments/assets/632d2f2a-174a-476c-81f6-74e2d05428c9
 
-![7 비밀번호 변경](https://github.com/user-attachments/assets/b3980171-6de3-459f-be29-984434f47f99)
+---
 
+### ✅ 좋아요 기능
+https://github.com/user-attachments/assets/fb922e4f-6554-4575-accf-e0123fa7af42
+
+---
+
+### ✅ 닉네임 변경
+https://github.com/user-attachments/assets/2aa59006-49eb-4a62-b3a3-b9edb364882f
+
+---
+
+### ✅ 내가 쓴 글 / 댓글
+https://github.com/user-attachments/assets/0c3807ed-7e81-4cc8-b74e-1f77cc479944
+
+---
+
+### ✅ 프로필 이미지 수정 및 삭제
+https://github.com/user-attachments/assets/0989cc2f-0c05-403b-8631-26d673652f42
+
+---
+
+### ✅ 비밀번호 변경
+https://github.com/user-attachments/assets/16dcd8cc-1204-4744-8117-928ac7fc726d
 
