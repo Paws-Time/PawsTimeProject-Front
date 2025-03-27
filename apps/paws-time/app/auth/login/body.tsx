@@ -9,30 +9,37 @@ import { useAuthStore } from "@/app/hooks/authStore";
 import { decodeJWT } from "@/components/utils/jwt";
 import { getUserFromUserId } from "@/app/lib/codegen/hooks/user-api/user-api"; // 추가
 import { AxiosError } from "axios";
+import { Spinner } from "@/components/Spinner";
 
 const LoginBody = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
-  const setToken = useAuthStore((state) => state.setToken);
-  const setUserId = useAuthStore((state) => state.setUserId);
-  const setNick = useAuthStore((state) => state.setNick);
-  const setRole = useAuthStore((state) => state.setRole);
+  // const setToken = useAuthStore((state) => state.setToken);
+  // const setUserId = useAuthStore((state) => state.setUserId);
+  // const setNick = useAuthStore((state) => state.setNick);
+  // const setRole = useAuthStore((state) => state.setRole);
+  const authStore = useAuthStore.getState(); // ✅ Zustand store 직접 접근
 
   const mutation = useLoginUser({
     mutation: {
       onSuccess: async (data) => {
+        setIsLoading(false); // 🟢 로딩 끝
         alert(data.message);
 
         const token = data.data;
-        setToken(token as string);
+        const authStore = useAuthStore.getState(); // ✅ Zustand store 직접 접근
+
+        authStore.setToken(token as string); // ✅ Zustand + localStorage에 저장
 
         // JWT 토큰 디코딩하여 userId 가져오기
         const decodedToken = decodeJWT(token as string);
         if (decodedToken?.userId) {
-          setUserId(decodedToken.userId); // userId 상태 업데이트
+          authStore.setUserId(decodedToken.userId); // userId 상태 업데이트
 
           // 🔹 로그인 후 userId를 이용해 닉네임을 가져와 상태 업데이트
           try {
@@ -40,17 +47,18 @@ const LoginBody = () => {
               Number(decodedToken.userId)
             );
             if (response.data) {
-              setNick(response.data.nick ?? null);
-              setRole(response.data.role ?? null);
+              authStore.setNick(response.data.nick ?? null);
+              authStore.setRole(response.data.role ?? null);
             }
           } catch (error) {
             console.error("유저 정보를 불러오는데 실패했습니다:", error);
           }
         }
 
-        router.push("/");
+        router.push("/home");
       },
       onError: (error: AxiosError<{ message: string }>) => {
+        setIsLoading(false); // 🛑 에러나도 로딩 중단
         const message = error.response?.data?.message ?? "";
         // * ?? "" 라고 빈 문자열을 명시하는 이유 -> setErrorMessage에 초기값을 string을 주었는데 message는 string | undefined 타입일 수 있기 때문에
         setErrorMessage(message);
@@ -65,7 +73,7 @@ const LoginBody = () => {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
       return;
     }
-
+    setIsLoading(true); // 🔄 로딩 시작
     mutation.mutate({ data: { email, password } });
   };
 
@@ -73,7 +81,11 @@ const LoginBody = () => {
     router.push("/auth/signup");
   };
 
-  return (
+  return isLoading ? (
+    <div className="h-screen flex items-center justify-center">
+      <Spinner />
+    </div>
+  ) : (
     <div
       className="flex"
       style={{

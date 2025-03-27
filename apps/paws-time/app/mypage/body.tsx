@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../styles/css/mypage.css";
 import Image from "next/image";
-import { useAuth } from "@/app/hooks/authStore";
+import { useAuth, useAuthStore } from "@/app/hooks/authStore";
 import { useGetPosts } from "@/app/lib/codegen/hooks/post/post";
 import { useGetCommentListByUser } from "@/app/lib/codegen/hooks/comment/comment";
 import {
@@ -21,6 +21,7 @@ import { AxiosError } from "axios";
 
 const MyPage = () => {
   const { userId, nick, setAuth } = useAuth();
+  const { logoutState } = useAuthStore();
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("recentPosts");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -193,6 +194,7 @@ const MyPage = () => {
         {
           onSuccess: (response) => {
             alert(response.message);
+            logoutState();
             router.push("/auth/login");
           },
           onError: (error: unknown) => {
