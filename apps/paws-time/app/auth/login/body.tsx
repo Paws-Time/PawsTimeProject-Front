@@ -103,7 +103,7 @@ const LoginBody = () => {
         style={{ ...formStyles.background, height: "800px" }}
         className="flex flex-1 items-center"
       >
-        <img src="/logo.png" alt="Logo" className="w-80 h-auto ml-28" />
+        <img src="/logo.png" alt="logo" className="w-80 h-auto ml-28" />
       </div>
 
       <form
