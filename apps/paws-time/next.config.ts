@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     domains: ["paws-time-bucket.s3.ap-northeast-2.amazonaws.com"], // 이미지 호스트 도메인 추가
+    unoptimized: true,
   },
 };
 
