@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { formStyles } from "@/app/styles/forms";
 import { CustomButton } from "@/components/utils/button";
 import { useLoginUser } from "../../lib/codegen/hooks/user-api/user-api";
@@ -103,7 +104,13 @@ const LoginBody = () => {
         style={{ ...formStyles.background, height: "800px" }}
         className="flex flex-1 items-center"
       >
-        <img src="/logo.png" alt="logo" className="w-80 h-auto ml-28" />
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={320}
+          height={320}
+          className="ml-28"
+        />
       </div>
 
       <form

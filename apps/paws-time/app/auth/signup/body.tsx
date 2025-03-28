@@ -6,6 +6,7 @@ import { CustomButton } from "@/components/utils/button";
 import { useCreateUser } from "../../lib/codegen/hooks/user-api/user-api";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import Image from "next/image";
 
 // interface PostData {
 //   email: string;
@@ -103,7 +104,13 @@ const SignupBody = () => {
         style={{ ...formStyles.background, height: "800px" }}
         className="flex flex-1 items-center"
       >
-        <img src="/logo.png" alt="logo" className="w-80 h-auto ml-28" />
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={320}
+          height={320}
+          className="ml-28"
+        />
       </div>
 
       {/* 폼 영역 */}
