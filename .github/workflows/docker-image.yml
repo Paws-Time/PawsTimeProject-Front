@@ -32,7 +32,6 @@ jobs:
       name: Build and Push
       uses: docker/build-push-action@v4
       with:
-        name: ${{ vars.DOCKERHUB_REPONAME }}
         context: . 
         file: Dockerfile.paws-time
         push: true 
