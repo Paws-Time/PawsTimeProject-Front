@@ -104,7 +104,7 @@ const SignupBody = () => {
         style={{ ...formStyles.background, height: "800px" }}
         className="flex flex-1 items-center"
       >
-        <Image
+        <img
           src="/logo.jpg"
           alt="logo"
           width={320}
