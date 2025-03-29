@@ -105,7 +105,7 @@ const SignupBody = () => {
         className="flex flex-1 items-center"
       >
         <Image
-          src="/logo.png"
+          src="/logo.jpg"
           alt="logo"
           width={320}
           height={320}
