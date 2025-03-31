@@ -106,7 +106,7 @@ const SignupBody = () => {
       >
         <Image
           src="https://paws-time-bucket.s3.ap-northeast-2.amazonaws.com/logo.jpg"
-          alt="logo"
+          alt="LOGO"
           width={320}
           height={320}
           className="ml-28"
