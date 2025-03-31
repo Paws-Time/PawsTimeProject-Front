@@ -104,8 +104,8 @@ const SignupBody = () => {
         style={{ ...formStyles.background, height: "800px" }}
         className="flex flex-1 items-center"
       >
-        <img
-          src="/logo.jpg"
+        <Image
+          src="https://paws-time-bucket.s3.ap-northeast-2.amazonaws.com/logo.jpg"
           alt="logo"
           width={320}
           height={320}
