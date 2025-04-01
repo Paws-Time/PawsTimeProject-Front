@@ -11,6 +11,7 @@ import { CustomButton } from "@/components/utils/button";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface BoardResDto {
   boardId: number;
@@ -31,6 +32,9 @@ const BoardWriteBody = () => {
   const router = useRouter();
   const { data, isLoading: boardLoading } = useGetBoardList();
 
+  const searchParams = useSearchParams();
+  const boardIdParam = searchParams.get("boardId");
+
   // 게시판 목록 로드
   useEffect(() => {
     if (data) {
@@ -39,13 +43,23 @@ const BoardWriteBody = () => {
           boardId: board.boardId,
           title: board.title,
         })) || [];
+
       setBoardOption(boardList);
 
-      if (!boardId && boardList.length > 0) {
-        setBoardId(boardList[0].boardId); // 첫 번째 게시판을 기본값으로 설정
+      const parsedBoardId = Number(boardIdParam);
+
+      if (
+        !boardId &&
+        parsedBoardId &&
+        boardList.some((b) => b.boardId === parsedBoardId)
+      ) {
+        setBoardId(parsedBoardId); // ✅ 쿼리에서 받은 boardId를 디폴트로 설정
+      } else if (!boardId && boardList.length > 0) {
+        setBoardId(boardList[0].boardId); // ✅ fallback
       }
     }
-  }, [data, boardId]);
+  }, [data, boardIdParam, boardId]);
+
   const { mutate, isLoading, isError } = useCreatePost({
     mutation: {
       onSuccess: async (response) => {
@@ -157,7 +171,7 @@ const BoardWriteBody = () => {
         <div style={formStyles.field}>
           <label style={formStyles.label}>게시판</label>
           <select
-            value={boardId}
+            value={boardId ?? ""}
             onChange={(e) => setBoardId(Number(e.target.value))}
             style={formStyles.select}
             required

@@ -125,7 +125,7 @@ const BoardDetailBody = () => {
       alert("로그인이 필요합니다.");
       router.push("/auth/login"); // 로그인 페이지로 이동
     } else {
-      router.push(`/board/write/`); // 게시글 작성 페이지로 이동
+      router.push(`/board/write?boardId=${boardId}`); // 게시글 작성 페이지로 이동
     }
   };
 
