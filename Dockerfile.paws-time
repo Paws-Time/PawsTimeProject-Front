@@ -19,7 +19,6 @@ COPY pnpm-workspace.yaml ./
 COPY package.json ./
 
 COPY apps/paws-time apps/paws-time
-COPY apps/paws-time/public ./public
 COPY packages/ packages/
 
 # RUN : 이미지를 빌드할 때 사용되는 명령어

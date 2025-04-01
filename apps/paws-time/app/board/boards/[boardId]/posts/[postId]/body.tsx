@@ -192,14 +192,36 @@ const PostDetailBody = () => {
             </div>
           )}
 
-          <div style={postFormStyles.titleBox}>
-            <h2 style={postFormStyles.title}>{post?.title}</h2>
-            <span>
-              작성자: {authorNick} | 작성일:{" "}
-              {post?.createdAt
-                ? new Date(post.createdAt).toLocaleDateString()
-                : "로딩 중입니다."}
-            </span>
+          <div
+            style={{
+              ...postFormStyles.titleBox,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <h2 style={postFormStyles.title}>{post?.title}</h2>
+              <span>
+                작성자: {authorNick} | 작성일:{" "}
+                {post?.createdAt
+                  ? new Date(post.createdAt).toLocaleDateString()
+                  : "로딩 중입니다."}
+              </span>
+            </div>
+
+            <button
+              onClick={() => router.push(`/board/boards/${boardId}`)}
+              style={{
+                padding: "8px 12px",
+                backgroundColor: "#f3f3f3",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              목록으로
+            </button>
           </div>
           <div style={postFormStyles.textBox}>
             <p>{post?.content}</p>
