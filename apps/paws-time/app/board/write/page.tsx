@@ -1,10 +1,11 @@
 import BoardWriteBody from "./body";
+import { Suspense } from "react";
 
 const BoardWritePage = () => {
   return (
-    <div>
+    <Suspense fallback={<div>로딩 중...</div>}>
       <BoardWriteBody />
-    </div>
+    </Suspense>
   );
 };
 
